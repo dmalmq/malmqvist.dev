@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/ui/Button.astro";
+---
+
+<BaseLayout title="404: Not Found | Daniel Malmqvist" lang="en">
+    <div
+        class="flex flex-col items-center justify-center py-24 md:py-32 text-center px-4"
+    >
+        <h1
+            class="text-8xl md:text-9xl font-black text-[var(--color-text-heading)] mb-6 opacity-20"
+        >
+            404
+        </h1>
+
+        <div class="max-w-md space-y-4 mb-10">
+            <h2 class="text-2xl font-bold text-[var(--color-text-heading)]">
+                Page not found
+            </h2>
+            <p class="text-[var(--color-text-secondary)]">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+        </div>
+
+        <div class="max-w-md space-y-4 mb-10 hidden" id="ja-content">
+            <h2 class="text-2xl font-bold text-[var(--color-text-heading)]">
+                ページが見つかりません
+            </h2>
+            <p class="text-[var(--color-text-secondary)]">
+                お探しのページは存在しないか、移動した可能性があります。
+            </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+            <Button href="/en/" variant="primary" id="btn-home"
+                >Return Home</Button
+            >
+        </div>
+    </div>
+
+    <script>
+        // Extremely lightweight language checking for 404
+        const isJa =
+            window.location.pathname.startsWith("/ja") ||
+            (typeof localStorage !== "undefined" &&
+                localStorage.getItem("preferred-language") === "ja") ||
+            window.navigator.language.startsWith("ja");
+
+        if (isJa) {
+            const jaContent = document.getElementById("ja-content");
+            const enContent = jaContent?.previousElementSibling;
+            const btnHome = document.getElementById("btn-home");
+
+            if (enContent) enContent.classList.add("hidden");
+            if (jaContent) jaContent.classList.remove("hidden");
+            if (btnHome) {
+                btnHome.textContent = "ホームに戻る";
+                btnHome.setAttribute("href", "/ja/");
+            }
+        }
+    </script>
+</BaseLayout>

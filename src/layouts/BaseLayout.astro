@@ -12,13 +12,34 @@ interface Props {
   title: string;
   description?: string;
   lang: Language;
+  image?: string;
 }
 
 const {
   title,
-  description = "Personal Site of Daniel Malmqvist",
+  description = "Daniel Malmqvist — Architect, BIM Manager, and Agentic Programmer. From Stockholm's hospitals to Tokyo's digital twin.",
   lang,
+  image = "/images/projects/shinjuku-nav-1.png",
 } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const isJa = currentPath.startsWith("/ja");
+const altLang = isJa ? "en" : "ja";
+const altPath = isJa
+  ? currentPath.replace(/^\/ja/, "/en")
+  : currentPath.replace(/^\/en/, "/ja");
+
+// Use Astro.site config for canonical URLs
+const canonicalUrl = new URL(
+  currentPath,
+  Astro.site ?? "https://malmqvist.dev",
+);
+const altUrl = new URL(altPath, Astro.site ?? "https://malmqvist.dev");
+const defaultUrl = new URL(
+  currentPath.replace(/^\/(ja|en)/, "/en"),
+  Astro.site ?? "https://malmqvist.dev",
+);
+const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
 ---
 
 <!doctype html>
@@ -28,8 +49,38 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta
+      name="theme-color"
+      content="#0a0a0f"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#fafaf9"
+      media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImageUrl} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={fullImageUrl} />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+    <link rel="alternate" hreflang={altLang} href={altUrl} />
+    <link rel="alternate" hreflang="x-default" href={defaultUrl} />
 
     <script is:inline>
       // Prevent theme flicker

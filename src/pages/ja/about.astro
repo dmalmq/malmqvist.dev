@@ -1,37 +1,77 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import FadeIn from '../../components/ui/FadeIn.astro';
-import Timeline from '../../components/Timeline.astro';
-import Button from '../../components/ui/Button.astro';
-import { useTranslations } from '../../i18n/utils';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FadeIn from "../../components/ui/FadeIn.astro";
+import Timeline from "../../components/Timeline.astro";
+import Button from "../../components/ui/Button.astro";
+import { useTranslations } from "../../i18n/utils";
 
-const t = useTranslations('ja');
+const t = useTranslations("ja");
+
+// SEO JSON-LD structured data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "ダニエル マルムクビスト (Daniel Malmqvist)",
+  url: "https://malmqvist.dev/ja",
+  image: "https://malmqvist.dev/images/projects/shinjuku-nav-1.png",
+  jobTitle: "BIM Manager & Developer",
+  worksFor: [
+    {
+      "@type": "Organization",
+      name: "JRE Consultants",
+    },
+    {
+      "@type": "Organization",
+      name: "Tengbom",
+    },
+  ],
+  sameAs: ["https://github.com/dmalmq", "https://linkedin.com/in/dmalmq"],
+};
 ---
 
-<BaseLayout title="Daniel Malmqvist | 自己紹介" lang="ja">
-  <section class="py-16 md:py-24 max-w-4xl mx-auto">
+<BaseLayout title="概要 | Daniel Malmqvist" lang="ja">
+  <!-- Schema.org Script -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="py-16 md:py-24 max-w-4xl mx-auto px-4 md:px-0">
     <FadeIn delay={0}>
-      <h1 class="text-4xl md:text-5xl font-black text-[var(--color-text-heading)] mb-8" style="font-family: 'Noto Sans JP', sans-serif;">
-        {t('about.title')}
+      <h1
+        class="text-4xl md:text-5xl font-black text-[var(--color-text-heading)] mb-8"
+        style="font-family: 'Noto Sans JP', sans-serif;"
+      >
+        {t("about.title")}
       </h1>
-      <p class="text-xl md:text-2xl text-[var(--color-text-secondary)] font-bold leading-relaxed mb-6" style="font-family: 'Noto Sans JP', sans-serif;">
+      <p
+        class="text-xl md:text-2xl text-[var(--color-text-secondary)] font-bold leading-relaxed mb-6"
+        style="font-family: 'Noto Sans JP', sans-serif;"
+      >
         建築の基礎知識、複雑なBIMワークフロー、そして新たなテクノロジーの架け橋に。
       </p>
     </FadeIn>
 
-    <div class="mt-12 space-y-8 text-lg text-[var(--color-text-secondary)] leading-relaxed" style="font-family: 'Noto Sans JP', sans-serif;">
+    <div
+      class="mt-12 space-y-8 text-lg text-[var(--color-text-secondary)] leading-relaxed"
+      style="font-family: 'Noto Sans JP', sans-serif;"
+    >
       <FadeIn delay={100}>
         <p>
           スウェーデンでの伝統的な建築および建設プロセスから、現在の東京における最先端の都市デジタルツイン開発まで、一貫して空間デザイン・データ構築の最前線でキャリアを積んできました。
         </p>
         <p class="mt-6">
-          北欧で最も伝統と由緒ある建築事務所の一つである<strong class="text-[var(--color-text-primary)] font-bold">Tengbom</strong>で7年間勤務し、受賞歴のある病院建築（Ersta Sjukhus）やストックホルム・アーランダ空港ターミナル5拡張など、大規模かつ複雑なプロジェクトに参画。単なるデータ管理にとどまらず、複雑なファサードシステムのモデリングから、各専門分野が交錯する設備調整、そして厳しい施工期限に向けたマネジメントまでを牽引しました。
+          北欧で最も伝統と由緒ある建築事務所の一つである<strong
+            class="text-[var(--color-text-primary)] font-bold">Tengbom</strong
+          >で7年間勤務し、受賞歴のある病院建築（Ersta
+          Sjukhus）やストックホルム・アーランダ空港ターミナル5拡張など、大規模かつ複雑なプロジェクトに参画。単なるデータ管理にとどまらず、複雑なファサードシステムのモデリングから、各専門分野が交錯する設備調整、そして厳しい施工期限に向けたマネジメントまでを牽引しました。
         </p>
       </FadeIn>
 
       <FadeIn delay={200}>
         <p>
-          その経験の中で、既存のAEC（建築・エンジニアリング・建設）ツールだけでは対応できない限界を感じました。私は「BIMを学んだソフトウェア開発者」ではなく、<strong class="text-[var(--color-text-primary)] font-bold">プログラミング技術を習得したBIMマネージャー・建築家</strong>です。現在私は東京に拠点を移し、建築のネイティブデータをレガシーなファイル変換プロセスから解放し、PLATEAUのような最先端のデジタルツイン空間に直接・自動的にデータを流し込むための「Agentic Programming（自律的AIを活用したプログラム開発）」のパイプライン化に取り組んでいます。
+          その経験の中で、既存のAEC（建築・エンジニアリング・建設）ツールだけでは対応できない限界を感じました。私は「BIMを学んだソフトウェア開発者」ではなく、<strong
+            class="text-[var(--color-text-primary)] font-bold"
+            >プログラミング技術を習得したBIMマネージャー・建築家</strong
+          >です。現在私は東京に拠点を移し、建築のネイティブデータをレガシーなファイル変換プロセスから解放し、PLATEAUのような最先端のデジタルツイン空間に直接・自動的にデータを流し込むための「Agentic
+          Programming（自律的AIを活用したプログラム開発）」のパイプライン化に取り組んでいます。
         </p>
         <p class="mt-6">
           建築家の意図する「緻密なデザイン」と、それを実装するための「技術的データパイプライン」。その両方を深く理解する者こそが、最も強力なBIMソリューションを生み出せると信じています。
@@ -40,20 +80,43 @@ const t = useTranslations('ja');
     </div>
 
     <FadeIn delay={300}>
-      <div class="mt-16 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] p-6 lg:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div
+        class="mt-16 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] p-6 lg:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+      >
         <div>
-          <h3 class="text-xl font-bold text-[var(--color-text-heading)] mb-2" style="font-family: 'Noto Sans JP', sans-serif;">履歴書（PDF）</h3>
-          <p class="text-[var(--color-text-secondary)] text-base" style="font-family: 'Noto Sans JP', sans-serif;">詳しい職歴、資格、習得スキルを記載しています。※JLPT N3取得済 / N2取得に向け学習中。</p>
+          <h3
+            class="text-xl font-bold text-[var(--color-text-heading)] mb-2"
+            style="font-family: 'Noto Sans JP', sans-serif;"
+          >
+            履歴書（PDF）
+          </h3>
+          <p
+            class="text-[var(--color-text-secondary)] text-base"
+            style="font-family: 'Noto Sans JP', sans-serif;"
+          >
+            詳しい職歴、資格、習得スキルを記載しています。※JLPT N3取得済 /
+            N2取得に向け学習中。
+          </p>
         </div>
-        <Button href="/resume-ja.pdf" variant="primary" class="shrink-0" download>
-          {t('about.resume')}
+        <Button
+          href="/resume-ja.pdf"
+          variant="primary"
+          class="shrink-0"
+          download
+        >
+          {t("about.resume")}
         </Button>
       </div>
     </FadeIn>
 
     <div class="mt-20">
       <FadeIn delay={400}>
-        <h2 class="text-3xl font-bold text-[var(--color-text-heading)] mb-8" style="font-family: 'Noto Sans JP', sans-serif;">職歴</h2>
+        <h2
+          class="text-3xl font-bold text-[var(--color-text-heading)] mb-8"
+          style="font-family: 'Noto Sans JP', sans-serif;"
+        >
+          職歴
+        </h2>
         <Timeline lang="ja" />
       </FadeIn>
     </div>
