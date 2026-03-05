@@ -1,0 +1,26 @@
+---
+interface Props {
+  variant?: 'primary' | 'secondary';
+  href?: string;
+  class?: string;
+  type?: 'button' | 'submit' | 'reset';
+  [x: string]: any;
+}
+
+const { variant = 'primary', href, class: className = '', type, ...rest } = Astro.props;
+
+const isLink = typeof href === 'string';
+const Element = isLink ? 'a' : 'button';
+
+const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-[6px] dark:rounded-full px-5 py-2';
+const variants = {
+  primary: 'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] hover:shadow-md dark:hover:shadow-[0_0_15px_var(--color-accent-glow)]',
+  secondary: 'border border-[var(--color-accent)] text-[var(--color-text-primary)] dark:text-[var(--color-accent)] hover:border-[var(--color-accent-hover)] dark:hover:shadow-[0_0_15px_var(--color-accent-glow)] bg-transparent',
+};
+
+const classes = `${baseStyles} ${variants[variant]} ${className}`;
+---
+
+<Element href={href} class={classes} type={!isLink ? type || 'button' : undefined} {...rest}>
+  <slot />
+</Element>

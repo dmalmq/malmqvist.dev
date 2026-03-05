@@ -1,0 +1,21 @@
+---
+interface Props {
+  class?: string;
+  [x: string]: any;
+}
+
+const { class: className = '', ...rest } = Astro.props;
+
+// Spec: 
+// Background: Dark: --bg-secondary, Light: --bg-elevated (white)
+// Border: 1px --border
+// Radius: Dark 12px, Light 8px
+// Hover: Dark: border shifts to accent + faint glow, Light: translate Y + soft drop shadow
+---
+
+<div
+  class={`bg-[var(--color-bg-elevated)] dark:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-sm hover:border-[var(--color-border-hover)] dark:hover:shadow-[0_0_15px_var(--color-accent-glow)] ${className}`}
+  {...rest}
+>
+  <slot />
+</div>

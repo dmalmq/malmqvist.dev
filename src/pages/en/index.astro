@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/ui/Button.astro';
+import Card from '../../components/ui/Card.astro';
+import FadeIn from '../../components/ui/FadeIn.astro';
+import SkillsGrid from '../../components/SkillsGrid.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('en');
+---
+
+<BaseLayout title="Daniel Malmqvist | Portfolio" lang="en">
+  {/* Hero Section */}
+  <section class="py-20 md:py-32 flex flex-col items-center text-center relative overflow-hidden">
+    {/* Background Image */}
+    <div class="absolute inset-0 z-0 opacity-10 dark:opacity-30 pointer-events-none">
+      <img src="/images/projects/shinjuku-nav-1.png" alt="" class="w-full h-full object-cover object-top" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[var(--color-bg-primary)]/40 via-[var(--color-bg-primary)]/80 to-[var(--color-bg-primary)]"></div>
+    </div>
+    
+    <div class="relative z-10 w-full max-w-4xl mx-auto px-4">
+    <FadeIn delay={0}>
+      <h1 class="text-5xl md:text-7xl font-black text-[var(--color-text-heading)] tracking-tight mb-6">
+        Daniel Malmqvist
+      </h1>
+    </FadeIn>
+    <FadeIn delay={100}>
+      <p class="text-xl md:text-2xl text-[var(--color-text-heading)] mb-2 font-medium">
+        {t('hero.tagline')}
+      </p>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] mb-10 max-w-2xl">
+        {t('hero.tagline.desc')}
+      </p>
+    </FadeIn>
+    <FadeIn delay={200}>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <Button href="/en/contact" variant="primary">
+          {t('hero.cta.primary')}
+        </Button>
+        <Button href="/en/projects" variant="secondary">
+          {t('hero.cta.secondary')}
+        </Button>
+      </div>
+    </FadeIn>
+  </div>
+</section>
+
+  {/* What I Do Section */}
+  <section class="py-20 border-t border-[var(--color-border)]">
+    <FadeIn>
+      <div class="mb-12 text-center">
+        <h2 class="text-3xl font-bold text-[var(--color-text-heading)]">{t('home.whatido.title')}</h2>
+      </div>
+    </FadeIn>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <FadeIn delay={0}>
+        <Card class="p-8 h-full flex flex-col">
+          <h3 class="text-xl font-bold text-[var(--color-text-heading)] mb-4">{t('home.whatido.card1.title')}</h3>
+          <p class="text-[var(--color-text-secondary)] leading-relaxed flex-grow">
+            {t('home.whatido.card1.desc')}
+          </p>
+        </Card>
+      </FadeIn>
+      
+      <FadeIn delay={150}>
+        <Card class="p-8 h-full flex flex-col">
+          <h3 class="text-xl font-bold text-[var(--color-text-heading)] mb-4">{t('home.whatido.card2.title')}</h3>
+          <p class="text-[var(--color-text-secondary)] leading-relaxed flex-grow">
+            {t('home.whatido.card2.desc')}
+          </p>
+        </Card>
+      </FadeIn>
+
+      <FadeIn delay={300}>
+        <Card class="p-8 h-full flex flex-col">
+          <h3 class="text-xl font-bold text-[var(--color-text-heading)] mb-4">{t('home.whatido.card3.title')}</h3>
+          <p class="text-[var(--color-text-secondary)] leading-relaxed flex-grow">
+            {t('home.whatido.card3.desc')}
+          </p>
+        </Card>
+      </FadeIn>
+    </div>
+  </section>
+
+  {/* Featured Project Section */}
+  <section class="py-20 border-t border-[var(--color-border)]">
+    <FadeIn>
+      <div class="mb-12 text-center">
+        <h2 class="text-3xl font-bold text-[var(--color-text-heading)]">{t('home.featured.title')}</h2>
+      </div>
+    </FadeIn>
+    <FadeIn delay={100}>
+      <Card class="overflow-hidden flex flex-col md:flex-row gap-8 items-center p-6 lg:p-10 border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-colors duration-200">
+        <div class="w-full md:w-1/2 flex-shrink-0">
+          <img src="/images/projects/shinjuku-nav-1.png" alt="Shinjuku Indoor Navigation" class="w-full h-auto rounded-[4px] md:rounded-[8px] border border-[var(--color-border)] shadow-sm dark:shadow-[0_0_15px_var(--color-accent-glow)] transition-all duration-300 relative z-10" />
+        </div>
+        <div class="w-full md:w-1/2 flex flex-col justify-center">
+          <h3 class="text-2xl font-bold text-[var(--color-text-heading)] mb-4">{t('home.featured.project.title')}</h3>
+          <p class="text-[var(--color-text-secondary)] text-lg leading-relaxed mb-6">
+            {t('home.featured.project.desc')}
+          </p>
+          <div>
+            <a href="/en/projects/shinjuku-nav" class="inline-flex flex-row items-center font-bold text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors text-base group">
+              {t('home.featured.readmore')}
+            </a>
+          </div>
+        </div>
+      </Card>
+    </FadeIn>
+  </section>
+
+  {/* Skills Grid */}
+  <section class="py-20 border-t border-[var(--color-border)]">
+    <FadeIn>
+      <div class="mb-12 text-center">
+        <h2 class="text-3xl font-bold text-[var(--color-text-heading)]">{t('home.skills.title')}</h2>
+      </div>
+    </FadeIn>
+    <FadeIn delay={100}>
+      <SkillsGrid lang="en" />
+    </FadeIn>
+  </section>
+
+  {/* CTA Section */}
+  <section class="py-24 text-center">
+    <FadeIn>
+      <h2 class="text-4xl font-bold text-[var(--color-text-heading)] mb-8">{t('home.cta.title')}</h2>
+      <Button href="/en/contact" variant="primary" class="text-lg px-8 py-4">
+        {t('home.cta.button')}
+      </Button>
+    </FadeIn>
+  </section>
+</BaseLayout>

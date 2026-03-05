@@ -1,0 +1,70 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ImageLightbox from "../components/ImageLightbox";
+import { type Language } from "../i18n/utils";
+
+// We want to persist early to avoid light/dark flicker, so we inject a script.
+// A simpler script handles dark mode before React inits.
+
+interface Props {
+  title: string;
+  description?: string;
+  lang: Language;
+}
+
+const {
+  title,
+  description = "Personal Site of Daniel Malmqvist",
+  lang,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <script is:inline>
+      // Prevent theme flicker
+      const theme = (() => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
+        }
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          return "dark";
+        }
+        return "light";
+      })();
+
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
+  </head>
+  <body
+    class="antialiased min-h-screen flex flex-col transition-colors duration-200"
+  >
+    <Header currentLang={lang} />
+
+    <main
+      class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-16"
+    >
+      <slot />
+    </main>
+
+    <Footer currentLang={lang} />
+    <ImageLightbox client:idle />
+  </body>
+</html>

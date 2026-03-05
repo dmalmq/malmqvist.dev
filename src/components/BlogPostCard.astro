@@ -1,0 +1,89 @@
+---
+import { type Language } from "../../i18n/utils";
+
+interface Props {
+    post: any;
+    lang: Language;
+}
+
+const { post, lang } = Astro.props;
+
+const slugParts = post.id.split("/");
+const slugRoute = slugParts[slugParts.length - 1];
+const url = `/${lang}/blog/${slugRoute}`;
+
+const dateOptions: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+};
+const formattedDate = new Intl.DateTimeFormat(
+    lang === "en" ? "en-US" : "ja-JP",
+    dateOptions,
+).format(post.data.publishDate);
+---
+
+<a
+    href={url}
+    class="group block py-8 border-b border-[var(--color-border)] hover:bg-[var(--color-bg-surface)] transition-colors duration-300 -mx-4 px-4 rounded-[8px]"
+>
+    <div
+        class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-4 mb-3"
+    >
+        <time
+            datetime={post.data.publishDate.toISOString()}
+            class="text-[var(--color-text-secondary)] font-mono text-sm shrink-0"
+        >
+            {formattedDate}
+        </time>
+        <div class="flex gap-2 flex-wrap text-xs font-semibold">
+            {
+                post.data.tags
+                    .slice(0, 2)
+                    .map((tag: string) => (
+                        <span class="text-[var(--color-accent)] uppercase tracking-wider">
+                            #{tag}
+                        </span>
+                    ))
+            }
+            {
+                post.data.readingTime && (
+                    <span class="text-[var(--color-text-secondary)] ml-auto md:ml-2 opacity-70 flex items-center gap-1">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-clock"
+                        >
+                            <>
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </>
+                        </svg>
+                        {post.data.readingTime}
+                    </span>
+                )
+            }
+        </div>
+    </div>
+
+    <h3
+        class="text-2xl font-bold text-[var(--color-text-heading)] mb-3 group-hover:text-[var(--color-accent)] transition-colors"
+        style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
+    >
+        {post.data.title}
+    </h3>
+
+    <p
+        class="text-[var(--color-text-secondary)] leading-relaxed line-clamp-2 max-w-3xl"
+        style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
+    >
+        {post.data.description}
+    </p>
+</a>

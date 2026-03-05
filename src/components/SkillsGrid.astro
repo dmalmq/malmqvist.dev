@@ -1,0 +1,45 @@
+---
+import Tag from './ui/Tag.astro';
+import { useTranslations, type Language } from '../i18n/utils';
+
+interface Props {
+  lang: Language;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const skillCategories = [
+  {
+    name: lang === 'ja' ? '建築・BIM' : 'Architecture & BIM',
+    skills: ['Revit', 'ArchiCAD', 'BIM Coordination', 'Clash Detection']
+  },
+  {
+    name: lang === 'ja' ? '地理空間・データ' : 'Geospatial & Spatial Data',
+    skills: ['CityGML', 'IFC', 'GeoPackage', 'IMDF', 'Shapefiles']
+  },
+  {
+    name: lang === 'ja' ? 'プログラミング' : 'Programming',
+    skills: ['Python', 'TypeScript', 'C#']
+  },
+  {
+    name: lang === 'ja' ? 'オープンソース・CG' : 'Open Source & Viz',
+    skills: ['Blender', 'Bonsai', 'Unity', 'FBX']
+  },
+  {
+    name: lang === 'ja' ? '言語' : 'Languages',
+    skills: lang === 'ja' ? ['英語 (母語)', 'スウェーデン語 (母語)', '日本語 (JLPT N3 / N2勉強中)'] : ['English (Native)', 'Swedish (Native)', 'Japanese (JLPT N3, studying for N2)']
+  }
+];
+---
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {skillCategories.map(category => (
+    <div class="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] p-5 hover:border-[var(--color-border-hover)] transition-colors duration-200">
+      <h4 class="text-xs font-bold text-[var(--color-text-heading)] mb-4 uppercase tracking-wider">{category.name}</h4>
+      <div class="flex flex-wrap gap-2">
+        {category.skills.map(skill => (
+          <Tag>{skill}</Tag>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>

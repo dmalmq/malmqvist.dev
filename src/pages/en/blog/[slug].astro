@@ -1,0 +1,105 @@
+---
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import FadeIn from "../../../components/ui/FadeIn.astro";
+import Tag from "../../../components/ui/Tag.astro";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog", ({ id }) => id.startsWith("en/"));
+    return posts.map((p) => {
+        const slugParts = p.id.split("/");
+        return {
+            params: { slug: slugParts[slugParts.length - 1] },
+            props: { post: p },
+        };
+    });
+}
+
+interface Props {
+    post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateOptions: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+};
+const formattedDate = new Intl.DateTimeFormat("en-US", dateOptions).format(
+    post.data.publishDate,
+);
+---
+
+<BaseLayout title={`${post.data.title} | Blog`} lang="en">
+    <article class="py-16 md:py-24 max-w-3xl mx-auto px-4">
+        <FadeIn>
+            <a
+                href="/en/blog"
+                class="inline-flex items-center text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors mb-10"
+            >
+                ← Back to Writing
+            </a>
+
+            <div
+                class="flex items-center gap-4 text-sm text-[var(--color-text-secondary)] font-medium mb-6"
+            >
+                <time datetime={post.data.publishDate.toISOString()}
+                    >{formattedDate}</time
+                >
+                {
+                    post.data.readingTime && (
+                        <>
+                            <span>•</span>
+                            <span class="flex items-center gap-1.5 opacity-80">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="lucide lucide-clock"
+                                >
+                                    <>
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </>
+                                </svg>
+                                {post.data.readingTime}
+                            </span>
+                        </>
+                    )
+                }
+            </div>
+
+            <h1
+                class="text-4xl md:text-5xl lg:text-6xl font-black text-[var(--color-text-heading)] mb-8 tracking-tight leading-[1.1]"
+            >
+                {post.data.title}
+            </h1>
+
+            <div class="flex flex-wrap gap-2 mb-12">
+                {post.data.tags.map((tag: string) => <Tag>{tag}</Tag>)}
+            </div>
+        </FadeIn>
+
+        <FadeIn delay={100}>
+            <div
+                class="prose prose-lg md:prose-xl dark:prose-invert max-w-none
+                  prose-headings:text-[var(--color-text-heading)] prose-headings:font-bold
+                  prose-a:text-[var(--color-accent)] hover:prose-a:text-[var(--color-accent-hover)]
+                  prose-code:bg-[var(--color-code-bg)] prose-code:text-[var(--color-code-text)]
+                  prose-img:rounded-[8px] md:prose-img:rounded-[12px] prose-img:border prose-img:border-[var(--color-border)]
+                  text-[var(--color-text-primary)]"
+            >
+                <Content />
+            </div>
+        </FadeIn>
+    </article>
+</BaseLayout>

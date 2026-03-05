@@ -1,0 +1,47 @@
+---
+import { type Language } from '../i18n/utils';
+
+interface Props {
+  lang: Language;
+}
+const { lang } = Astro.props;
+
+const timelineData = [
+  {
+    year: '2023 - Present',
+    role: lang === 'ja' ? 'BIMデジタルツイン・エンジニア' : 'BIM Digital Twin Engineer',
+    company: lang === 'ja' ? 'JRE Consultants (東京)' : 'JRE Consultants (Tokyo)',
+    desc: lang === 'ja' 
+      ? '日本の国土交通省主導の3D都市モデル「PLATEAU」と連携し、詳細な屋内モデリングや都市スケールのデジタルツインを構築。ネイティブなBIMモデルを、Unity等で動作するインタラクティブプラットフォーム向けに変換する堅牢なデータパイプラインを開発・運用。' 
+      : 'Building deep indoor navigation workflows and digital twins by integrating native BIM geometry into the Japanese government-backed PLATEAU 3D city model. Developing bespoke agentic pipelines to directly synthesize complex spatial data formats.'
+  },
+  {
+    year: '2016 - 2023',
+    role: lang === 'ja' ? 'BIMマネージャー / 建築設計' : 'BIM Manager / Architect',
+    company: lang === 'ja' ? 'Tengbom (ストックホルム)' : 'Tengbom (Stockholm)',
+    desc: lang === 'ja' 
+      ? '北欧有数の建築事務所(1906年設立)にて7年間勤務。ストックホルムの受賞歴のある「Ersta Sjukhus（病院）」や、アーランダ空港ターミナル5の拡張プロジェクト等において、BIMマネジメントやファサード等のモデリングを指揮・担当。複数分野をまたぐプロジェクト統合を牽引。'
+      : 'Spent 7 years at one of the Nordic region’s leading architecture firms. Coordinated multidisciplinary models from scratch, led BIM management, and managed fabrication processes for award-winning institutional projects like the Ersta Sjukhus hospital and the 330m Terminal 5 expansion at Stockholm Arlanda Airport.'
+  }
+];
+---
+<div class="relative border-l border-[var(--color-border)] ml-3 md:ml-6 mt-10">
+  {timelineData.map((item) => (
+    <div class="mb-10 ml-8 md:ml-12 relative">
+      <span class="absolute flex items-center justify-center w-4 h-4 rounded-full -left-[39px] md:-left-[55px] ring-4 ring-[var(--color-bg-primary)] bg-[var(--color-accent)]">
+      </span>
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-2 md:gap-4">
+        <h3 class="flex items-center text-lg md:text-xl font-bold text-[var(--color-text-heading)]" style={lang === 'ja' ? "font-family: 'Noto Sans JP', sans-serif;" : ""}>
+          {item.role}
+        </h3>
+        <time class="mt-1 md:mt-0 block text-sm font-medium leading-none text-[var(--color-text-secondary)] shrink-0">
+          {item.year}
+        </time>
+      </div>
+      <p class="mb-4 text-base font-semibold text-[var(--color-accent)]" style={lang === 'ja' ? "font-family: 'Noto Sans JP', sans-serif;" : ""}>{item.company}</p>
+      <p class="text-base font-normal text-[var(--color-text-secondary)] leading-relaxed" style={lang === 'ja' ? "font-family: 'Noto Sans JP', sans-serif;" : ""}>
+        {item.desc}
+      </p>
+    </div>
+  ))}
+</div>
