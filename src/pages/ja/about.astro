@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import FadeIn from "../../components/ui/FadeIn.astro";
 import Timeline from "../../components/Timeline.astro";
 import Button from "../../components/ui/Button.astro";
+import SkillsGrid from "../../components/SkillsGrid.astro";
 import { useTranslations } from "../../i18n/utils";
 
 const t = useTranslations("ja");
@@ -35,18 +36,76 @@ const jsonLd = {
 
   <section class="py-16 md:py-24 max-w-4xl mx-auto px-4 md:px-0">
     <FadeIn delay={0}>
-      <h1
-        class="text-4xl md:text-5xl font-black text-[var(--color-text-heading)] mb-8"
-        style="font-family: 'Noto Sans JP', sans-serif;"
+      <div
+        class="flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-[var(--color-border)] pb-10 mb-10"
       >
-        {t("about.title")}
-      </h1>
-      <p
-        class="text-xl md:text-2xl text-[var(--color-text-secondary)] font-bold leading-relaxed mb-6"
-        style="font-family: 'Noto Sans JP', sans-serif;"
-      >
-        建築の基礎知識、複雑なBIMワークフロー、そして新たなテクノロジーの架け橋に。
-      </p>
+        <div
+          class="shrink-0 flex items-center justify-center p-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] shadow-sm dark:shadow-[0_0_20px_var(--color-accent-glow)]"
+        >
+          <img
+            src="/images/profile-img.JPG"
+            alt="ダニエル マルムクビスト"
+            class="w-48 h-48 sm:w-56 sm:h-56 rounded-full object-cover"
+          />
+        </div>
+        <div>
+          <h1
+            class="text-4xl md:text-5xl font-black text-[var(--color-text-heading)] mb-4"
+            style="font-family: 'Noto Sans JP', sans-serif;"
+          >
+            {t("about.title")}
+          </h1>
+          <p
+            class="text-xl md:text-2xl text-[var(--color-text-secondary)] font-bold leading-relaxed mb-4"
+            style="font-family: 'Noto Sans JP', sans-serif;"
+          >
+            建築の基礎知識、複雑なBIMワークフロー、そして新たなテクノロジーの架け橋に。
+          </p>
+          <div
+            class="flex flex-wrap gap-4 text-sm font-medium text-[var(--color-text-primary)]"
+            style="font-family: 'Noto Sans JP', sans-serif;"
+          >
+            <span
+              class="flex items-center gap-1.5 bg-[var(--color-bg-secondary)] px-3 py-1.5 rounded-md border border-[var(--color-border)]"
+            >
+              <svg
+                class="h-4 w-4 text-[var(--color-accent)]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg
+              >
+              家族と共に東京在住
+            </span>
+            <span
+              class="flex items-center gap-1.5 bg-[var(--color-bg-secondary)] px-3 py-1.5 rounded-md border border-[var(--color-border)]"
+            >
+              <svg
+                class="h-4 w-4 text-[var(--color-accent)]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+                ></path></svg
+              >
+              日本語能力試験 N3合格 (N2取得に向け学習中)
+            </span>
+          </div>
+        </div>
+      </div>
     </FadeIn>
 
     <div
@@ -80,32 +139,16 @@ const jsonLd = {
     </div>
 
     <FadeIn delay={300}>
-      <div
-        class="mt-16 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] p-6 lg:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
-      >
-        <div>
-          <h3
-            class="text-xl font-bold text-[var(--color-text-heading)] mb-2"
+      <div class="mt-20">
+        <FadeIn delay={300}>
+          <h2
+            class="text-3xl font-bold text-[var(--color-text-heading)] mb-8"
             style="font-family: 'Noto Sans JP', sans-serif;"
           >
-            履歴書（PDF）
-          </h3>
-          <p
-            class="text-[var(--color-text-secondary)] text-base"
-            style="font-family: 'Noto Sans JP', sans-serif;"
-          >
-            詳しい職歴、資格、習得スキルを記載しています。※JLPT N3取得済 /
-            N2取得に向け学習中。
-          </p>
-        </div>
-        <Button
-          href="/resume-ja.pdf"
-          variant="primary"
-          class="shrink-0"
-          download
-        >
-          {t("about.resume")}
-        </Button>
+            スキル・ツール
+          </h2>
+          <SkillsGrid lang="ja" />
+        </FadeIn>
       </div>
     </FadeIn>
 

@@ -15,7 +15,7 @@ export async function GET(context: any) {
             pubDate: post.data.publishDate,
             description: post.data.description,
             // Calculate the correct slug from id e.g. "ja/some-post" -> "some-post"
-            link: `/ja/blog/${post.id.split('/').pop()}/`,
+            link: `/ja/blog/${post.id.split('/').pop()?.replace(/\.mdx?$/, '')}/`,
         })),
         customData: `<language>ja-jp</language>`,
     });

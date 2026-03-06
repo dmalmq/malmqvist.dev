@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#1e1e2e" />
+  <g transform="translate(75, 150)">
+    <!-- Revit Box -->
+    <rect x="0" y="0" width="150" height="100" rx="8" fill="#181825" stroke="#89b4fa" stroke-width="3"/>
+    <text x="75" y="55" font-family="sans-serif" font-weight="bold" font-size="20" fill="#89b4fa" text-anchor="middle">Revit AEC</text>
+    
+    <!-- Arrow -->
+    <path d="M 160 50 L 240 50" stroke="#a6adc8" stroke-width="4" stroke-dasharray="8 4"/>
+    <polygon points="230,40 245,50 230,60" fill="#a6adc8"/>
+    
+    <!-- SQLite Box -->
+    <rect x="255" y="10" width="120" height="80" rx="8" fill="#181825" stroke="#f9e2af" stroke-width="3"/>
+    <text x="315" y="55" font-family="sans-serif" font-weight="bold" font-size="18" fill="#f9e2af" text-anchor="middle">.SQLITE</text>
+    
+    <!-- Arrow -->
+    <path d="M 385 50 L 465 50" stroke="#a6adc8" stroke-width="4" stroke-dasharray="8 4"/>
+    <polygon points="455,40 470,50 455,60" fill="#a6adc8"/>
+    
+    <!-- GeoPackage Box -->
+    <rect x="480" y="0" width="170" height="100" rx="8" fill="#181825" stroke="#a6e3a1" stroke-width="3"/>
+    <text x="565" y="55" font-family="sans-serif" font-weight="bold" font-size="20" fill="#a6e3a1" text-anchor="middle">GEOPACKAGE</text>
+  </g>
+</svg>

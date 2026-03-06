@@ -9,7 +9,7 @@ interface Props {
 const { post, lang } = Astro.props;
 
 const slugParts = post.id.split("/");
-const slugRoute = slugParts[slugParts.length - 1];
+const slugRoute = slugParts[slugParts.length - 1].replace(/\.mdx?$/, "");
 const url = `/${lang}/blog/${slugRoute}`;
 
 const dateOptions: Intl.DateTimeFormatOptions = {

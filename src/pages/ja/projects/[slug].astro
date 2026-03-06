@@ -5,14 +5,17 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import FadeIn from "../../../components/ui/FadeIn.astro";
 import Tag from "../../../components/ui/Tag.astro";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
     const projects = await getCollection("projects", ({ id }) =>
         id.startsWith("ja/"),
     );
     return projects.map((p) => {
         const slugParts = p.id.split("/");
+        const basename = slugParts[slugParts.length - 1].replace(/\.mdx?$/, "");
         return {
-            params: { slug: slugParts[slugParts.length - 1] },
+            params: { slug: basename },
             props: { project: p },
         };
     });

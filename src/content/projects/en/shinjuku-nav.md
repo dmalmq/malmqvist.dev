@@ -16,6 +16,6 @@ My role within this flagship project focused precisely on the **BIM modeling and
 
 ### Bridging the Extents
 
-The core challenge was aligning strict indoor millimeter precision with macro-scale geo-coordinates inherent to Japan's MLIT **PLATEAU** data set. We developed custom Blender + Bonsai extraction workflows that piped our modeled station interiors outward into correct CityGML topologies, establishing an unbroken link between deep underground platforms and adjacent street networks. 
+The core challenge was aligning strict indoor millimeter precision with macro-scale geo-coordinates inherent to Japan's MLIT **PLATEAU** data set. We developed custom Blender + Bonsai extraction workflows that connected our detailed indoor models directly to the city's exterior 3D map, establishing an unbroken link between deep underground platforms and adjacent street networks. 
 
 ![Street Level View](/images/projects/shinjuku-nav-2.png)

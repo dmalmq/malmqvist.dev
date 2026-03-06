@@ -7,11 +7,11 @@ tags: ["BIM", "Automation", "Python", "Career"]
 readingTime: "5 min read"
 ---
 
-![Code Meets Architecture](/images/projects/shinjuku-nav-1.png)
+![Code Meets Architecture](/images/projects/ersta/01-revit-model-front.jpg)
 
 When I first transitioned from pure architectural design into a dedicated BIM Manager role at Tengbom, I quickly realized that the primary bottleneck in large-scale projects wasn't a lack of design capability—it was data friction.
 
-Architects want to design. Engineers want to engineer. But when a project hits 30,000 square meters, like the Ersta Sjukhus hospital, the sheer volume of parameters, room codes, door schedules, and model alignments becomes overwhelming. The standard BIM software packages—while powerful—often force you into repetitive, manual click-paths to solve relatively simple data mismatches.
+Architects want to design. Engineers want to engineer. But when a project hits 30,000 square meters, like the [Ersta Sjukhus](/en/projects/ersta-sjukhus) hospital, the sheer volume of parameters, room codes, door schedules, and model alignments becomes overwhelming. The standard BIM software packages—while powerful—often force you into repetitive, manual click-paths to solve relatively simple data mismatches.
 
 This is where the paradigm shifts from *using* the software to *controlling* the software.
 

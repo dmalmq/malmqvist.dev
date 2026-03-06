@@ -9,7 +9,7 @@ featured: false
 problem: "The legacy workflow required converting Revit via DWG and then into Shapefile formats. It was a three-step process that lost metadata at each stage."
 solution: "Developed a native Revit plugin using C# and the Revit API for direct exports targeting the modern GeoPackage standard."
 techStack: ["Revit API", "C#", "SQLite", "Ogr2Ogr"]
-impact: "Reduced conversion stages strictly to software execution, retaining direct properties securely through SQLite standards."
+impact: "Eliminated two manual conversion steps, preserving all BIM metadata through direct SQLite/GeoPackage export."
 ---
 
 When scaling geometric and BIM meta-properties across geospatial systems, relying on older format bridges like DWG or strict Shapefile limits typically means stripping valuable parameters.

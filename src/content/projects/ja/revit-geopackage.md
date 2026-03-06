@@ -9,7 +9,7 @@ featured: false
 problem: "従来のワークフローでは、RevitからDWG、さらにShapefileへと変換する必要があり、各段階でメタデータが欠落する3段階のプロセスでした。"
 solution: "近代的標準のGeoPackageへの直接出力をターゲットとして、C#とRevit APIを利用したネイティブのRevitプラグインを開発。"
 techStack: ["Revit API", "C#", "SQLite", "Ogr2Ogr"]
-impact: "変換処理を1つのソフトウェア実行プロセスに限定し、SQLiteの標準仕様を通じて直接プロパティを安全に保持することに成功。"
+impact: "2つの手動変換ステップを排除し、直接SQLite/GeoPackageへのエクスポートを行うことで、すべてのBIMメタデータを完全に保持することに成功。"
 ---
 
 幾何学的要素とBIMメタプロパティを地理空間システム全般にスケーリングする際、DWGなどの古いフォーマット・ブリッジや厳密なShapefileの制限に依存することは、貴重なパラメータを剥ぎ取ることを意味します。
