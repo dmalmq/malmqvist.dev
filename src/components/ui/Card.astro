@@ -5,16 +5,10 @@ interface Props {
 }
 
 const { class: className = '', ...rest } = Astro.props;
-
-// Spec: 
-// Background: Dark: --bg-secondary, Light: --bg-elevated (white)
-// Border: 1px --border
-// Radius: Dark 12px, Light 8px
-// Hover: Dark: border shifts to accent + faint glow, Light: translate Y + soft drop shadow
 ---
 
 <div
-  class={`bg-[var(--color-bg-elevated)] dark:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-sm hover:border-[var(--color-border-hover)] dark:hover:shadow-[0_0_15px_var(--color-accent-glow)] ${className}`}
+  class={`rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_28px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] hover:shadow-[0_34px_80px_-48px_rgba(87,82,121,0.5)] dark:bg-[var(--color-bg-elevated)] dark:shadow-[0_28px_70px_-48px_rgba(25,23,36,0.95)] ${className}`}
   {...rest}
 >
   <slot />

@@ -32,7 +32,7 @@ export default function ThemeToggle() {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-[var(--color-bg-surface)] transition-colors duration-200 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] focus:outline-none"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)] focus:outline-none"
             aria-label="Toggle theme"
         >
             {theme === 'light' ? (

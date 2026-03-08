@@ -1,33 +1,15 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ProjectCard from '../../../components/ProjectCard.astro';
-import FadeIn from '../../../components/ui/FadeIn.astro';
-import { getCollection } from 'astro:content';
+import { getCollection } from "astro:content";
+import ProjectsIndexPage from "../../../components/ProjectsIndexPage.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
 
-const allProjects = await getCollection('projects', ({ id }) => {
-  return id.startsWith('en/');
+const allProjects = await getCollection("projects", ({ id }) => {
+  return id.startsWith("en/");
 });
 
 allProjects.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 ---
 
 <BaseLayout title="Projects | Daniel Malmqvist" lang="en">
-  <section class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <FadeIn delay={0}>
-      <h1 class="text-4xl md:text-5xl font-black text-[var(--color-text-heading)] mb-4">
-        Projects
-      </h1>
-      <p class="text-xl text-[var(--color-text-secondary)] font-medium mb-12">
-        A selection of digital twins, data pipelines, and BIM automations.
-      </p>
-    </FadeIn>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {allProjects.map((project, i) => (
-        <FadeIn delay={i * 100}>
-          <ProjectCard project={project} lang="en" />
-        </FadeIn>
-      ))}
-    </div>
-  </section>
+  <ProjectsIndexPage lang="en" allProjects={allProjects} />
 </BaseLayout>

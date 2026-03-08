@@ -1,0 +1,204 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Card from "./ui/Card.astro";
+import FadeIn from "./ui/FadeIn.astro";
+import PageLead from "./ui/PageLead.astro";
+import ProjectCard from "./ProjectCard.astro";
+import Tag from "./ui/Tag.astro";
+import { type Language } from "../i18n/utils";
+
+interface Props {
+  lang: Language;
+  allProjects: CollectionEntry<"projects">[];
+}
+
+const { lang, allProjects } = Astro.props;
+const isJa = lang === "ja";
+const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
+
+const featuredProject =
+  allProjects.find((project) => project.data.featured) ?? allProjects[0];
+const remainingProjects = allProjects.filter(
+  (project) => project.id !== featuredProject?.id,
+);
+const projectTags = Array.from(
+  new Set(allProjects.flatMap((project) => project.data.tags ?? [])),
+).slice(0, 6);
+
+const copy = isJa
+  ? {
+      eyebrow: "SELECTED WORK",
+      title: "プロジェクト",
+      description:
+        "建築の実務、BIM運用、空間データ変換、自動化をまたぐ仕事をまとめています。単なる成果物一覧ではなく、どのように複雑な情報を扱い、実装へつなげたかを示すページです。",
+      statsTitle: "このページで見るもの",
+      stats: [
+        { label: "掲載数", value: `${allProjects.length} 件` },
+        { label: "対象領域", value: "BIM / Geospatial / Digital Twin" },
+        { label: "主な舞台", value: "東京 / ストックホルム" },
+      ],
+      featureEyebrow: "FEATURED CASE",
+      featureNote: "現在の代表的な実装領域",
+      gridEyebrow: "PROJECT INDEX",
+      gridTitle: "その他のプロジェクト",
+      gridDesc:
+        "プラグイン開発、変換パイプライン、病院建築のBIM実務まで、扱う粒度の異なるプロジェクトを並べています。",
+    }
+  : {
+      eyebrow: "SELECTED WORK",
+      title: "Projects",
+      description:
+        "A working selection of projects across architecture, BIM operations, spatial-data conversion, and automation. The emphasis is on how complex information becomes usable systems.",
+      statsTitle: "What this page covers",
+      stats: [
+        { label: "Projects", value: `${allProjects.length}` },
+        { label: "Domains", value: "BIM / Geospatial / Digital Twin" },
+        { label: "Primary contexts", value: "Tokyo / Stockholm" },
+      ],
+      featureEyebrow: "FEATURED CASE",
+      featureNote: "Current flagship implementation area",
+      gridEyebrow: "PROJECT INDEX",
+      gridTitle: "Other projects",
+      gridDesc:
+        "From plugins and conversion pipelines to hospital-scale BIM practice, the projects span different scales but follow the same systems-oriented approach.",
+    };
+---
+
+<section class="pb-6 pt-8 md:pt-12">
+  <FadeIn>
+    <PageLead
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      description={copy.description}
+      style={typeStyle}
+    >
+      <Card slot="aside" class="p-6 md:p-7">
+        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+          {copy.statsTitle}
+        </p>
+        <dl class="mt-5 space-y-4">
+          {
+            copy.stats.map((item) => (
+              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
+                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                  {item.label}
+                </dt>
+                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
+                  {item.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </Card>
+    </PageLead>
+  </FadeIn>
+</section>
+
+{
+  featuredProject && (
+    <section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+      <FadeIn>
+        <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+              {copy.featureEyebrow}
+            </p>
+            <p class="mt-3 text-sm text-[var(--color-text-secondary)]" style={typeStyle}>
+              {copy.featureNote}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            {projectTags.map((tag) => <Tag>{tag}</Tag>)}
+          </div>
+        </div>
+      </FadeIn>
+
+      <FadeIn delay={90}>
+        <a
+          href={`/${lang}/projects/${featuredProject.id.split("/").pop()?.replace(/\.mdx?$/, "")}`}
+          class="group block"
+        >
+          <Card class="overflow-hidden p-0">
+            <div class="grid gap-0 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+              <div class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] lg:border-b-0 lg:border-r">
+                <img
+                  src={featuredProject.data.coverImage || "/images/projects/shinjuku-nav-1.png"}
+                  alt={featuredProject.data.title}
+                  class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                />
+              </div>
+              <div class="flex flex-col justify-between p-7 md:p-10">
+                <div>
+                  <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+                    {featuredProject.data.publishDate.toLocaleDateString(
+                      isJa ? "ja-JP" : "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                      },
+                    )}
+                  </p>
+                  <h2
+                    class="mt-5 text-[clamp(2.35rem,4vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
+                    style={typeStyle}
+                  >
+                    {featuredProject.data.title}
+                  </h2>
+                  <p
+                    class="mt-5 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg"
+                    style={typeStyle}
+                  >
+                    {featuredProject.data.description}
+                  </p>
+                  {
+                    featuredProject.data.impact && (
+                      <p
+                        class="mt-5 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base"
+                        style={typeStyle}
+                      >
+                        {featuredProject.data.impact}
+                      </p>
+                    )
+                  }
+                </div>
+
+                <div class="mt-8 flex flex-wrap gap-2">
+                  {featuredProject.data.tags.map((tag) => <Tag>{tag}</Tag>)}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </a>
+      </FadeIn>
+    </section>
+  )
+}
+
+<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+  <FadeIn>
+    <div class="max-w-3xl">
+      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+        {copy.gridEyebrow}
+      </p>
+      <h2
+        class="mt-5 text-[clamp(2.25rem,5vw,3.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
+        style={typeStyle}
+      >
+        {copy.gridTitle}
+      </h2>
+      <p class="mt-5 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
+        {copy.gridDesc}
+      </p>
+    </div>
+  </FadeIn>
+
+  <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+    {(remainingProjects.length > 0 ? remainingProjects : allProjects).map((project, index) => (
+      <FadeIn delay={index * 110}>
+        <ProjectCard project={project} lang={lang} />
+      </FadeIn>
+    ))}
+  </div>
+</section>

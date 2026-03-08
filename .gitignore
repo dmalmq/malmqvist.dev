@@ -25,3 +25,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Obsidian workspace state
+collab/obsidian-vault/.obsidian/
+collab/obsidian-vault/.trash/
+docs/.obsidian/

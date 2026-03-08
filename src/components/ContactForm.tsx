@@ -2,6 +2,9 @@ import { useState } from 'react';
 
 export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+    const labelClass = "text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]";
+    const fieldClass = "w-full rounded-[1.1rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3.5 text-[var(--color-text-primary)] transition-all duration-300 focus:border-[var(--color-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)]";
+    const buttonClass = "inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
 
     const texts = {
         en: {
@@ -70,7 +73,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
 
     if (status === 'success') {
         return (
-            <div className="p-8 bg-[var(--color-bg-secondary)] border border-[var(--color-success)] rounded-[8px] text-center">
+            <div className="rounded-[1.5rem] border border-[var(--color-success)] bg-[var(--color-bg-secondary)] p-8 text-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 lucide lucide-check-circle-2"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
                 <p className="text-lg font-medium text-[var(--color-text-heading)]">{t.success}</p>
             </div>
@@ -83,37 +86,37 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-bold tracking-wide text-[var(--color-text-heading)]">{t.name}</label>
+                    <label htmlFor="name" className={labelClass}>{t.name}</label>
                     <input
                         type="text"
                         id="name"
                         name="name"
                         required
                         readOnly={status === 'submitting'}
-                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-[6px] px-4 py-3 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
+                        className={fieldClass}
                     />
                 </div>
                 <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-bold tracking-wide text-[var(--color-text-heading)]">{t.email}</label>
+                    <label htmlFor="email" className={labelClass}>{t.email}</label>
                     <input
                         type="email"
                         id="email"
                         name="email"
                         required
                         readOnly={status === 'submitting'}
-                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-[6px] px-4 py-3 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
+                        className={fieldClass}
                     />
                 </div>
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="subject" className="text-sm font-bold tracking-wide text-[var(--color-text-heading)]">{t.subject}</label>
+                <label htmlFor="subject" className={labelClass}>{t.subject}</label>
                 <select
                     id="subject"
                     name="subject"
                     required
                     disabled={status === 'submitting'}
-                    className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-[6px] px-4 py-3 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors appearance-none"
+                    className={`${fieldClass} appearance-none`}
                 >
                     <option value="inquiry">{t.subjects.inquiry}</option>
                     <option value="collab">{t.subjects.collab}</option>
@@ -122,19 +125,19 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-bold tracking-wide text-[var(--color-text-heading)]">{t.message}</label>
+                <label htmlFor="message" className={labelClass}>{t.message}</label>
                 <textarea
                     id="message"
                     name="message"
                     required
                     rows={6}
                     readOnly={status === 'submitting'}
-                    className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-[6px] px-4 py-3 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors resize-y"
+                    className={`${fieldClass} min-h-[11rem] resize-y`}
                 ></textarea>
             </div>
 
             {status === 'error' && (
-                <div className="p-4 bg-[var(--color-error)]/10 border border-[var(--color-error)] rounded-[6px] text-[var(--color-error)] text-sm font-medium">
+                <div className="rounded-[1rem] border border-[var(--color-error)] bg-[var(--color-error)]/10 p-4 text-sm font-medium text-[var(--color-error)]">
                     {t.error}
                 </div>
             )}
@@ -142,7 +145,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
             <button
                 type="submit"
                 disabled={status === 'submitting'}
-                className="w-full md:w-auto inline-flex items-center justify-center px-8 py-4 bg-[var(--color-accent)] text-white font-bold rounded-[6px] hover:bg-[var(--color-accent-hover)] hover:-translate-y-0.5 hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] dark:focus:ring-offset-[var(--color-bg-primary)] disabled:opacity-70 disabled:hover:transform-none disabled:hover:shadow-none"
+                className={buttonClass}
             >
                 {status === 'submitting' ? (
                     <>

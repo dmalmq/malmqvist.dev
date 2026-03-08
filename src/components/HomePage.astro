@@ -1,0 +1,354 @@
+---
+import BlogPostCard from "./BlogPostCard.astro";
+import SkillsGrid from "./SkillsGrid.astro";
+import SocialLinks from "./SocialLinks.astro";
+import Button from "./ui/Button.astro";
+import Card from "./ui/Card.astro";
+import FadeIn from "./ui/FadeIn.astro";
+import SectionHeading from "./ui/SectionHeading.astro";
+import Tag from "./ui/Tag.astro";
+import { useTranslations, type Language } from "../i18n/utils";
+
+interface Props {
+  lang: Language;
+  latestPosts: any[];
+}
+
+const { lang, latestPosts } = Astro.props;
+const t = useTranslations(lang);
+const isJa = lang === "ja";
+const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
+
+const copy = isJa
+  ? {
+      heroEyebrow: "TOKYO / BIM / AGENTIC SYSTEMS",
+      heroSupport:
+        "建築実務、空間データ、そして自動化をつなぎ、複雑なプロジェクトを動くデジタルシステムへ変換します。",
+      heroFacts: [
+        { label: "拠点", value: "東京" },
+        { label: "主軸", value: "BIM とデジタルツイン" },
+        { label: "対応言語", value: "EN / SV / 日本語" },
+      ],
+      projectMetaLeft: "TOKYO / CASE STUDY",
+      projectMetaRight: "REVIT / UNITY / PLATEAU",
+      projectStatus: "進行中の実践領域",
+      capabilitiesEyebrow: "CORE PRACTICE",
+      capabilitiesDesc:
+        "受賞歴のある建築実務から、AIを活用した自動化、都市スケールのデジタルツインまで。扱う領域は違っても、重視しているのは精度と運用可能性です。",
+      capabilityLabels: ["実務", "自動化", "統合"],
+      toolsEyebrow: "WORKING SYSTEM",
+      toolsTitle: "使う技術と扱うデータのレイヤー",
+      toolsDesc:
+        "プロジェクトごとに道具は変わりますが、共通しているのは複雑な空間情報を読み替え、つなぎ、扱える形へ整えることです。",
+      toolsNoteTitle: "現在のフォーカス",
+      toolsNotes: [
+        "詳細なBIMモデルを、インタラクティブな環境向けに変換すること。",
+        "レガシーな変換工程を減らすために、AIを活用したワークフローを組むこと。",
+        "屋内外をまたぐナビゲーション体験を、都市スケールの文脈に接続すること。",
+      ],
+      latestEyebrow: "WRITING",
+      ctaEyebrow: "LET'S TALK",
+      ctaNote: "設計、BIM、自動化、空間データの実装について相談できます。",
+    }
+  : {
+      heroEyebrow: "TOKYO / BIM / AGENTIC SYSTEMS",
+      heroSupport:
+        "I connect architectural practice, spatial data, and automation to turn complex project information into working digital systems.",
+      heroFacts: [
+        { label: "Based", value: "Tokyo" },
+        { label: "Focus", value: "BIM to digital twin" },
+        { label: "Languages", value: "EN / SV / 日本語" },
+      ],
+      projectMetaLeft: "TOKYO / CASE STUDY",
+      projectMetaRight: "REVIT / UNITY / PLATEAU",
+      projectStatus: "Active practice area",
+      capabilitiesEyebrow: "CORE PRACTICE",
+      capabilitiesDesc:
+        "From award-winning healthcare and airport work to AI-assisted automation and city-scale digital twins, the throughline is precision, interoperability, and systems thinking.",
+      capabilityLabels: ["Practice", "Automation", "Integration"],
+      toolsEyebrow: "WORKING SYSTEM",
+      toolsTitle: "The tools and data layers I actually work across",
+      toolsDesc:
+        "The stack changes from project to project. The method stays the same: understand the source model, preserve the important information, and translate it into something usable.",
+      toolsNoteTitle: "Current focus",
+      toolsNotes: [
+        "Converting detailed BIM geometry into formats that work in interactive environments.",
+        "Building AI-assisted workflows that remove brittle legacy conversion steps.",
+        "Connecting indoor navigation layers to city-scale digital twin context.",
+      ],
+      latestEyebrow: "WRITING",
+      ctaEyebrow: "LET'S TALK",
+      ctaNote: "Available for architecture, BIM, automation, and spatial-data collaborations.",
+    };
+
+const capabilityCards = [
+  {
+    label: copy.capabilityLabels[0],
+    title: t("home.whatido.card1.title"),
+    description: t("home.whatido.card1.desc"),
+  },
+  {
+    label: copy.capabilityLabels[1],
+    title: t("home.whatido.card2.title"),
+    description: t("home.whatido.card2.desc"),
+  },
+  {
+    label: copy.capabilityLabels[2],
+    title: t("home.whatido.card3.title"),
+    description: t("home.whatido.card3.desc"),
+  },
+];
+
+const projectTags = ["Revit", "Unity", "PLATEAU"];
+---
+
+<section class="relative isolate overflow-hidden pb-6 pt-8 md:pb-12 md:pt-12">
+  <div class="absolute inset-x-0 top-0 -z-10 h-[34rem]">
+    <div class="absolute -left-16 top-8 h-56 w-56 rounded-full bg-[var(--color-accent)]/12 blur-3xl"></div>
+    <div class="absolute right-0 top-20 h-72 w-72 rounded-full bg-[var(--color-ring)]/10 blur-3xl"></div>
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[var(--color-bg-primary)]"></div>
+  </div>
+
+  <div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,33rem)] lg:items-end">
+    <div class="max-w-4xl">
+      <FadeIn delay={0}>
+        <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+          {copy.heroEyebrow}
+        </p>
+      </FadeIn>
+
+      <FadeIn delay={70}>
+        <h1
+          class:list={[
+            "mt-6 text-[clamp(4.25rem,10vw,8.75rem)] font-semibold leading-[0.84] tracking-[-0.08em] text-[var(--color-text-heading)]",
+            isJa && "text-[clamp(3.8rem,9vw,7.25rem)] tracking-[-0.05em]",
+          ]}
+          style={typeStyle}
+        >
+          Daniel
+          <span class="block">Malmqvist</span>
+        </h1>
+      </FadeIn>
+
+      <FadeIn delay={130}>
+        <p
+          class="mt-8 max-w-2xl text-2xl font-medium leading-[1.15] text-[var(--color-text-heading)] md:text-[2rem]"
+          style={typeStyle}
+        >
+          {t("hero.tagline")}
+        </p>
+        <p
+          class="mt-4 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg"
+          style={typeStyle}
+        >
+          {copy.heroSupport}
+        </p>
+        <p
+          class="mt-4 max-w-xl text-base leading-8 text-[var(--color-text-secondary)]"
+          style={typeStyle}
+        >
+          {t("hero.tagline.desc")}
+        </p>
+      </FadeIn>
+
+      <FadeIn delay={190}>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+          <Button href={`/${lang}/contact`} variant="primary">
+            {t("hero.cta.primary")}
+          </Button>
+          <Button href={`/${lang}/projects`} variant="secondary">
+            {t("hero.cta.secondary")}
+          </Button>
+        </div>
+      </FadeIn>
+
+      <FadeIn delay={240}>
+        <dl class="mt-12 grid gap-4 sm:grid-cols-3">
+          {
+            copy.heroFacts.map((fact) => (
+              <div class="rounded-[1.4rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/90 px-5 py-5 backdrop-blur-sm">
+                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+                  {fact.label}
+                </dt>
+                <dd class="mt-2 text-sm font-medium leading-6 text-[var(--color-text-heading)] md:text-base">
+                  {fact.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </FadeIn>
+    </div>
+
+    <FadeIn delay={150}>
+      <Card class="relative overflow-hidden p-6 md:p-7 lg:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+            {t("home.featured.title")}
+          </p>
+          <span class="mt-1 h-4 w-4 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)]"></span>
+        </div>
+
+        <h2
+          class="mt-4 max-w-md text-[clamp(2.25rem,4.2vw,4rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[var(--color-text-heading)]"
+          style={typeStyle}
+        >
+          {t("home.featured.project.title")}
+        </h2>
+
+        <div class="mt-6 overflow-hidden rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+          <img
+            src="/images/projects/shinjuku-nav-1.png"
+            alt="Shinjuku Indoor Navigation"
+            class="aspect-[4/3] w-full object-cover"
+          />
+          <div class="flex items-center justify-between gap-4 border-t border-[var(--color-border)] px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-secondary)]">
+            <span>{copy.projectMetaLeft}</span>
+            <span>{copy.projectMetaRight}</span>
+          </div>
+        </div>
+
+        <p class="mt-6 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
+          {t("home.featured.project.desc")}
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-2">
+          {projectTags.map((tag) => <Tag>{tag}</Tag>)}
+        </div>
+
+        <div class="mt-6 flex items-center justify-between gap-4">
+          <a
+            href={`/${lang}/projects/shinjuku-nav`}
+            class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)] transition-colors duration-300 hover:text-[var(--color-accent-hover)]"
+          >
+            {t("home.featured.readmore")}
+          </a>
+          <span class="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-secondary)]">
+            {copy.projectStatus}
+          </span>
+        </div>
+      </Card>
+    </FadeIn>
+  </div>
+</section>
+
+<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+  <FadeIn>
+    <SectionHeading
+      eyebrow={copy.capabilitiesEyebrow}
+      title={t("home.whatido.title")}
+      description={copy.capabilitiesDesc}
+      style={typeStyle}
+    />
+  </FadeIn>
+
+  <div class="mt-12 grid gap-6 lg:grid-cols-3">
+    {
+      capabilityCards.map((card, index) => (
+        <FadeIn delay={index * 110}>
+          <Card class="flex h-full flex-col gap-6 p-7 md:p-8">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+                {`0${index + 1}`}
+              </span>
+              <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                {card.label}
+              </span>
+            </div>
+            <h3 class="text-2xl font-semibold leading-tight text-[var(--color-text-heading)]" style={typeStyle}>
+              {card.title}
+            </h3>
+            <p class="text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
+              {card.description}
+            </p>
+          </Card>
+        </FadeIn>
+      ))
+    }
+  </div>
+</section>
+
+<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+  <div class="grid gap-10 xl:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] xl:items-start">
+    <FadeIn>
+      <div class="space-y-8">
+        <SectionHeading
+          eyebrow={copy.toolsEyebrow}
+          title={copy.toolsTitle}
+          description={copy.toolsDesc}
+          style={typeStyle}
+        />
+
+        <Card class="p-7 md:p-8">
+          <p class="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+            {copy.toolsNoteTitle}
+          </p>
+          <ul class="mt-5 space-y-4">
+            {
+              copy.toolsNotes.map((note) => (
+                <li class="border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+                  {note}
+                </li>
+              ))
+            }
+          </ul>
+        </Card>
+      </div>
+    </FadeIn>
+
+    <FadeIn delay={120}>
+      <SkillsGrid lang={lang} />
+    </FadeIn>
+  </div>
+</section>
+
+{
+  latestPosts.length > 0 && (
+    <section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+      <FadeIn>
+        <SectionHeading
+          eyebrow={copy.latestEyebrow}
+          title={t("home.latest.title")}
+          description={t("home.latest.desc")}
+          style={typeStyle}
+        />
+      </FadeIn>
+
+      <div class="mt-12 space-y-4">
+        {latestPosts.map((post, index) => (
+          <FadeIn delay={index * 110}>
+            <BlogPostCard post={post} lang={lang} />
+          </FadeIn>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<section class="py-24 md:py-28">
+  <FadeIn>
+    <Card class="relative overflow-hidden px-6 py-10 md:px-10 md:py-12">
+      <div class="absolute right-0 top-0 h-36 w-36 rounded-full bg-[var(--color-accent)]/10 blur-3xl"></div>
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div class="relative">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+            {copy.ctaEyebrow}
+          </p>
+          <h2 class="mt-5 max-w-3xl text-[clamp(2.4rem,5vw,4.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]" style={typeStyle}>
+            {t("home.cta.title")}
+          </h2>
+          <p class="mt-5 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
+            {copy.ctaNote}
+          </p>
+        </div>
+
+        <div class="relative flex flex-col items-start gap-5">
+          <Button href={`/${lang}/contact`} variant="primary" class="px-7 py-3.5 text-base">
+            {t("home.cta.button")}
+          </Button>
+          <SocialLinks variant="buttons" />
+        </div>
+      </div>
+    </Card>
+  </FadeIn>
+</section>
