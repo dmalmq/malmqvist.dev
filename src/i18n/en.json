@@ -4,7 +4,7 @@
     "nav.blog": "Blog",
     "nav.about": "About",
     "nav.contact": "Contact",
-    "hero.tagline": "Architect. BIM Manager. Agentic Programmer.",
+    "hero.tagline": "Architectural Engineer. BIM Manager. Agentic Programmer.",
     "hero.tagline.desc": "From Stockholm's hospitals and airports to Tokyo's digital twin.",
     "hero.cta.primary": "Get in touch",
     "hero.cta.secondary": "View Projects",
@@ -20,8 +20,15 @@
     "home.featured.project.desc": "Tokyo's complex underground station networks are nearly impossible to navigate with traditional 2D maps. I created detailed Revit models of station interiors and converted them for Unity, integrating rich indoor geometry with PLATEAU's CityGML digital twin for seamless indoor-outdoor continuity.",
     "home.featured.readmore": "Read full case study →",
     "home.skills.title": "Tools & Skills",
+    "home.latest.title": "Latest Posts",
+    "home.latest.desc": "Recent writing on BIM, automation, and digital twins.",
     "home.cta.title": "Let's build something together.",
     "home.cta.button": "Get in touch",
+    "home.cta.links": "You can also find me here",
     "about.title": "About Daniel",
-    "about.resume": "Download Resume (PDF)"
+    "about.resume": "Download Resume (PDF)",
+    "about.resume.title": "Resume",
+    "about.resume.desc": "Download a concise PDF version in English or Japanese.",
+    "about.resume.en": "English PDF",
+    "about.resume.ja": "Japanese PDF"
 }

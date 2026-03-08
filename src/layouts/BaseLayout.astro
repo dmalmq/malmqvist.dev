@@ -54,12 +54,12 @@ const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
     <meta name="description" content={description} />
     <meta
       name="theme-color"
-      content="#0a0a0f"
+      content="#191724"
       media="(prefers-color-scheme: dark)"
     />
     <meta
       name="theme-color"
-      content="#fafaf9"
+      content="#faf4ed"
       media="(prefers-color-scheme: light)"
     />
 
@@ -107,10 +107,10 @@ const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
   <body
     class="antialiased min-h-screen flex flex-col transition-colors duration-200"
   >
-    <Header currentLang={lang} />
+    <Header currentLang={lang} currentPath={currentPath} />
 
     <main
-      class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-16"
+      class="flex-grow w-full max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-6 md:pt-10"
     >
       <slot />
     </main>

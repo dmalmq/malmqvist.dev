@@ -18,11 +18,11 @@ const url = `/${lang}/projects/${slugRoute}`;
 
 <a
   href={url}
-  class="group block border border-[var(--color-border)] rounded-[8px] dark:rounded-[12px] overflow-hidden bg-[var(--color-bg-secondary)] hover:border-[var(--color-border-hover)] transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:hover:shadow-[0_0_15px_var(--color-accent-glow)]"
+  class="group block overflow-hidden rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_24px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] hover:shadow-[0_32px_78px_-48px_rgba(87,82,121,0.52)]"
 >
   {
     project.data.coverImage ? (
-      <div class="w-full aspect-video overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]">
+      <div class="w-full aspect-[4/3] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]">
         <img
           src={project.data.coverImage}
           alt={project.data.title}
@@ -30,21 +30,21 @@ const url = `/${lang}/projects/${slugRoute}`;
         />
       </div>
     ) : (
-      <div class="w-full aspect-video bg-[var(--color-bg-primary)] border-b border-[var(--color-border)] flex items-center justify-center">
-        <span class="text-[var(--color-text-secondary)] opacity-50 font-mono text-sm group-hover:text-[var(--color-accent)] transition-colors">
+      <div class="flex aspect-[4/3] w-full items-center justify-center border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]">
+        <span class="font-mono text-sm text-[var(--color-text-secondary)] opacity-50 transition-colors group-hover:text-[var(--color-accent)]">
           // missing visual
         </span>
       </div>
     )
   }
 
-  <div class="p-6">
+  <div class="p-6 md:p-7">
     <div class="flex flex-wrap gap-2 mb-4">
       {
         project.data.tags
           .slice(0, 3)
           .map((tag: string) => (
-            <span class="inline-block text-xs font-semibold px-2 py-1 rounded bg-[var(--color-accent-muted)] text-[var(--color-accent)]">
+            <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-secondary)]">
               {tag}
             </span>
           ))
@@ -52,11 +52,11 @@ const url = `/${lang}/projects/${slugRoute}`;
     </div>
 
     <h3
-      class="text-xl font-bold text-[var(--color-text-heading)] mb-2 group-hover:text-[var(--color-accent)] transition-colors"
+      class="mb-3 text-2xl font-semibold leading-[1.05] tracking-[-0.04em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
     >
       {project.data.title}
     </h3>
-    <p class="text-[var(--color-text-secondary)] text-sm line-clamp-3">
+    <p class="text-base leading-8 text-[var(--color-text-secondary)]">
       {project.data.description}
     </p>
   </div>

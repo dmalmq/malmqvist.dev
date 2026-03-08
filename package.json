@@ -6,7 +6,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "design:paper:system": "./scripts/create-paper-design-system.sh",
+    "generate:resumes": "node scripts/generate-resume-pdfs.mjs",
+    "install:paper:linux": "./scripts/install-paper-linux.sh",
+    "mcp:obsidian": "node scripts/obsidian-cli-mcp.mjs --vault-root ./collab/obsidian-vault",
+    "mcp:setup:codex": "./scripts/setup-codex-mcp.sh"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
@@ -17,8 +22,14 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.17.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "tailwindcss": "^4.2.1"
+    "shadcn": "^4.0.0",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.1",
+    "tw-animate-css": "^1.4.0"
   }
 }

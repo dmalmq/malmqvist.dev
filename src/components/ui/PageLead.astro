@@ -1,0 +1,47 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  class?: string;
+  style?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  class: className = "",
+  style,
+} = Astro.props;
+
+const hasAside = Astro.slots.has("aside");
+---
+
+<div
+  class:list={[
+    "grid gap-8 md:gap-10",
+    hasAside && "xl:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.7fr)] xl:items-end",
+    className,
+  ]}
+>
+  <div class="max-w-4xl">
+    <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+      {eyebrow}
+    </p>
+    <h1
+      class="mt-6 max-w-4xl text-[clamp(3.25rem,8vw,6.4rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-[var(--color-text-heading)]"
+      style={style}
+    >
+      {title}
+    </h1>
+    <p
+      class="mt-6 max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)] md:text-xl"
+      style={style}
+    >
+      {description}
+    </p>
+  </div>
+
+  {hasAside && <div class="xl:justify-self-end"><slot name="aside" /></div>}
+</div>

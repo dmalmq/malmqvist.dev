@@ -12,6 +12,17 @@ const { class: className = '', delay = 0 } = Astro.props;
 <script>
   if (typeof window !== 'undefined') {
     const initObserver = () => {
+      const prefersReducedMotion = window
+        .matchMedia('(prefers-reduced-motion: reduce)')
+        .matches;
+      const isAutomatedBrowser = navigator.webdriver;
+
+      if (prefersReducedMotion || isAutomatedBrowser) {
+        const elements = document.querySelectorAll('.fade-in-element');
+        elements.forEach((el) => el.classList.remove('opacity-0', 'translate-y-8'));
+        return;
+      }
+
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {

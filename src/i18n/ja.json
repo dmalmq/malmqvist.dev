@@ -4,7 +4,7 @@
     "nav.blog": "ブログ",
     "nav.about": "自己紹介",
     "nav.contact": "お問い合わせ",
-    "hero.tagline": "建築家・BIMマネージャー・Agentic Programmer",
+    "hero.tagline": "建築エンジニア・BIMマネージャー・Agentic Programmer",
     "hero.tagline.desc": "ストックホルムの病院や空港から、東京のデジタルツインまで。",
     "hero.cta.primary": "お問い合わせ",
     "hero.cta.secondary": "プロジェクトを見る",
@@ -20,8 +20,15 @@
     "home.featured.project.desc": "従来の2Dマップではナビゲーションが困難な東京の複雑な地下駅ネットワーク。私が駅構内の詳細なRevitモデルを作成し、Unity向けに変換。リッチな屋内ジオメトリをPLATEAUのCityGMLデジタルツインと統合し、シームレスな屋内外の連続性を実現しました。",
     "home.featured.readmore": "ケーススタディを読む →",
     "home.skills.title": "スキル・使用ツール",
+    "home.latest.title": "最新記事",
+    "home.latest.desc": "BIM、自動化、デジタルツインに関する最近の考察です。",
     "home.cta.title": "一緒にプロジェクトを進めませんか？",
     "home.cta.button": "お問い合わせ",
+    "home.cta.links": "こちらでもご覧いただけます",
     "about.title": "自己紹介",
-    "about.resume": "履歴書をダウンロード (PDF)"
+    "about.resume": "履歴書をダウンロード (PDF)",
+    "about.resume.title": "履歴書",
+    "about.resume.desc": "英語版または日本語版のPDFをダウンロードできます。",
+    "about.resume.en": "英語版 PDF",
+    "about.resume.ja": "日本語版 PDF"
 }

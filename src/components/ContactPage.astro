@@ -1,0 +1,155 @@
+---
+import Card from "./ui/Card.astro";
+import FadeIn from "./ui/FadeIn.astro";
+import PageLead from "./ui/PageLead.astro";
+import SocialLinks from "./SocialLinks.astro";
+import ContactForm from "./ContactForm";
+import { type Language } from "../i18n/utils";
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const isJa = lang === "ja";
+const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
+
+const copy = isJa
+  ? {
+      eyebrow: "CONTACT",
+      title: "お問い合わせ",
+      description:
+        "BIMワークフロー、デジタルツイン、空間データの変換、自動化について相談できます。案件のご相談でも、技術的な壁打ちでも構いません。",
+      statsTitle: "コンタクトの目安",
+      stats: [
+        { label: "拠点", value: "東京 / ストックホルム" },
+        { label: "返信", value: "通常 2〜4 日ほど" },
+        { label: "テーマ", value: "BIM / Automation / Spatial Data" },
+      ],
+      directTitle: "直接連絡したい場合",
+      directDesc:
+        "短い相談や紹介であれば、フォームではなくメールからでも問題ありません。",
+      focusTitle: "よく話す内容",
+      focusItems: [
+        "BIMモデルの運用改善と変換パイプライン",
+        "空間データを使ったプロトタイプやPoCの設計",
+        "既存ワークフローをAIで置き換える実装方針",
+      ],
+      formTitle: "フォームから送る",
+      formDesc: "必要な内容が決まっていれば、そのまま送ってください。",
+    }
+  : {
+      eyebrow: "CONTACT",
+      title: "Get in touch",
+      description:
+        "Available for conversations around BIM workflows, digital twins, spatial-data conversion, and automation. That can mean project work, technical planning, or just a focused discussion.",
+      statsTitle: "Contact context",
+      stats: [
+        { label: "Based", value: "Tokyo / Stockholm" },
+        { label: "Replies", value: "Usually within 2 to 4 days" },
+        { label: "Topics", value: "BIM / Automation / Spatial Data" },
+      ],
+      directTitle: "Prefer direct contact?",
+      directDesc:
+        "For short introductions or focused questions, email is completely fine.",
+      focusTitle: "Typical conversations",
+      focusItems: [
+        "Improving BIM model operations and conversion pipelines",
+        "Planning spatial-data prototypes and digital-twin proofs of concept",
+        "Replacing brittle legacy workflows with AI-assisted systems",
+      ],
+      formTitle: "Send a message",
+      formDesc: "If you already know what you want to discuss, the form is the fastest route.",
+    };
+---
+
+<section class="pb-6 pt-8 md:pt-12">
+  <FadeIn>
+    <PageLead
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      description={copy.description}
+      style={typeStyle}
+    >
+      <Card slot="aside" class="p-6 md:p-7">
+        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+          {copy.statsTitle}
+        </p>
+        <dl class="mt-5 space-y-4">
+          {
+            copy.stats.map((item) => (
+              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
+                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                  {item.label}
+                </dt>
+                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
+                  {item.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </Card>
+    </PageLead>
+  </FadeIn>
+</section>
+
+<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+  <div class="grid gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+    <div class="space-y-6">
+      <FadeIn>
+        <Card class="p-7 md:p-8">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+            {copy.directTitle}
+          </p>
+          <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
+            {copy.directDesc}
+          </p>
+          <a
+            href="mailto:daniel@malmqvist.dev"
+            class="mt-6 inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text-heading)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]"
+          >
+            daniel@malmqvist.dev
+          </a>
+          <p class="mt-6 text-sm leading-7 text-[var(--color-text-secondary)]">
+            Tokyo, Japan / Stockholm, Sweden
+          </p>
+        </Card>
+      </FadeIn>
+
+      <FadeIn delay={100}>
+        <Card class="p-7 md:p-8">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+            {copy.focusTitle}
+          </p>
+          <ul class="mt-5 space-y-4">
+            {
+              copy.focusItems.map((item) => (
+                <li class="border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-6">
+            <SocialLinks variant="buttons" />
+          </div>
+        </Card>
+      </FadeIn>
+    </div>
+
+    <FadeIn delay={140}>
+      <Card class="p-7 md:p-10">
+        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+          {copy.formTitle}
+        </p>
+        <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
+          {copy.formDesc}
+        </p>
+        <div class="mt-8" style={typeStyle}>
+          <ContactForm lang={lang} client:load />
+        </div>
+      </Card>
+    </FadeIn>
+  </div>
+</section>
