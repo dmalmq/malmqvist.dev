@@ -78,7 +78,7 @@ const navItems = [
         <button
           id="mobile-menu-btn"
           type="button"
-          class="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-all duration-300 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)] focus:outline-none"
+          class="ui-pill-button px-4"
           aria-controls="mobile-menu"
           aria-expanded="false"
         >
@@ -112,20 +112,26 @@ const navItems = [
   <div
     id="mobile-menu"
     class="fixed inset-y-0 right-0 z-50 flex w-[min(92vw,23rem)] translate-x-full flex-col border-l border-[var(--color-border)] bg-[var(--color-bg-primary)] px-5 py-6 transition-transform duration-300 md:hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="mobile-menu-title"
+    aria-hidden="true"
+    tabindex="-1"
   >
     <div class="flex items-start justify-between gap-4">
       <div>
         <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
           {navigationLabel}
         </p>
-        <p class="mt-2 text-lg font-semibold text-[var(--color-text-heading)]">
+        <p id="mobile-menu-title" class="mt-2 text-lg font-semibold text-[var(--color-text-heading)]">
           Daniel Malmqvist
         </p>
       </div>
       <button
         type="button"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)]"
+        class="ui-icon-button"
         data-close-mobile-nav
+        data-mobile-menu-close-button
       >
         <span class="sr-only">Close menu</span>
         <svg
@@ -161,6 +167,7 @@ const navItems = [
                   : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]",
               ]}
               data-close-mobile-nav
+              data-mobile-menu-link
             >
               {item.label}
             </a>
@@ -189,22 +196,65 @@ const navItems = [
   const menu = document.getElementById("mobile-menu");
   const overlay = document.getElementById("mobile-menu-overlay");
   const closeTargets = document.querySelectorAll("[data-close-mobile-nav]");
+  const closeButton = menu?.querySelector("[data-mobile-menu-close-button]");
+  const firstMenuLink = menu?.querySelector("[data-mobile-menu-link]");
+  const desktopMq = window.matchMedia("(min-width: 768px)");
 
   if (btn && menu && overlay) {
-    const setOpen = (open) => {
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-      menu.classList.toggle("translate-x-full", !open);
-      overlay.classList.toggle("hidden", !open);
-      document.body.classList.toggle("overflow-hidden", open);
+    const openMenu = () => {
+      btn.setAttribute("aria-expanded", "true");
+      menu.classList.remove("translate-x-full");
+      menu.setAttribute("aria-hidden", "false");
+      overlay.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+      window.requestAnimationFrame(() => {
+        (closeButton || firstMenuLink || menu).focus();
+      });
+    };
+
+    const closeMenu = ({ restoreFocus = true } = {}) => {
+      btn.setAttribute("aria-expanded", "false");
+      menu.classList.add("translate-x-full");
+      menu.setAttribute("aria-hidden", "true");
+      overlay.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+      if (restoreFocus) {
+        btn.focus();
+      }
     };
 
     btn.addEventListener("click", () => {
       const expanded = btn.getAttribute("aria-expanded") === "true";
-      setOpen(!expanded);
+      if (expanded) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
     closeTargets.forEach((target) =>
-      target.addEventListener("click", () => setOpen(false))
+      target.addEventListener("click", () => {
+        const restoreFocus = !target.hasAttribute("data-mobile-menu-link");
+        closeMenu({ restoreFocus });
+      })
     );
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && btn.getAttribute("aria-expanded") === "true") {
+        closeMenu();
+      }
+    });
+
+    const handleDesktopChange = (event) => {
+      if (event.matches) {
+        closeMenu({ restoreFocus: false });
+      }
+    };
+
+    if (desktopMq.addEventListener) {
+      desktopMq.addEventListener("change", handleDesktopChange);
+    } else {
+      desktopMq.addListener(handleDesktopChange);
+    }
   }
 </script>
