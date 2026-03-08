@@ -70,8 +70,8 @@ const navItems = [
           {t("nav.contact")}
         </Button>
         <SocialLinks />
-        <LanguageToggle currentLang={currentLang} client:load />
-        <ThemeToggle client:load />
+        <LanguageToggle currentLang={currentLang} client:idle />
+        <ThemeToggle client:idle />
       </div>
 
       <div class="flex md:hidden items-center">
@@ -186,8 +186,8 @@ const navItems = [
       <div class="flex items-center justify-between gap-3">
         <SocialLinks />
         <div class="flex items-center gap-2">
-          <LanguageToggle currentLang={currentLang} client:load />
-          <ThemeToggle client:load />
+          <LanguageToggle currentLang={currentLang} client:idle />
+          <ThemeToggle client:idle />
         </div>
       </div>
     </div>

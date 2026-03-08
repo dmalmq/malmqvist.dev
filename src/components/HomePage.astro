@@ -201,11 +201,27 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
         </h2>
 
         <div class="mt-6 overflow-hidden rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-          <img
-            src="/images/projects/shinjuku-nav-1.png"
-            alt="Shinjuku Indoor Navigation"
-            class="aspect-[4/3] w-full object-cover"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
+              sizes="(min-width: 1024px) 33rem, 100vw"
+            />
+            <source
+              type="image/jpeg"
+              srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
+              sizes="(min-width: 1024px) 33rem, 100vw"
+            />
+            <img
+              src="/images/projects/shinjuku-nav-1-800.jpg"
+              alt="Shinjuku Indoor Navigation"
+              width="1400"
+              height="1050"
+              fetchpriority="high"
+              decoding="async"
+              class="aspect-[4/3] w-full object-cover"
+            />
+          </picture>
           <div class="flex items-center justify-between gap-4 border-t border-[var(--color-border)] px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-secondary)]">
             <span>{copy.projectMetaLeft}</span>
             <span>{copy.projectMetaRight}</span>

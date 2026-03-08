@@ -220,6 +220,7 @@ const copy = isJa
           <img
             src={featuredImage}
             alt={project.data.title}
+            decoding="async"
             class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
           />
           <div class="absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 border-t border-[var(--color-border)] bg-[color:color-mix(in_srgb,var(--color-bg-primary)_78%,transparent)] px-5 py-4 backdrop-blur-md md:px-6">
@@ -264,6 +265,8 @@ const copy = isJa
                     <img
                       src={image}
                       alt={`${project.data.title} detail view ${index + 2}`}
+                      loading="lazy"
+                      decoding="async"
                       class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     />
                     <div class="absolute inset-x-0 bottom-0 border-t border-[var(--color-border)] bg-[color:color-mix(in_srgb,var(--color-bg-primary)_82%,transparent)] px-4 py-3 backdrop-blur-md">
