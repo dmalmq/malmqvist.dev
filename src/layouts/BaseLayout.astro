@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ViewTransitions } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ImageLightbox from "../components/ImageLightbox";
@@ -94,45 +95,52 @@ const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
     <link rel="alternate" hreflang="x-default" href={defaultUrl} />
 
     <script is:inline>
-      // Prevent theme flicker
-      const theme = (() => {
-        const forcedTheme = new URLSearchParams(window.location.search).get(
-          "theme",
-        );
-        if (forcedTheme === "light" || forcedTheme === "dark") {
-          return forcedTheme;
-        }
-        if (
-          typeof localStorage !== "undefined" &&
-          localStorage.getItem("theme")
-        ) {
-          return localStorage.getItem("theme");
-        }
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          return "dark";
-        }
-        return "light";
-      })();
+      // Prevent theme flicker — runs on initial load AND after View Transition swaps
+      function applyTheme() {
+        const theme = (() => {
+          const forcedTheme = new URLSearchParams(window.location.search).get(
+            "theme",
+          );
+          if (forcedTheme === "light" || forcedTheme === "dark") {
+            return forcedTheme;
+          }
+          if (
+            typeof localStorage !== "undefined" &&
+            localStorage.getItem("theme")
+          ) {
+            return localStorage.getItem("theme");
+          }
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+          }
+          return "light";
+        })();
 
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
       }
+
+      applyTheme();
+      document.addEventListener("astro:after-swap", applyTheme);
     </script>
+    <ViewTransitions />
   </head>
   <body
     class="antialiased min-h-screen flex flex-col transition-colors duration-200"
   >
-    <Header currentLang={lang} currentPath={currentPath} />
+    <Header currentLang={lang} currentPath={currentPath} transition:animate="none" />
 
     <main
       class="flex-grow w-full max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-6 md:pt-10"
+      transition:animate="fade"
     >
       <slot />
     </main>
 
-    <Footer currentLang={lang} />
+    <Footer currentLang={lang} transition:animate="none" />
     {enableLightbox && <ImageLightbox client:idle />}
     <SpeedInsights />
   </body>

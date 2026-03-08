@@ -108,11 +108,14 @@ const copy = isJa
     <FadeIn>
       <Card class="overflow-hidden p-0">
         <div class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6">
-          <img
-            src="/images/profile-img.JPG"
-            alt="Daniel Malmqvist"
-            class="aspect-[4/5] w-full rounded-[1.4rem] object-cover"
-          />
+          <div class="group/photo relative overflow-hidden rounded-[1.4rem] ring-2 ring-[var(--color-accent)]/20 ring-offset-4 ring-offset-[var(--color-bg-secondary)]">
+            <img
+              src="/images/profile-img.JPG"
+              alt="Daniel Malmqvist"
+              class="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover/photo:scale-[1.02]"
+            />
+            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent"></div>
+          </div>
         </div>
         <div class="p-6 md:p-7">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">

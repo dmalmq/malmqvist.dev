@@ -8,7 +8,7 @@ const { class: className = '', ...rest } = Astro.props;
 ---
 
 <div
-  class={`rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_28px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] hover:shadow-[0_34px_80px_-48px_rgba(87,82,121,0.5)] dark:bg-[var(--color-bg-elevated)] dark:shadow-[0_28px_70px_-48px_rgba(25,23,36,0.95)] ${className}`}
+  class={`relative rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_28px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] hover:shadow-[0_34px_80px_-48px_rgba(87,82,121,0.5),inset_0_1px_0_0_color-mix(in_srgb,var(--color-accent)_15%,transparent)] dark:bg-[var(--color-bg-elevated)] dark:shadow-[0_28px_70px_-48px_rgba(25,23,36,0.95)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:rounded-t-[1.6rem] before:bg-gradient-to-r before:from-transparent before:via-[var(--color-accent)]/0 before:to-transparent before:transition-all before:duration-300 hover:before:via-[var(--color-accent)]/30 ${className}`}
   {...rest}
 >
   <slot />

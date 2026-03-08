@@ -1,10 +1,12 @@
 ---
+import AnimatedFact from "./AnimatedFact";
 import BlogPostCard from "./BlogPostCard.astro";
 import SkillsGrid from "./SkillsGrid.astro";
 import SocialLinks from "./SocialLinks.astro";
 import Button from "./ui/Button.astro";
 import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
+import ScrollReveal from "./ui/ScrollReveal.astro";
 import SectionHeading from "./ui/SectionHeading.astro";
 import Tag from "./ui/Tag.astro";
 import { useTranslations, type Language } from "../i18n/utils";
@@ -104,11 +106,12 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
 
 <section class="relative isolate pb-6 pt-8 md:pb-12 md:pt-12">
   <div
-    class="pointer-events-none absolute left-1/2 -top-28 -z-10 h-[49rem] w-screen -translate-x-1/2 opacity-90"
+    class="hero-gradient-bg pointer-events-none absolute left-1/2 -top-28 -z-10 h-[49rem] w-screen -translate-x-1/2 opacity-90"
     style="background:
-      radial-gradient(circle at 12% 34%, color-mix(in srgb, var(--color-accent) 10%, transparent) 0%, transparent 24rem),
-      radial-gradient(circle at 24% 16%, color-mix(in srgb, var(--color-ring) 10%, transparent) 0%, transparent 18rem),
-      radial-gradient(circle at 86% 12%, color-mix(in srgb, var(--color-ring) 10%, transparent) 0%, transparent 22rem),
+      radial-gradient(circle at 12% 34%, color-mix(in srgb, var(--color-accent) 14%, transparent) 0%, transparent 24rem),
+      radial-gradient(circle at 24% 16%, color-mix(in srgb, var(--color-ring) 12%, transparent) 0%, transparent 18rem),
+      radial-gradient(circle at 86% 12%, color-mix(in srgb, var(--color-ring) 12%, transparent) 0%, transparent 22rem),
+      radial-gradient(circle at 64% 48%, color-mix(in srgb, var(--color-accent) 8%, transparent) 0%, transparent 22rem),
       radial-gradient(circle at 30% 48%, color-mix(in srgb, var(--color-bg-elevated) 32%, transparent) 0%, transparent 26rem);"
   ></div>
   <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent via-[color:color-mix(in_srgb,var(--color-bg-primary)_38%,transparent)] to-[var(--color-bg-primary)]"></div>
@@ -129,9 +132,10 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
           ]}
           style={typeStyle}
         >
-          Daniel
-          <span class="block">Malmqvist</span>
+          <span class="hero-name-word inline-block">Daniel</span>
+          <span class="hero-name-word block">Malmqvist</span>
         </h1>
+        <span class="hero-accent-line" aria-hidden="true"></span>
       </FadeIn>
 
       <FadeIn delay={130}>
@@ -142,7 +146,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
           {t("hero.tagline")}
         </p>
         <p
-          class="mt-4 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg"
+          class="mt-4 max-w-2xl text-lg leading-8 text-[var(--color-text-secondary)] md:text-xl"
           style={typeStyle}
         >
           {copy.heroSupport}
@@ -169,16 +173,17 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
       <FadeIn delay={240}>
         <dl class="mt-12 grid gap-4 sm:grid-cols-3">
           {
-            copy.heroFacts.map((fact) => (
-              <div class="rounded-[1.4rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/90 px-5 py-5 backdrop-blur-sm">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-                  {fact.label}
-                </dt>
-                <dd class="mt-2 text-sm font-medium leading-6 text-[var(--color-text-heading)] md:text-base">
-                  {fact.value}
-                </dd>
-              </div>
-            ))
+            copy.heroFacts.map((fact, i) => {
+              const icons = ["map", "target", "languages"] as const;
+              return (
+                <AnimatedFact
+                  label={fact.label}
+                  value={fact.value}
+                  icon={icons[i]}
+                  client:visible
+                />
+              );
+            })
           }
         </dl>
       </FadeIn>
@@ -200,28 +205,31 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
           {t("home.featured.project.title")}
         </h2>
 
-        <div class="mt-6 overflow-hidden rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-          <picture>
-            <source
-              type="image/webp"
-              srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
-              sizes="(min-width: 1024px) 33rem, 100vw"
-            />
-            <source
-              type="image/jpeg"
-              srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
-              sizes="(min-width: 1024px) 33rem, 100vw"
-            />
-            <img
-              src="/images/projects/shinjuku-nav-1-800.jpg"
-              alt="Shinjuku Indoor Navigation"
-              width="1400"
-              height="1050"
-              fetchpriority="high"
-              decoding="async"
-              class="aspect-[4/3] w-full object-cover"
-            />
-          </picture>
+        <div class="group/img mt-6 overflow-hidden rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+          <div class="relative overflow-hidden">
+            <picture>
+              <source
+                type="image/webp"
+                srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
+                sizes="(min-width: 1024px) 33rem, 100vw"
+              />
+              <source
+                type="image/jpeg"
+                srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
+                sizes="(min-width: 1024px) 33rem, 100vw"
+              />
+              <img
+                src="/images/projects/shinjuku-nav-1-800.jpg"
+                alt="Shinjuku Indoor Navigation"
+                width="1400"
+                height="1050"
+                fetchpriority="high"
+                decoding="async"
+                class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+              />
+            </picture>
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          </div>
           <div class="flex items-center justify-between gap-4 border-t border-[var(--color-border)] px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-secondary)]">
             <span>{copy.projectMetaLeft}</span>
             <span>{copy.projectMetaRight}</span>
@@ -265,7 +273,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
   <div class="mt-12 grid gap-6 lg:grid-cols-3">
     {
       capabilityCards.map((card, index) => (
-        <FadeIn delay={index * 110}>
+        <ScrollReveal variant={index === 0 ? "slide-left" : index === 1 ? "fade-up" : "slide-right"} delay={index * 110}>
           <Card class="flex h-full flex-col gap-6 p-7 md:p-8">
             <div class="flex items-center justify-between gap-4">
               <span class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
@@ -282,7 +290,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
               {card.description}
             </p>
           </Card>
-        </FadeIn>
+        </ScrollReveal>
       ))
     }
   </div>
@@ -346,15 +354,16 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
 }
 
 <section class="py-24 md:py-28">
-  <FadeIn>
-    <Card class="relative overflow-hidden px-6 py-10 md:px-10 md:py-12">
+  <ScrollReveal variant="scale-up">
+    <Card class="relative overflow-hidden px-6 py-10 md:px-10 md:py-12" style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 6%, var(--color-bg-elevated)), var(--color-bg-elevated));">
       <div class="absolute right-0 top-0 h-36 w-36 rounded-full bg-[var(--color-accent)]/10 blur-3xl"></div>
+      <div class="absolute left-12 bottom-8 h-28 w-28 rounded-full bg-[var(--color-ring)]/8 blur-3xl"></div>
       <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div class="relative">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
             {copy.ctaEyebrow}
           </p>
-          <h2 class="mt-5 max-w-3xl text-[clamp(2.4rem,5vw,4.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]" style={typeStyle}>
+          <h2 class="mt-5 max-w-3xl text-[clamp(2.4rem,5vw,4.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-accent)]" style={typeStyle}>
             {t("home.cta.title")}
           </h2>
           <p class="mt-5 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
@@ -363,12 +372,13 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
         </div>
 
         <div class="relative flex flex-col items-start gap-5">
-          <Button href={`/${lang}/contact`} variant="primary" class="px-7 py-3.5 text-base">
+          <Button href={`/${lang}/contact`} variant="primary" class="group/cta px-7 py-3.5 text-base">
             {t("home.cta.button")}
+            <svg class="animated-arrow h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </Button>
           <SocialLinks variant="buttons" />
         </div>
       </div>
     </Card>
-  </FadeIn>
+  </ScrollReveal>
 </section>

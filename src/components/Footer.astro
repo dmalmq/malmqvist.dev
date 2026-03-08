@@ -1,5 +1,5 @@
 ---
-import { type Language } from "../i18n/utils";
+import { useTranslations, type Language } from "../i18n/utils";
 import SocialLinks from "./SocialLinks.astro";
 
 interface Props {
@@ -7,27 +7,58 @@ interface Props {
 }
 
 const { currentLang } = Astro.props;
+const t = useTranslations(currentLang);
 const copy = currentLang === "ja"
   ? "建築のディテールから空間システムまでを横断する、建築エンジニア・BIMマネージャー・Agentic Programmer。"
   : "Architectural engineer, BIM manager, and agentic programmer working between architectural detail and spatial systems.";
+
+const navItems = [
+  { href: `/${currentLang}/projects`, label: t("nav.projects") },
+  { href: `/${currentLang}/blog`, label: t("nav.blog") },
+  { href: `/${currentLang}/about`, label: t("nav.about") },
+  { href: `/${currentLang}/contact`, label: t("nav.contact") },
+];
 ---
 
 <footer
-  class="mt-20 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]/80 py-12 transition-colors duration-200"
+  class="mt-20 border-t border-transparent bg-[var(--color-bg-secondary)]/80 py-12 transition-colors duration-200"
+  style="border-image: linear-gradient(to right, transparent, var(--color-accent), transparent) 1;"
 >
   <div class="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-10">
-    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+    <div class="grid gap-8 md:grid-cols-[1fr_auto_auto]">
       <div>
         <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
           Daniel Malmqvist
+        </p>
+        <p class="mt-1 text-xs font-medium tracking-[0.12em] text-[var(--color-accent)]">
+          Tokyo / Stockholm
         </p>
         <p class="mt-3 max-w-xl text-sm leading-7 text-[var(--color-text-secondary)]">
           {copy}
         </p>
       </div>
 
+      <nav class="flex flex-col gap-2">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class="text-sm font-medium text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-accent)]"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
       <div class="flex flex-col items-start gap-4 md:items-end">
         <SocialLinks />
+        <button
+          id="back-to-top"
+          type="button"
+          class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-accent)]"
+        >
+          <svg class="h-3.5 w-3.5 rotate-180" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          {currentLang === "ja" ? "トップへ戻る" : "Back to top"}
+        </button>
         <p class="text-sm text-[var(--color-text-secondary)]">
           &copy; {new Date().getFullYear()} Daniel Malmqvist
         </p>
@@ -35,3 +66,12 @@ const copy = currentLang === "ja"
     </div>
   </div>
 </footer>
+
+<script>
+  const btn = document.getElementById("back-to-top");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+</script>
