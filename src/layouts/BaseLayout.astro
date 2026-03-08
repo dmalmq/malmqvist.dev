@@ -85,6 +85,12 @@ const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
     <script is:inline>
       // Prevent theme flicker
       const theme = (() => {
+        const forcedTheme = new URLSearchParams(window.location.search).get(
+          "theme",
+        );
+        if (forcedTheme === "light" || forcedTheme === "dark") {
+          return forcedTheme;
+        }
         if (
           typeof localStorage !== "undefined" &&
           localStorage.getItem("theme")

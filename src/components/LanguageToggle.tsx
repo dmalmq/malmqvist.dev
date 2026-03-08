@@ -18,7 +18,7 @@ export default function LanguageToggle({ currentLang }: Props) {
         const nextPath = window.location.pathname.match(/^\/(en|ja)(\/.*)?$/)
             ? window.location.pathname.replace(/^\/(en|ja)/, `/${nextLang}`)
             : `/${nextLang}/`;
-        window.location.href = nextPath;
+        window.location.href = `${nextPath}${window.location.search}${window.location.hash}`;
     };
 
     if (!mounted) {

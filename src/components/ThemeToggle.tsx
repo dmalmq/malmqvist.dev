@@ -3,30 +3,42 @@ import { useEffect, useState } from 'react';
 export default function ThemeToggle() {
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-    useEffect(() => {
-        // Determine initial theme
-        const storedTheme = localStorage.getItem('theme');
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const initialTheme = storedTheme === 'dark' || (!storedTheme && systemDark) ? 'dark' : 'light';
+    const applyTheme = (nextTheme: 'light' | 'dark') => {
+        setTheme(nextTheme);
 
-        setTheme(initialTheme);
-        if (initialTheme === 'dark') {
+        if (nextTheme === 'dark') {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const forcedTheme = params.get('theme');
+        const storedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initialTheme =
+            forcedTheme === 'light' || forcedTheme === 'dark'
+                ? forcedTheme
+                : storedTheme === 'dark' || (!storedTheme && systemDark)
+                  ? 'dark'
+                  : 'light';
+
+        applyTheme(initialTheme);
     }, []);
 
     const toggleTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
+        const url = new URL(window.location.href);
 
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', newTheme);
+        if (url.searchParams.has('theme')) {
+            url.searchParams.set('theme', newTheme);
+            window.history.replaceState({}, '', url);
         }
+
+        applyTheme(newTheme);
     };
 
     return (
