@@ -10,6 +10,7 @@ const projects = defineCollection({
         lang: z.enum(['en', 'ja']),
         tags: z.array(z.string()).default([]),
         coverImage: z.string().optional(),
+        galleryImages: z.array(z.string()).default([]),
         featured: z.boolean().default(false),
         problem: z.string().optional(),
         solution: z.string().optional(),

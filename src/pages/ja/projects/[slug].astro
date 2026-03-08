@@ -41,6 +41,8 @@ const relatedProjects = (await getCollection("projects", ({ id }) =>
     title={`${project.data.title} | プロジェクト`}
     description={project.data.description}
     image={project.data.coverImage}
+    ogType="article"
+    publishedTime={project.data.publishDate.toISOString()}
     lang="ja"
 >
     <ProjectDetailPage

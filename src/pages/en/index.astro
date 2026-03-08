@@ -8,6 +8,11 @@ const latestPosts = (await getCollection("blog", ({ id }) => id.startsWith("en/"
   .slice(0, 2);
 ---
 
-<BaseLayout title="Daniel Malmqvist | Portfolio" lang="en">
+<BaseLayout
+  title="Daniel Malmqvist | Architectural Engineer, BIM Manager, and Agentic Programmer"
+  description="Architectural engineer and BIM manager in Tokyo working across digital twins, automation, and spatial-data implementation."
+  image="/images/projects/shinjuku-nav-1.png"
+  lang="en"
+>
   <HomePage lang="en" latestPosts={latestPosts} />
 </BaseLayout>
