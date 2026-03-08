@@ -10,8 +10,14 @@ const allPosts = await getCollection("blog", ({ id }) => {
 allPosts.sort(
     (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
 );
+const shareImage = allPosts[0]?.data.coverImage ?? "/images/projects/shinjuku-nav-1.png";
 ---
 
-<BaseLayout title="Blog | Daniel Malmqvist" lang="en">
+<BaseLayout
+    title="Blog | Daniel Malmqvist"
+    description="Writing on BIM, automation, architectural engineering, and spatial-data implementation."
+    image={shareImage}
+    lang="en"
+>
     <BlogIndexPage lang="en" allPosts={allPosts} />
 </BaseLayout>

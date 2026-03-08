@@ -8,8 +8,8 @@ const jsonLd = {
   "@type": "Person",
   name: "Daniel Malmqvist",
   url: "https://malmqvist.dev",
-  image: "https://malmqvist.dev/images/projects/shinjuku-nav-1.png",
-  jobTitle: "BIM Manager & Developer",
+  image: "https://malmqvist.dev/images/profile-img.JPG",
+  jobTitle: "Architectural Engineer, BIM Manager & Developer",
   worksFor: [
     {
       "@type": "Organization",
@@ -24,7 +24,12 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title="About | Daniel Malmqvist" lang="en">
+<BaseLayout
+  title="About | Daniel Malmqvist"
+  description="Background, experience, and working approach across architectural engineering, BIM practice, and spatial-data systems."
+  image="/images/profile-img.JPG"
+  lang="en"
+>
   <!-- Schema.org Script -->
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <AboutPage lang="en" />

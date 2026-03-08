@@ -39,6 +39,8 @@ const relatedPosts = (await getCollection("blog", ({ id }) =>
     title={`${post.data.title} | ブログ`}
     description={post.data.description}
     image={post.data.coverImage}
+    ogType="article"
+    publishedTime={post.data.publishDate.toISOString()}
     lang="ja"
 >
     <BlogPostPage

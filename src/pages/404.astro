@@ -3,7 +3,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
 ---
 
-<BaseLayout title="404: Not Found | Daniel Malmqvist" lang="en">
+<BaseLayout
+    title="404: Not Found | Daniel Malmqvist"
+    description="The page you requested could not be found."
+    image="/images/profile-img.JPG"
+    noindex={true}
+    lang="en"
+>
     <div
         class="flex flex-col items-center justify-center py-24 md:py-32 text-center px-4"
     >
