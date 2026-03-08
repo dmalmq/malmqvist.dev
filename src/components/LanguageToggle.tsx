@@ -23,7 +23,7 @@ export default function LanguageToggle({ currentLang }: Props) {
 
     if (!mounted) {
         return (
-            <button className="rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-2 text-sm font-semibold text-[var(--color-text-secondary)]" disabled>
+            <button className="ui-pill-button px-3" disabled>
                 {currentLang.toUpperCase()}
             </button>
         );
@@ -34,8 +34,9 @@ export default function LanguageToggle({ currentLang }: Props) {
     return (
         <button
             onClick={switchLanguage}
-            className="rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)] focus:outline-none"
+            className="ui-pill-button px-3"
             aria-label="Switch language"
+            title={currentLang === 'en' ? 'Switch to Japanese' : 'Switch to English'}
         >
             {toggleText}
         </button>
