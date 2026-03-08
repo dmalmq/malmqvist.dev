@@ -1,45 +1,13 @@
 ---
+import ScrollReveal from './ScrollReveal.astro';
+
 interface Props {
   class?: string;
   delay?: number;
 }
 const { class: className = '', delay = 0 } = Astro.props;
 ---
-<div class={`opacity-0 translate-y-8 transition-all duration-700 ease-out fade-in-element ${className}`} style={`transition-delay: ${delay}ms;`}>
+
+<ScrollReveal variant="fade-up" delay={delay} class={className}>
   <slot />
-</div>
-
-<script>
-  if (typeof window !== 'undefined') {
-    const initObserver = () => {
-      const prefersReducedMotion = window
-        .matchMedia('(prefers-reduced-motion: reduce)')
-        .matches;
-      const isAutomatedBrowser = navigator.webdriver;
-
-      if (prefersReducedMotion || isAutomatedBrowser) {
-        const elements = document.querySelectorAll('.fade-in-element');
-        elements.forEach((el) => el.classList.remove('opacity-0', 'translate-y-8'));
-        return;
-      }
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('opacity-0', 'translate-y-8');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-      });
-
-      const elements = document.querySelectorAll('.fade-in-element');
-      elements.forEach((el) => observer.observe(el));
-    };
-    
-    initObserver();
-    document.addEventListener('astro:page-load', initObserver);
-  }
-</script>
+</ScrollReveal>

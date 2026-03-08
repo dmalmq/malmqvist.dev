@@ -1,5 +1,6 @@
 ---
 import Card from "./ui/Card.astro";
+import ScrollReveal from "./ui/ScrollReveal.astro";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -45,44 +46,52 @@ const timelineData = [
 ];
 ---
 
-<div class="space-y-6">
-  {
-    timelineData.map((item) => (
-      <Card class="p-6 md:p-7">
-        <div class="grid gap-6 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-8">
-          <div>
-            <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-              {item.year}
-            </p>
-            <p
-              class="mt-4 text-sm font-semibold leading-7 text-[var(--color-accent)]"
-              style={
-                lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
-              }
-            >
-              {item.company}
-            </p>
+<div class="relative pl-8">
+  <div class="absolute left-0 top-0 bottom-0 w-px bg-[var(--color-accent)]/30"></div>
+  <div class="space-y-6">
+    {
+      timelineData.map((item, i) => (
+        <ScrollReveal variant="slide-right" delay={i * 120}>
+          <div class="relative">
+            <div class="absolute -left-8 top-7 h-2.5 w-2.5 -translate-x-[calc(50%-0.5px)] rounded-full border-2 border-[var(--color-accent)] bg-[var(--color-bg-primary)]"></div>
+            <Card class="p-6 md:p-7">
+              <div class="grid gap-6 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-8">
+                <div>
+                  <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                    {item.year}
+                  </p>
+                  <p
+                    class="mt-4 text-sm font-semibold leading-7 text-[var(--color-accent)]"
+                    style={
+                      lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
+                    }
+                  >
+                    {item.company}
+                  </p>
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
+                    style={
+                      lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
+                    }
+                  >
+                    {item.role}
+                  </h3>
+                  <p
+                    class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
+                    style={
+                      lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
+                    }
+                  >
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            </Card>
           </div>
-          <div>
-            <h3
-              class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-              style={
-                lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
-              }
-            >
-              {item.role}
-            </h3>
-            <p
-              class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-              style={
-                lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
-              }
-            >
-              {item.desc}
-            </p>
-          </div>
-        </div>
-      </Card>
-    ))
-  }
+        </ScrollReveal>
+      ))
+    }
+  </div>
 </div>

@@ -1,0 +1,81 @@
+---
+interface Props {
+  variant?: 'fade-up' | 'fade-in' | 'slide-left' | 'slide-right' | 'scale-up' | 'blur-in';
+  delay?: number;
+  class?: string;
+  once?: boolean;
+}
+
+const { variant = 'fade-up', delay = 0, class: className = '', once = true } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  'fade-up': 'opacity-0 translate-y-8',
+  'fade-in': 'opacity-0',
+  'slide-left': 'opacity-0 -translate-x-12',
+  'slide-right': 'opacity-0 translate-x-12',
+  'scale-up': 'opacity-0 scale-95',
+  'blur-in': 'opacity-0 blur-sm',
+};
+
+const initial = variantClasses[variant] || variantClasses['fade-up'];
+---
+
+<div
+  class={`scroll-reveal transition-all duration-700 ease-out ${initial} ${className}`}
+  style={`transition-delay: ${delay}ms;`}
+  data-sr-variant={variant}
+  data-sr-once={once ? 'true' : 'false'}
+>
+  <slot />
+</div>
+
+<script>
+  if (typeof window !== 'undefined') {
+    const variantMap: Record<string, string[]> = {
+      'fade-up': ['opacity-0', 'translate-y-8'],
+      'fade-in': ['opacity-0'],
+      'slide-left': ['opacity-0', '-translate-x-12'],
+      'slide-right': ['opacity-0', 'translate-x-12'],
+      'scale-up': ['opacity-0', 'scale-95'],
+      'blur-in': ['opacity-0', 'blur-sm'],
+    };
+
+    const initScrollReveal = () => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isAutomatedBrowser = navigator.webdriver;
+
+      const elements = document.querySelectorAll('.scroll-reveal');
+
+      if (prefersReducedMotion || isAutomatedBrowser) {
+        elements.forEach((el) => {
+          const variant = el.getAttribute('data-sr-variant') || 'fade-up';
+          const classes = variantMap[variant] || variantMap['fade-up'];
+          el.classList.remove(...classes);
+        });
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              const variant = el.getAttribute('data-sr-variant') || 'fade-up';
+              const classes = variantMap[variant] || variantMap['fade-up'];
+              el.classList.remove(...classes);
+              if (el.getAttribute('data-sr-once') !== 'false') {
+                observer.unobserve(el);
+              }
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+      );
+
+      elements.forEach((el) => observer.observe(el));
+    };
+
+    initScrollReveal();
+    document.addEventListener('astro:page-load', initScrollReveal);
+  }
+</script>
