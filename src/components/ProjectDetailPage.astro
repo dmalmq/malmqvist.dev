@@ -16,7 +16,12 @@ interface Props {
 const { lang, project, Content, relatedProjects } = Astro.props;
 const isJa = lang === "ja";
 const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
-const imageTriggerId = `project-image-${project.id.replaceAll("/", "-")}`;
+const mediaScopeId = `project-media-${project.id.replaceAll("/", "-")}`;
+const galleryImages = Array.from(
+  new Set([project.data.coverImage, ...project.data.galleryImages].filter(Boolean)),
+);
+const featuredImage = galleryImages[0];
+const secondaryGallery = galleryImages.slice(1);
 const formattedDate = new Intl.DateTimeFormat(isJa ? "ja-JP" : "en-US", {
   year: "numeric",
   month: "long",
@@ -63,6 +68,8 @@ const copy = isJa
         },
       ],
       preview: "クリックして拡大",
+      galleryTitle: "ギャラリー",
+      galleryNote: "ツール画面や出力ワークフローの追加ビューです。",
       bodyEyebrow: "IMPLEMENTATION NOTES",
       bodyTitle: "実装の詳細",
       bodyDescription:
@@ -105,6 +112,8 @@ const copy = isJa
         },
       ],
       preview: "Click to preview",
+      galleryTitle: "Gallery",
+      galleryNote: "Additional views from the tool and export workflow.",
       bodyEyebrow: "IMPLEMENTATION NOTES",
       bodyTitle: "How the work was structured",
       bodyDescription:
@@ -201,15 +210,15 @@ const copy = isJa
 </section>
 
 {
-  project.data.coverImage && (
-    <section class="border-t border-[var(--color-border)] pt-16 md:pt-20">
+  featuredImage && (
+    <section id={mediaScopeId} class="border-t border-[var(--color-border)] pt-16 md:pt-20">
       <FadeIn>
         <div
-          id={imageTriggerId}
+          data-lightbox-src={featuredImage}
           class="group relative overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] shadow-[0_34px_90px_-56px_rgba(87,82,121,0.45)]"
         >
           <img
-            src={project.data.coverImage}
+            src={featuredImage}
             alt={project.data.title}
             class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
           />
@@ -226,6 +235,49 @@ const copy = isJa
           </div>
         </div>
       </FadeIn>
+
+      {
+        secondaryGallery.length > 0 && (
+          <FadeIn delay={90}>
+            <div class="mt-6 rounded-[1.75rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5 shadow-[0_22px_62px_-46px_rgba(87,82,121,0.36)] dark:shadow-[0_22px_62px_-46px_rgba(25,23,36,0.95)] md:p-6">
+              <div class="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+                    {copy.galleryTitle}
+                  </p>
+                  <p class="mt-2 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
+                    {copy.galleryNote}
+                  </p>
+                </div>
+                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]" style={typeStyle}>
+                  {copy.preview}
+                </p>
+              </div>
+
+              <div class:list={["grid gap-4", secondaryGallery.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"]}>
+                {secondaryGallery.map((image, index) => (
+                  <button
+                    type="button"
+                    data-lightbox-src={image}
+                    class="group relative overflow-hidden rounded-[1.35rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-left shadow-[0_18px_48px_-42px_rgba(87,82,121,0.34)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:shadow-[0_26px_60px_-44px_rgba(87,82,121,0.42)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-primary)]"
+                  >
+                    <img
+                      src={image}
+                      alt={`${project.data.title} detail view ${index + 2}`}
+                      class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    />
+                    <div class="absolute inset-x-0 bottom-0 border-t border-[var(--color-border)] bg-[color:color-mix(in_srgb,var(--color-bg-primary)_82%,transparent)] px-4 py-3 backdrop-blur-md">
+                      <span class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]" style={typeStyle}>
+                        {copy.preview}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        )
+      }
     </section>
   )
 }
@@ -356,18 +408,20 @@ const copy = isJa
   )
 }
 
-<script define:vars={{ imageTriggerId }}>
-  const el = document.getElementById(imageTriggerId);
-  if (el) {
-    el.addEventListener("click", () => {
-      const bgImg = el.querySelector("img")?.src;
-      if (bgImg) {
-        window.dispatchEvent(
-          new CustomEvent("open-lightbox", {
-            detail: { src: bgImg },
-          }),
-        );
-      }
+<script define:vars={{ mediaScopeId }}>
+  const mediaScope = document.getElementById(mediaScopeId);
+  if (mediaScope) {
+    mediaScope.querySelectorAll("[data-lightbox-src]").forEach((node) => {
+      node.addEventListener("click", () => {
+        const src = node.getAttribute("data-lightbox-src");
+        if (src) {
+          window.dispatchEvent(
+            new CustomEvent("open-lightbox", {
+              detail: { src },
+            }),
+          );
+        }
+      });
     });
   }
 </script>

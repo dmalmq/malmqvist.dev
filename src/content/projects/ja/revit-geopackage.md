@@ -4,7 +4,10 @@ description: "複雑な3ステップのBIM変換を、ネイティブなRevitエ
 publishDate: "2024-11-20"
 lang: "ja"
 tags: ["C#", "Revit API", "Geospatial", "GeoPackage"]
-coverImage: ""
+coverImage: "/images/projects/revitgeoconverter/revitaddin-1.jpg"
+galleryImages:
+  - "/images/projects/revitgeoconverter/revitaddin-1.jpg"
+  - "/images/projects/revitgeoconverter/revitaddin-2.jpg"
 featured: false
 problem: "従来のワークフローでは、RevitからDWG、さらにShapefileへと変換する必要があり、各段階でメタデータが欠落する3段階のプロセスでした。"
 solution: "近代的標準のGeoPackageへの直接出力をターゲットとして、C#とRevit APIを利用したネイティブのRevitプラグインを開発。"
