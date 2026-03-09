@@ -21,22 +21,12 @@ const featuredProject =
 const remainingProjects = allProjects.filter(
   (project) => project.id !== featuredProject?.id,
 );
-const projectTags = Array.from(
-  new Set(allProjects.flatMap((project) => project.data.tags ?? [])),
-).slice(0, 6);
-
 const copy = isJa
   ? {
       eyebrow: "SELECTED WORK",
       title: "プロジェクト",
       description:
         "建築の実務、BIM運用、空間データ変換、自動化をまたぐ仕事をまとめています。単なる成果物一覧ではなく、どのように複雑な情報を扱い、実装へつなげたかを示すページです。",
-      statsTitle: "このページで見るもの",
-      stats: [
-        { label: "掲載数", value: `${allProjects.length} 件` },
-        { label: "対象領域", value: "BIM / Geospatial / Digital Twin" },
-        { label: "主な舞台", value: "東京 / ストックホルム" },
-      ],
       featureEyebrow: "FEATURED CASE",
       featureNote: "現在の代表的な実装領域",
       gridEyebrow: "PROJECT INDEX",
@@ -49,12 +39,6 @@ const copy = isJa
       title: "Projects",
       description:
         "A working selection of projects across architecture, BIM operations, spatial-data conversion, and automation. The emphasis is on how complex information becomes usable systems.",
-      statsTitle: "What this page covers",
-      stats: [
-        { label: "Projects", value: `${allProjects.length}` },
-        { label: "Domains", value: "BIM / Geospatial / Digital Twin" },
-        { label: "Primary contexts", value: "Tokyo / Stockholm" },
-      ],
       featureEyebrow: "FEATURED CASE",
       featureNote: "Current flagship implementation area",
       gridEyebrow: "PROJECT INDEX",
@@ -71,27 +55,7 @@ const copy = isJa
       title={copy.title}
       description={copy.description}
       style={typeStyle}
-    >
-      <Card slot="aside" class="p-6 md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.statsTitle}
-        </p>
-        <dl class="mt-5 space-y-4">
-          {
-            copy.stats.map((item) => (
-              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {item.label}
-                </dt>
-                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-      </Card>
-    </PageLead>
+    />
   </FadeIn>
 </section>
 
@@ -111,7 +75,7 @@ const copy = isJa
           </div>
 
           <div class="flex flex-wrap gap-2">
-            {projectTags.map((tag) => <Tag>{tag}</Tag>)}
+            {featuredProject.data.tags.map((tag) => <Tag>{tag}</Tag>)}
           </div>
         </div>
       </FadeIn>

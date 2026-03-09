@@ -23,12 +23,6 @@ const copy = isJa
       title: t("about.title"),
       description:
         "建築の設計意図、BIMの実務、そして自動化をつなぐ仕事をしています。空間データを正しく理解し、運用可能なシステムに変換することが自分の役割です。",
-      statsTitle: "現在の立ち位置",
-      stats: [
-        { label: "拠点", value: "東京在住" },
-        { label: "バックグラウンド", value: "Architecture / BIM Management" },
-        { label: "現在の焦点", value: "Digital Twin / Automation" },
-      ],
       narrativeTitle: "Background",
       paragraphs: [
         "スウェーデンでの伝統的な建築実務から、現在の東京における都市スケールのデジタルツインまで、一貫して空間をどう構成し、どう扱うかを仕事にしてきました。",
@@ -37,10 +31,7 @@ const copy = isJa
       ],
       quote:
         "建築家の意図する緻密な空間と、実装のための技術的データパイプライン。その両方を理解することが、良いBIMシステムの前提だと考えています。",
-      skillsEyebrow: "SKILLS",
       experienceEyebrow: "EXPERIENCE",
-      skillsDesc:
-        "扱う領域は幅広いですが、中心にあるのは建築情報を壊さずに次のシステムへ渡すことです。",
       experienceDesc:
         "建築事務所でのBIM実務から、東京でのデジタルツイン開発へと軸足を移してきました。",
     }
@@ -49,12 +40,6 @@ const copy = isJa
       title: t("about.title"),
       description:
         "I work where architectural intent, BIM practice, and automation meet. The consistent thread is translating complex spatial information into systems that can actually be used.",
-      statsTitle: "Current position",
-      stats: [
-        { label: "Based", value: "Tokyo" },
-        { label: "Background", value: "Architecture / BIM Management" },
-        { label: "Current focus", value: "Digital Twin / Automation" },
-      ],
       narrativeTitle: "Background",
       paragraphs: [
         "My work spans the path from traditional architectural production in Sweden to city-scale <a href='/en/blog/what-is-a-digital-twin'>digital twin</a> work in Tokyo. The core interest has stayed the same: how space is described, coordinated, and made operational.",
@@ -63,10 +48,7 @@ const copy = isJa
       ],
       quote:
         "The strongest BIM systems are built by people who understand both the discipline-specific design intent and the technical pipeline required to deploy it.",
-      skillsEyebrow: "SKILLS",
       experienceEyebrow: "EXPERIENCE",
-      skillsDesc:
-        "The toolset is broad, but the goal is consistent: preserve meaningful building information while translating it into the next usable system.",
       experienceDesc:
         "The trajectory runs from BIM-heavy architectural practice in Stockholm to digital-twin implementation work in Tokyo.",
     };
@@ -79,27 +61,7 @@ const copy = isJa
       title={copy.title}
       description={copy.description}
       style={typeStyle}
-    >
-      <Card slot="aside" class="p-6 md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.statsTitle}
-        </p>
-        <dl class="mt-5 space-y-4">
-          {
-            copy.stats.map((item) => (
-              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {item.label}
-                </dt>
-                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-      </Card>
-    </PageLead>
+    />
   </FadeIn>
 </section>
 
@@ -179,24 +141,11 @@ const copy = isJa
           </div>
         </Card>
       </FadeIn>
-    </div>
-  </div>
-</section>
 
-<div class="section-divider"></div>
-<section class="py-[var(--space-section-md)]">
-  <FadeIn>
-    <SectionHeading
-      eyebrow={copy.skillsEyebrow}
-      title={isJa ? "スキル・ツール" : "Skills & tools"}
-      description={copy.skillsDesc}
-      style={typeStyle}
-    />
-  </FadeIn>
-  <div class="mt-8">
-    <FadeIn delay={100}>
-      <SkillsGrid lang={lang} />
-    </FadeIn>
+      <FadeIn delay={160}>
+        <SkillsGrid lang={lang} />
+      </FadeIn>
+    </div>
   </div>
 </section>
 
