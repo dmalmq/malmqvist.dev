@@ -18,7 +18,7 @@ const url = `/${lang}/projects/${slugRoute}`;
 
 <a
   href={url}
-  class="group block overflow-hidden rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_24px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] hover:shadow-[0_32px_78px_-48px_rgba(87,82,121,0.52)]"
+  class="group block overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)]"
 >
   {
     project.data.coverImage ? (
@@ -41,7 +41,7 @@ const url = `/${lang}/projects/${slugRoute}`;
     )
   }
 
-  <div class="p-6 md:p-7">
+  <div class="p-4 md:p-5">
     <div class="flex flex-wrap gap-2 mb-4">
       {
         project.data.tags

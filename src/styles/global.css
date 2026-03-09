@@ -37,6 +37,11 @@
   --color-accent-muted: var(--accent-muted);
   --color-accent-glow: var(--accent-glow);
   --color-border-hover: var(--border-hover);
+
+  /* Density spacing tokens */
+  --space-section-lg: clamp(3.5rem, 6vw, 5rem);
+  --space-section-md: clamp(2.5rem, 4vw, 3.5rem);
+  --space-section-sm: clamp(1.5rem, 3vw, 2rem);
 }
 
 /* Base definitions for themes */
@@ -420,6 +425,12 @@ body {
   }
 }
 
+/* Section divider — subtle accent-tinted gradient line */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--color-accent) 40%, var(--color-border)), transparent);
+}
+
 /* Hero animations */
 @keyframes hero-glow {
   0%, 100% { background-position: 0% 50%; }
@@ -433,7 +444,7 @@ body {
 
 @keyframes hero-accent-line {
   from { width: 0; }
-  to { width: 8rem; }
+  to { width: 5rem; }
 }
 
 @keyframes arrow-bounce {
@@ -508,7 +519,7 @@ body {
     animation: none;
   }
   .hero-accent-line {
-    width: 8rem;
+    width: 5rem;
     animation: none;
   }
   .hero-gradient-bg {

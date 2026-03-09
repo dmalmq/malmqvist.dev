@@ -45,10 +45,10 @@ const skillCategories = [
   }
 ];
 ---
-<div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+<div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3">
   {skillCategories.map((category, i) => (
     <ScrollReveal variant="scale-up" delay={i * 80}>
-      <Card class="h-full p-6 md:p-7" style={`border-left: 3px solid ${categoryColors[i]};`}>
+      <Card class="h-full p-4 md:p-5" style={`border-left: 3px solid ${categoryColors[i]};`}>
         <div class="flex items-center gap-2.5">
           {category.icon === 'building' && (
             <svg class="h-4 w-4" style={`color: ${categoryColors[i]}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>

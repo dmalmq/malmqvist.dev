@@ -103,7 +103,8 @@ const copy = isJa
   </FadeIn>
 </section>
 
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-lg)]">
   <div class="grid gap-8 xl:grid-cols-[minmax(18rem,22rem)_minmax(0,1fr)] xl:items-start">
     <FadeIn>
       <Card class="overflow-hidden p-0">
@@ -112,7 +113,7 @@ const copy = isJa
             <img
               src="/images/profile-img.JPG"
               alt="Daniel Malmqvist"
-              class="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover/photo:scale-[1.02]"
+              class="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover/photo:scale-[1.02]"
             />
             <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent"></div>
           </div>
@@ -143,7 +144,7 @@ const copy = isJa
 
     <div class="space-y-6">
       <FadeIn delay={70}>
-        <Card class="p-7 md:p-8">
+        <Card class="p-5 md:p-6">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.narrativeTitle}
           </p>
@@ -157,7 +158,7 @@ const copy = isJa
       </FadeIn>
 
       <FadeIn delay={120}>
-        <Card class="p-7 md:p-8">
+        <Card class="p-5 md:p-6">
           <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div class="max-w-2xl">
               <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
@@ -182,7 +183,8 @@ const copy = isJa
   </div>
 </section>
 
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-md)]">
   <FadeIn>
     <SectionHeading
       eyebrow={copy.skillsEyebrow}
@@ -191,14 +193,15 @@ const copy = isJa
       style={typeStyle}
     />
   </FadeIn>
-  <div class="mt-12">
+  <div class="mt-8">
     <FadeIn delay={100}>
       <SkillsGrid lang={lang} />
     </FadeIn>
   </div>
 </section>
 
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-md)]">
   <FadeIn>
     <SectionHeading
       eyebrow={copy.experienceEyebrow}
@@ -207,7 +210,7 @@ const copy = isJa
       style={typeStyle}
     />
   </FadeIn>
-  <div class="mt-12">
+  <div class="mt-8">
     <FadeIn delay={100}>
       <Timeline lang={lang} />
     </FadeIn>
