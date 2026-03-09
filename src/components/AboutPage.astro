@@ -57,7 +57,7 @@ const copy = isJa
       ],
       narrativeTitle: "Background",
       paragraphs: [
-        "My work spans the path from traditional architectural production in Sweden to city-scale digital twin work in Tokyo. The core interest has stayed the same: how space is described, coordinated, and made operational.",
+        "My work spans the path from traditional architectural production in Sweden to city-scale <a href='/en/blog/what-is-a-digital-twin'>digital twin</a> work in Tokyo. The core interest has stayed the same: how space is described, coordinated, and made operational.",
         "At Tengbom, I worked on award-winning healthcare and airport projects, not as a passive file coordinator but as someone rebuilding living BIM models, coordinating complex facade systems, and resolving interdisciplinary issues under real delivery pressure.",
         "Over time, the limits of legacy AEC tooling became too obvious to ignore. That pushed me toward writing code, building conversion pipelines, and treating BIM information as something that should move cleanly into broader spatial systems instead of getting trapped in brittle intermediate steps.",
       ],
@@ -147,8 +147,8 @@ const copy = isJa
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.narrativeTitle}
           </p>
-          <div class="mt-5 space-y-5 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
-            {copy.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          <div class="mt-5 space-y-5 text-base leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-lg" style={typeStyle}>
+            {copy.paragraphs.map((paragraph) => <p set:html={paragraph} />)}
           </div>
           <p class="mt-6 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-heading)] md:text-base" style={typeStyle}>
             {copy.quote}
