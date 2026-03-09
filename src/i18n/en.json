@@ -5,7 +5,7 @@
     "nav.about": "About",
     "nav.contact": "Contact",
     "hero.tagline": "Architectural Engineer. BIM Manager. Agentic Programmer.",
-    "hero.tagline.desc": "From Stockholm's hospitals and airports to Tokyo's digital twin.",
+    "hero.tagline.desc": "From Stockholm's hospitals and airports to Tokyo's <a href='/en/blog/what-is-a-digital-twin'>digital twin</a>.",
     "hero.cta.primary": "Get in touch",
     "hero.cta.secondary": "View Projects",
     "home.whatido.title": "What I Do",

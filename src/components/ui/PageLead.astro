@@ -36,11 +36,10 @@ const hasAside = Astro.slots.has("aside");
       {title}
     </h1>
     <p
-      class="mt-6 max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)] md:text-xl"
+      class="mt-6 max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-xl"
       style={style}
-    >
-      {description}
-    </p>
+      set:html={description}
+    />
   </div>
 
   {hasAside && <div class="xl:justify-self-end"><slot name="aside" /></div>}

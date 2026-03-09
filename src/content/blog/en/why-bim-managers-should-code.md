@@ -29,7 +29,7 @@ Once you realize you can script away the tedium, you start seeing the entire BIM
 
 ### Moving Beyond Dynamo and Grasshopper
 
-Visual programming languages like Dynamo and Grasshopper are fantastic, but they have ceilings. To truly unlock the data pipelines required for deep integration—especially as the industry moves towards Digital Twins and interconnected city models like PLATEAU—you need to step out of the node-based environment.
+Visual programming languages like Dynamo and Grasshopper are fantastic, but they have ceilings. To truly unlock the data pipelines required for deep integration—especially as the industry moves towards [Digital Twins](/en/blog/what-is-a-digital-twin) and interconnected city models like PLATEAU—you need to step out of the node-based environment.
 
 Learning Python or C# gives you the ability to:
 - Directly hit APIs to fetch or push data without opening the software.

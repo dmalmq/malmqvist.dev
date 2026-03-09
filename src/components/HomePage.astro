@@ -152,11 +152,10 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
           {copy.heroSupport}
         </p>
         <p
-          class="mt-4 max-w-xl text-base leading-8 text-[var(--color-text-secondary)]"
+          class="mt-4 max-w-xl text-base leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)]"
           style={typeStyle}
-        >
-          {t("hero.tagline.desc")}
-        </p>
+          set:html={t("hero.tagline.desc")}
+        />
       </FadeIn>
 
       <FadeIn delay={190}>
