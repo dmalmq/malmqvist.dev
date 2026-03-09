@@ -1,10 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BlogPostCard from "./BlogPostCard.astro";
-import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
 import PageLead from "./ui/PageLead.astro";
-import Tag from "./ui/Tag.astro";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -15,7 +13,6 @@ interface Props {
 const { lang, allPosts } = Astro.props;
 const isJa = lang === "ja";
 const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
-const tags = Array.from(new Set(allPosts.flatMap((post) => post.data.tags ?? []))).slice(0, 6);
 
 const copy = isJa
   ? {
@@ -23,32 +20,12 @@ const copy = isJa
       title: "記事",
       description:
         "建築、BIM、自動化、空間データの実装について書いています。単なる技術メモではなく、実務の現場で何が詰まり、どう設計し直すかを中心にした記録です。",
-      statsTitle: "主な論点",
-      stats: [
-        { label: "テーマ", value: "Architecture / BIM / Automation" },
-        { label: "投稿数", value: `${allPosts.length} 件` },
-        { label: "視点", value: "実務者としての技術設計" },
-      ],
-      listEyebrow: "POSTS",
-      listTitle: "公開中の記事",
-      listDesc:
-        "今後、ケーススタディやワークフローの分解記事を増やしていく予定です。現時点では自分の実務に近いテーマからまとめています。",
     }
   : {
       eyebrow: "WRITING",
       title: "Writing",
       description:
         "Notes on architecture, BIM, automation, and spatial-data implementation. The focus is not abstract trend commentary, but how technical decisions actually behave inside real projects.",
-      statsTitle: "Current themes",
-      stats: [
-        { label: "Topics", value: "Architecture / BIM / Automation" },
-        { label: "Posts", value: `${allPosts.length}` },
-        { label: "Viewpoint", value: "Practice-driven technical writing" },
-      ],
-      listEyebrow: "POSTS",
-      listTitle: "Published writing",
-      listDesc:
-        "More case studies and workflow breakdowns will follow. For now, the writing starts close to the work I am already doing in practice.",
     };
 ---
 
@@ -59,56 +36,10 @@ const copy = isJa
       title={copy.title}
       description={copy.description}
       style={typeStyle}
-    >
-      <Card slot="aside" class="p-6 md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.statsTitle}
-        </p>
-        <dl class="mt-5 space-y-4">
-          {
-            copy.stats.map((item) => (
-              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {item.label}
-                </dt>
-                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-        {
-          tags.length > 0 && (
-            <div class="mt-6 flex flex-wrap gap-2">
-              {tags.map((tag) => <Tag>{tag}</Tag>)}
-            </div>
-          )
-        }
-      </Card>
-    </PageLead>
-  </FadeIn>
-</section>
-
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
-  <FadeIn>
-    <div class="max-w-3xl">
-      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-        {copy.listEyebrow}
-      </p>
-      <h2
-        class="mt-5 text-[clamp(2.2rem,5vw,3.7rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
-        style={typeStyle}
-      >
-        {copy.listTitle}
-      </h2>
-      <p class="mt-5 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
-        {copy.listDesc}
-      </p>
-    </div>
+    />
   </FadeIn>
 
-  <div class="mt-12 space-y-5">
+  <div class="mt-8 space-y-3">
     {allPosts.map((post, index) => (
       <FadeIn delay={index * 110}>
         <BlogPostCard post={post} lang={lang} />

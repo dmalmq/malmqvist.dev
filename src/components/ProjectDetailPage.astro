@@ -211,7 +211,8 @@ const copy = isJa
 
 {
   featuredImage && (
-    <section id={mediaScopeId} class="border-t border-[var(--color-border)] pt-16 md:pt-20">
+    <div class="section-divider"></div>
+    <section id={mediaScopeId} class="py-[var(--space-section-lg)]">
       <FadeIn>
         <div
           data-lightbox-src={featuredImage}
@@ -287,7 +288,8 @@ const copy = isJa
 
 {
   overviewCards.length > 0 && (
-    <section class="border-t border-[var(--color-border)] pt-16 md:pt-20">
+    <div class="section-divider"></div>
+    <section class="py-[var(--space-section-lg)]">
       <div class="grid gap-5 lg:grid-cols-3">
         {overviewCards.map((item, index) => (
           <FadeIn delay={index * 90}>
@@ -306,7 +308,8 @@ const copy = isJa
   )
 }
 
-<section class="border-t border-[var(--color-border)] pt-20 md:pt-24">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-lg)]">
   <div class="grid gap-8 xl:grid-cols-[minmax(0,1.08fr)_minmax(18rem,0.52fr)]">
     <div>
       <FadeIn>
@@ -382,7 +385,8 @@ const copy = isJa
 
 {
   relatedProjects.length > 0 && (
-    <section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+    <div class="section-divider"></div>
+    <section class="py-[var(--space-section-lg)]">
       <FadeIn>
         <div class="max-w-3xl">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">

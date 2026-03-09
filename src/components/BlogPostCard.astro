@@ -25,10 +25,10 @@ const formattedDate = new Intl.DateTimeFormat(
 
 <a
     href={url}
-    class="group block rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-6 py-7 shadow-[0_24px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] hover:shadow-[0_32px_78px_-48px_rgba(87,82,121,0.52)] md:px-8"
+    class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-5 py-5 shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)] md:px-6"
 >
     <div
-        class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+        class="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
     >
         <div class="flex flex-wrap items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
             <time
@@ -74,7 +74,7 @@ const formattedDate = new Intl.DateTimeFormat(
     </div>
 
     <h3
-        class="mb-3 text-[clamp(1.55rem,3vw,2.35rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
+        class="mb-2 text-[clamp(1.35rem,2.5vw,1.75rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
         style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
     >
         {post.data.title}

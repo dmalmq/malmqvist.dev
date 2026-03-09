@@ -7,7 +7,7 @@ tags: ["Revit", "Unity", "Digital Twin", "PLATEAU"]
 coverImage: "/images/projects/shinjuku-nav-1-optimized.jpg"
 featured: true
 problem: "従来の2Dマップではナビゲーションが困難な東京の複雑な地下駅ネットワーク。PLATEAUは都市規模の3Dデータを提供しますが、建物の外部で途切れてしまいます。"
-solution: "駅構内、地下通路、周辺のショッピングモールの詳細なRevitモデルを作成。Unityベースの屋内ナビゲーションアプリで3Dアセットとして使用するためにFBXに変換。PLATEAUのCityGMLデジタルツインと統合し、屋内外のシームレスな連続性を実現。"
+solution: "駅構内の詳細なRevitモデルを作成し、Unity向けにFBXへ変換。PLATEAUのCityGMLデジタルツインと統合し、屋内外のシームレスな連続性を実現。"
 techStack: ["Revit", "FBX", "Unity", "CityGML", "Blender", "Bonsai"]
 impact: "絶対的な都市スケールの空間座標と連動するシームレスな屋内外トランジションにより、都市モデリングと微小な屋内ナビゲーションのギャップを埋めることに成功。"
 ---

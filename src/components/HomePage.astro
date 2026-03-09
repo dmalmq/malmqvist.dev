@@ -104,7 +104,7 @@ const capabilityCards = [
 const projectTags = ["Revit", "Unity", "PLATEAU"];
 ---
 
-<section class="relative isolate pb-6 pt-8 md:pb-12 md:pt-12">
+<section class="relative isolate pb-4 pt-2 md:pb-6 md:pt-4">
   <div
     class="hero-gradient-bg pointer-events-none absolute left-1/2 -top-28 -z-10 h-[49rem] w-screen -translate-x-1/2 opacity-90"
     style="background:
@@ -116,7 +116,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
   ></div>
   <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent via-[color:color-mix(in_srgb,var(--color-bg-primary)_38%,transparent)] to-[var(--color-bg-primary)]"></div>
 
-  <div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,33rem)] lg:items-end">
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,33rem)] lg:items-center lg:gap-8">
     <div class="max-w-4xl">
       <FadeIn delay={0}>
         <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
@@ -127,8 +127,8 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
       <FadeIn delay={70}>
         <h1
           class:list={[
-            "mt-6 text-[clamp(4.25rem,10vw,8.75rem)] font-semibold leading-[0.84] tracking-[-0.08em] text-[var(--color-text-heading)]",
-            isJa && "text-[clamp(3.8rem,9vw,7.25rem)] tracking-[-0.05em]",
+            "mt-6 text-[clamp(3rem,7vw,5.5rem)] font-semibold leading-[0.84] tracking-[-0.08em] text-[var(--color-text-heading)]",
+            isJa && "text-[clamp(2.75rem,6.5vw,4.75rem)] tracking-[-0.05em]",
           ]}
           style={typeStyle}
         >
@@ -151,15 +151,10 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
         >
           {copy.heroSupport}
         </p>
-        <p
-          class="mt-4 max-w-xl text-base leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)]"
-          style={typeStyle}
-          set:html={t("hero.tagline.desc")}
-        />
       </FadeIn>
 
       <FadeIn delay={190}>
-        <div class="mt-10 flex flex-wrap items-center gap-4">
+        <div class="mt-6 flex flex-wrap items-center gap-4">
           <Button href={`/${lang}/contact`} variant="primary">
             {t("hero.cta.primary")}
           </Button>
@@ -170,7 +165,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
       </FadeIn>
 
       <FadeIn delay={240}>
-        <dl class="mt-12 grid gap-4 sm:grid-cols-3">
+        <dl class="mt-6 grid gap-3 sm:grid-cols-3">
           {
             copy.heroFacts.map((fact, i) => {
               const icons = ["map", "target", "languages"] as const;
@@ -189,7 +184,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
     </div>
 
     <FadeIn delay={150}>
-      <Card class="relative overflow-hidden p-6 md:p-7 lg:p-8">
+      <Card class="relative overflow-hidden p-5 md:p-6">
         <div class="flex items-start justify-between gap-4">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
             {t("home.featured.title")}
@@ -198,13 +193,13 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
         </div>
 
         <h2
-          class="mt-4 max-w-md text-[clamp(2.25rem,4.2vw,4rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[var(--color-text-heading)]"
+          class="mt-4 max-w-md text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[var(--color-text-heading)]"
           style={typeStyle}
         >
           {t("home.featured.project.title")}
         </h2>
 
-        <div class="group/img mt-6 overflow-hidden rounded-[1.7rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+        <div class="group/img mt-4 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
           <div class="relative overflow-hidden">
             <picture>
               <source
@@ -224,42 +219,36 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
                 height="1050"
                 fetchpriority="high"
                 decoding="async"
-                class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover/img:scale-105"
               />
             </picture>
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
           </div>
-          <div class="flex items-center justify-between gap-4 border-t border-[var(--color-border)] px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-secondary)]">
-            <span>{copy.projectMetaLeft}</span>
-            <span>{copy.projectMetaRight}</span>
-          </div>
         </div>
 
-        <p class="mt-6 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
+        <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
           {t("home.featured.project.desc")}
         </p>
 
-        <div class="mt-6 flex flex-wrap gap-2">
+        <div class="mt-4 flex flex-wrap gap-2">
           {projectTags.map((tag) => <Tag>{tag}</Tag>)}
         </div>
 
-        <div class="mt-6 flex items-center justify-between gap-4">
+        <div class="mt-4 flex items-center gap-4">
           <a
             href={`/${lang}/projects/shinjuku-nav`}
             class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)] transition-colors duration-300 hover:text-[var(--color-accent-hover)]"
           >
             {t("home.featured.readmore")}
           </a>
-          <span class="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-secondary)]">
-            {copy.projectStatus}
-          </span>
         </div>
       </Card>
     </FadeIn>
   </div>
 </section>
 
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-lg)]">
   <FadeIn>
     <SectionHeading
       eyebrow={copy.capabilitiesEyebrow}
@@ -269,11 +258,11 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
     />
   </FadeIn>
 
-  <div class="mt-12 grid gap-6 lg:grid-cols-3">
+  <div class="mt-8 grid gap-4 lg:grid-cols-3">
     {
       capabilityCards.map((card, index) => (
         <ScrollReveal variant={index === 0 ? "slide-left" : index === 1 ? "fade-up" : "slide-right"} delay={index * 110}>
-          <Card class="flex h-full flex-col gap-6 p-7 md:p-8">
+          <Card class="flex h-full flex-col gap-6 p-5 md:p-6">
             <div class="flex items-center justify-between gap-4">
               <span class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
                 {`0${index + 1}`}
@@ -295,7 +284,8 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
   </div>
 </section>
 
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-lg)]">
   <div class="grid gap-10 xl:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] xl:items-start">
     <FadeIn>
       <div class="space-y-8">
@@ -306,11 +296,11 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
           style={typeStyle}
         />
 
-        <Card class="p-7 md:p-8">
+        <Card class="p-5 md:p-6">
           <p class="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.toolsNoteTitle}
           </p>
-          <ul class="mt-5 space-y-4">
+          <ul class="mt-4 space-y-3">
             {
               copy.toolsNotes.map((note) => (
                 <li class="border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
@@ -331,7 +321,8 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
 
 {
   latestPosts.length > 0 && (
-    <section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+    <div class="section-divider"></div>
+    <section class="py-[var(--space-section-lg)]">
       <FadeIn>
         <SectionHeading
           eyebrow={copy.latestEyebrow}
@@ -341,7 +332,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
         />
       </FadeIn>
 
-      <div class="mt-12 space-y-4">
+      <div class="mt-8 space-y-3">
         {latestPosts.map((post, index) => (
           <FadeIn delay={index * 110}>
             <BlogPostCard post={post} lang={lang} />
@@ -352,9 +343,9 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
   )
 }
 
-<section class="py-24 md:py-28">
+<section class="py-[var(--space-section-lg)]">
   <ScrollReveal variant="scale-up">
-    <Card class="relative overflow-hidden px-6 py-10 md:px-10 md:py-12" style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 6%, var(--color-bg-elevated)), var(--color-bg-elevated));">
+    <Card class="relative overflow-hidden px-5 py-7 md:px-8 md:py-9" style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 6%, var(--color-bg-elevated)), var(--color-bg-elevated));">
       <div class="absolute right-0 top-0 h-36 w-36 rounded-full bg-[var(--color-accent)]/10 blur-3xl"></div>
       <div class="absolute left-12 bottom-8 h-28 w-28 rounded-full bg-[var(--color-ring)]/8 blur-3xl"></div>
       <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
@@ -362,10 +353,10 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
             {copy.ctaEyebrow}
           </p>
-          <h2 class="mt-5 max-w-3xl text-[clamp(2.4rem,5vw,4.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-accent)]" style={typeStyle}>
+          <h2 class="mt-3 max-w-3xl text-[clamp(1.75rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-accent)]" style={typeStyle}>
             {t("home.cta.title")}
           </h2>
-          <p class="mt-5 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
+          <p class="mt-3 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
             {copy.ctaNote}
           </p>
         </div>

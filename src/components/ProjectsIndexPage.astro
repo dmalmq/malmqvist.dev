@@ -21,22 +21,12 @@ const featuredProject =
 const remainingProjects = allProjects.filter(
   (project) => project.id !== featuredProject?.id,
 );
-const projectTags = Array.from(
-  new Set(allProjects.flatMap((project) => project.data.tags ?? [])),
-).slice(0, 6);
-
 const copy = isJa
   ? {
       eyebrow: "SELECTED WORK",
       title: "プロジェクト",
       description:
         "建築の実務、BIM運用、空間データ変換、自動化をまたぐ仕事をまとめています。単なる成果物一覧ではなく、どのように複雑な情報を扱い、実装へつなげたかを示すページです。",
-      statsTitle: "このページで見るもの",
-      stats: [
-        { label: "掲載数", value: `${allProjects.length} 件` },
-        { label: "対象領域", value: "BIM / Geospatial / Digital Twin" },
-        { label: "主な舞台", value: "東京 / ストックホルム" },
-      ],
       featureEyebrow: "FEATURED CASE",
       featureNote: "現在の代表的な実装領域",
       gridEyebrow: "PROJECT INDEX",
@@ -49,12 +39,6 @@ const copy = isJa
       title: "Projects",
       description:
         "A working selection of projects across architecture, BIM operations, spatial-data conversion, and automation. The emphasis is on how complex information becomes usable systems.",
-      statsTitle: "What this page covers",
-      stats: [
-        { label: "Projects", value: `${allProjects.length}` },
-        { label: "Domains", value: "BIM / Geospatial / Digital Twin" },
-        { label: "Primary contexts", value: "Tokyo / Stockholm" },
-      ],
       featureEyebrow: "FEATURED CASE",
       featureNote: "Current flagship implementation area",
       gridEyebrow: "PROJECT INDEX",
@@ -71,33 +55,14 @@ const copy = isJa
       title={copy.title}
       description={copy.description}
       style={typeStyle}
-    >
-      <Card slot="aside" class="p-6 md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.statsTitle}
-        </p>
-        <dl class="mt-5 space-y-4">
-          {
-            copy.stats.map((item) => (
-              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {item.label}
-                </dt>
-                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-      </Card>
-    </PageLead>
+    />
   </FadeIn>
 </section>
 
 {
   featuredProject && (
-    <section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+    <div class="section-divider"></div>
+    <section class="py-[var(--space-section-lg)]">
       <FadeIn>
         <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -110,7 +75,7 @@ const copy = isJa
           </div>
 
           <div class="flex flex-wrap gap-2">
-            {projectTags.map((tag) => <Tag>{tag}</Tag>)}
+            {featuredProject.data.tags.map((tag) => <Tag>{tag}</Tag>)}
           </div>
         </div>
       </FadeIn>
@@ -127,10 +92,10 @@ const copy = isJa
                   src={featuredProject.data.coverImage || "/images/projects/shinjuku-nav-1-optimized.jpg"}
                   alt={featuredProject.data.title}
                   decoding="async"
-                  class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  class="aspect-[2/1] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
-              <div class="flex flex-col justify-between p-7 md:p-10">
+              <div class="flex flex-col justify-between p-5 md:p-7">
                 <div>
                   <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
                     {featuredProject.data.publishDate.toLocaleDateString(
@@ -142,7 +107,7 @@ const copy = isJa
                     )}
                   </p>
                   <h2
-                    class="mt-5 text-[clamp(2.35rem,4vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
+                    class="mt-5 text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
                     style={typeStyle}
                   >
                     {featuredProject.data.title}
@@ -177,14 +142,15 @@ const copy = isJa
   )
 }
 
-<section class="border-t border-[var(--color-border)] pt-24 md:pt-32">
+<div class="section-divider"></div>
+<section class="py-[var(--space-section-md)]">
   <FadeIn>
     <div class="max-w-3xl">
       <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
         {copy.gridEyebrow}
       </p>
       <h2
-        class="mt-5 text-[clamp(2.25rem,5vw,3.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
+        class="mt-3 text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
         style={typeStyle}
       >
         {copy.gridTitle}
@@ -195,7 +161,7 @@ const copy = isJa
     </div>
   </FadeIn>
 
-  <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+  <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
     {(remainingProjects.length > 0 ? remainingProjects : allProjects).map((project, index) => (
       <FadeIn delay={index * 110}>
         <ProjectCard project={project} lang={lang} />

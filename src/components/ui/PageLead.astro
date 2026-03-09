@@ -20,8 +20,8 @@ const hasAside = Astro.slots.has("aside");
 
 <div
   class:list={[
-    "grid gap-8 md:gap-10",
-    hasAside && "xl:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.7fr)] xl:items-end",
+    "grid gap-6 md:gap-8",
+    hasAside && "xl:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.7fr)] xl:items-center",
     className,
   ]}
 >
@@ -30,13 +30,13 @@ const hasAside = Astro.slots.has("aside");
       {eyebrow}
     </p>
     <h1
-      class="mt-6 max-w-4xl text-[clamp(3.25rem,8vw,6.4rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-[var(--color-text-heading)]"
+      class="mt-4 max-w-4xl text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-[var(--color-text-heading)]"
       style={style}
     >
       {title}
     </h1>
     <p
-      class="mt-6 max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-xl"
+      class="mt-4 max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-xl"
       style={style}
       set:html={description}
     />

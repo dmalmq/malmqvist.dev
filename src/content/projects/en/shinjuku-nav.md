@@ -7,7 +7,7 @@ tags: ["Revit", "Unity", "Digital Twin", "PLATEAU"]
 coverImage: "/images/projects/shinjuku-nav-1-optimized.jpg"
 featured: true
 problem: "Tokyo's complex underground station networks are nearly impossible to navigate with traditional 2D maps. PLATEAU provides city-scale 3D data but stops at building exteriors."
-solution: "Create detailed Revit models of station interiors, underground walkways, and surrounding shopping malls. Convert to FBX for use as 3D assets in a Unity-based indoor navigation application. Integrate with PLATEAU's CityGML digital twin for seamless indoor-outdoor continuity."
+solution: "Create detailed Revit models of station interiors and convert to FBX for Unity-based indoor navigation. Integrate with PLATEAU's CityGML digital twin for seamless indoor-outdoor continuity."
 techStack: ["Revit", "FBX", "Unity", "CityGML", "Blender", "Bonsai"]
 impact: "Seamless indoor-outdoor transitions mapped at absolute city-scale accuracy, bridging the gap between urban modeling and micro-indoor navigation."
 ---

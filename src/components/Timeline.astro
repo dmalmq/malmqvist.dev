@@ -48,13 +48,13 @@ const timelineData = [
 
 <div class="relative pl-8">
   <div class="absolute left-0 top-0 bottom-0 w-px bg-[var(--color-accent)]/30"></div>
-  <div class="space-y-6">
+  <div class="space-y-4">
     {
       timelineData.map((item, i) => (
         <ScrollReveal variant="slide-right" delay={i * 120}>
           <div class="relative">
             <div class="absolute -left-8 top-7 h-2.5 w-2.5 -translate-x-[calc(50%-0.5px)] rounded-full border-2 border-[var(--color-accent)] bg-[var(--color-bg-primary)]"></div>
-            <Card class="p-6 md:p-7">
+            <Card class="p-4 md:p-5">
               <div class="grid gap-6 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-8">
                 <div>
                   <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
