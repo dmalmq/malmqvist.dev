@@ -15,6 +15,8 @@ I was listening to a recent episode of the [AEC AI & Tech Strategy Podcast](http
 
 So let's unpack it.
 
+![Aerial view of Tokyo Station with digital twin infrastructure overlay](/images/blog/digital-twin-tokyo-station.jpg)
+
 ## The "Just Show Me the Building" End of the Spectrum
 
 At its simplest, a lot of people use "digital twin" to mean "a 3D model of something that exists in the real world." A Revit model of a completed building. A point cloud scan. A real-time rendering you can fly through in a browser.
