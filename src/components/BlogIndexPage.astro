@@ -21,21 +21,79 @@ const copy = isJa
       title: "記事",
       description:
         "建築、BIM、自動化、空間データの実装について書いています。単なる技術メモではなく、実務の現場で何が詰まり、どう設計し直すかを中心にした記録です。",
+      fallbackTitle: "More writing coming soon",
+      fallbackDescription:
+        "最新の記事が少ない時期は、プロジェクト一覧やお問い合わせページもぜひご覧ください。実装の背景や相談テーマを確認できます。",
+      fallbackProjects: "プロジェクトを見る",
+      fallbackContact: "お問い合わせ",
     }
   : {
       eyebrow: "WRITING",
       title: "Writing",
       description:
         "Notes on architecture, BIM, automation, and spatial-data implementation. The focus is not abstract trend commentary, but how technical decisions actually behave inside real projects.",
+      fallbackTitle: "More writing coming soon",
+      fallbackDescription:
+        "If the archive is light right now, you can browse project case studies or get in touch to discuss implementation challenges.",
+      fallbackProjects: "View projects",
+      fallbackContact: "Contact",
     };
+
+const shouldShowFallback = allPosts.length < 4;
 ---
 
-<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-6">
-  <div class="space-y-3">
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-12">
+  <div class="max-w-3xl">
+    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]" style={typeStyle}>
+      {copy.eyebrow}
+    </p>
+    <h1
+      class="mt-2 text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
+      style={typeStyle}
+    >
+      {copy.title}
+    </h1>
+    <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+      {copy.description}
+    </p>
+  </div>
+
+  <div class="mt-8 space-y-3 md:mt-10">
     {allPosts.map((post, index) => (
       <ScrollReveal variant="fade-up" delay={index * 90}>
         <BlogPostCard post={post} lang={lang} accentColor={blogColors[index % blogColors.length]} />
       </ScrollReveal>
     ))}
   </div>
+
+  {
+    shouldShowFallback && (
+      <div class="mt-10 border-t border-[var(--color-border)] pt-7">
+        <div class="max-w-2xl">
+          <h2 class="text-lg font-semibold text-[var(--color-text-heading)] md:text-xl" style={typeStyle}>
+            {copy.fallbackTitle}
+          </h2>
+          <p class="mt-3 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+            {copy.fallbackDescription}
+          </p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <a
+              href={`/${lang}/projects`}
+              class="inline-flex items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              style={typeStyle}
+            >
+              {copy.fallbackProjects}
+            </a>
+            <a
+              href={`/${lang}/contact`}
+              class="inline-flex items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              style={typeStyle}
+            >
+              {copy.fallbackContact}
+            </a>
+          </div>
+        </div>
+      </div>
+    )
+  }
 </section>
