@@ -24,19 +24,19 @@ impact: "Monocle Design Awards 2024で「Best Healthcare」を受賞。構造・
 これらの画像はBIMの生データです。特筆すべき複雑さは、建物のボリュームそのものだけでなく、詳細な窓の構成や、38,000㎥の岩盤掘削による地形、そして歴史的建造物との統合にありました。
 
 ### デザインレビューとオフィスでのワークフロー
-![Tengbom ファサード素材検討 A](/images/projects/ersta/07-tengbom-facade-review-a.png)
-![Tengbom ファサード素材検討 B](/images/projects/ersta/08-tengbom-facade-review-b.png)
+![Tengbom ファサード素材検討 A](/images/projects/ersta/07-tengbom-facade-review-a.jpg)
+![Tengbom ファサード素材検討 B](/images/projects/ersta/08-tengbom-facade-review-b.jpg)
 
 Tengbomのオフィスでは、画面を見るだけではなく、デジタルモデルと物理的な素材の検討（特に特徴的な黄土色のアルミクラッディングについて）を常に照らし合わせていました。
 
 ### 建設とファブリケーション
-![クレーンを用いたファサード建設](/images/projects/ersta/04-construction-facade-crane.png)
-![ゴールデンアワーのファサード詳細](/images/projects/ersta/05-construction-facade-golden.png)
-![ストリートビューからの建設風景](/images/projects/ersta/06-construction-street-view.png)
+![クレーンを用いたファサード建設](/images/projects/ersta/04-construction-facade-crane.jpg)
+![ゴールデンアワーのファサード詳細](/images/projects/ersta/05-construction-facade-golden.jpg)
+![ストリートビューからの建設風景](/images/projects/ersta/06-construction-street-view.jpg)
 
 ファサードの製造・施工調整会議に参加することで、設計されたソリューションがRevitモデルの指示通りに製造、設置できることを物理的に検証することができました。
 
 ### 結果
-![BIM 外観レンダリング](/images/projects/ersta/09-bim-render-exterior.png)
+![BIM 外観レンダリング](/images/projects/ersta/09-bim-render-exterior.jpg)
 
 このプロジェクトを通して私が得た最大の学びは、真のBIMマネジメントとは設計意図、生データ構造、そして建設現場の物理的現実を結びつける「結合組織」であるということです。

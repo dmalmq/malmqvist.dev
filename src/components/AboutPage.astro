@@ -2,6 +2,7 @@
 import Button from "./ui/Button.astro";
 import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
+import ResponsivePicture from "./ResponsivePicture.astro";
 
 import ScrollReveal from "./ui/ScrollReveal.astro";
 import SectionHeading from "./ui/SectionHeading.astro";
@@ -75,11 +76,12 @@ const copy = isJa
           <div class="relative">
             <div class="accent-ring-rotate absolute -inset-2 rounded-full" style="background: conic-gradient(from 0deg, var(--color-pine), var(--color-iris), var(--color-foam), var(--color-love), var(--color-pine)); opacity: 0.12; filter: blur(16px);"></div>
             <div class="relative blob-clip overflow-hidden ring-2 ring-[var(--color-accent)]/20 ring-offset-4 ring-offset-[var(--color-bg-secondary)]">
-              <img
+              <ResponsivePicture
                 src="/images/profile-img.JPG"
                 alt="Daniel Malmqvist"
+                sizes="(min-width: 1280px) 22rem, (min-width: 768px) 18rem, 90vw"
                 class="aspect-[3/4] w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-                transition:name="profile-photo"
+                transitionName="profile-photo"
               />
               <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
