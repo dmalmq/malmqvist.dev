@@ -24,19 +24,11 @@ const formattedDate = new Intl.DateTimeFormat(isJa ? "ja-JP" : "en-US", {
 
 const copy = isJa
   ? {
-      eyebrow: "PRACTICE NOTE",
       back: "記事一覧に戻る",
       lead:
         "実務の中で詰まった技術課題や、そのときに取った判断を整理したノートです。抽象論よりも、現場でどう効いたかを重視しています。",
-      metaTitle: "記事メタ",
-      metaItems: [
-        { label: "公開日", value: formattedDate },
-        { label: "読了時間", value: post.data.readingTime ?? "数分" },
-        {
-          label: "トピック数",
-          value: `${post.data.tags.length || 0} 件`,
-        },
-      ],
+      metaPublished: "公開日",
+      metaReadingTime: "読了時間",
       metaNote:
         "記事はプロジェクト実務に近いテーマから順に増やしていきます。技術の断片ではなく、運用に効く考え方を残すための記録です。",
       bodyEyebrow: "ARTICLE",
@@ -57,19 +49,11 @@ const copy = isJa
         "同じ問題意識を別の角度から扱っている記事です。",
     }
   : {
-      eyebrow: "PRACTICE NOTE",
       back: "Back to writing",
       lead:
         "A note from practice: what the technical issue was, what decision was made, and why it mattered inside real project work.",
-      metaTitle: "Article profile",
-      metaItems: [
-        { label: "Published", value: formattedDate },
-        { label: "Reading time", value: post.data.readingTime ?? "A few minutes" },
-        {
-          label: "Topics",
-          value: `${post.data.tags.length || 0}`,
-        },
-      ],
+      metaPublished: "Published",
+      metaReadingTime: "Reading time",
       metaNote:
         "The writing stays close to practical implementation. The goal is not trend commentary, but reusable technical judgement.",
       bodyEyebrow: "ARTICLE",
@@ -103,110 +87,72 @@ const copy = isJa
     </a>
   </FadeIn>
 
-  <div class="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.6fr)] xl:items-end">
+  <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(12rem,16rem)] lg:items-start">
     <div class="max-w-4xl">
-      <FadeIn delay={40}>
-        <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-          {copy.eyebrow}
-        </p>
-      </FadeIn>
-
-      <FadeIn delay={90}>
+      <FadeIn delay={60}>
         <h1
-          class="mt-6 text-[clamp(3rem,7vw,5.5rem)] font-semibold leading-[0.92] tracking-[-0.065em] text-[var(--color-text-heading)]"
+          class="text-[clamp(2.2rem,5vw,4rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[var(--color-text-heading)]"
           style={typeStyle}
         >
           {post.data.title}
         </h1>
-        <p
-          class="mt-6 max-w-3xl text-xl leading-8 text-[var(--color-text-heading)] md:text-2xl"
-          style={typeStyle}
-        >
-          {post.data.description}
-        </p>
-        <p
-          class="mt-5 max-w-3xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg"
-          style={typeStyle}
-        >
-          {copy.lead}
-        </p>
-      </FadeIn>
 
-      <FadeIn delay={140}>
-        <div class="mt-8 flex flex-wrap gap-2">
-          {post.data.tags.map((tag) => <Tag>{tag}</Tag>)}
+        <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+          <span>{copy.metaPublished}: {formattedDate}</span>
+          <span aria-hidden="true">•</span>
+          <span>{copy.metaReadingTime}: {post.data.readingTime ?? (isJa ? "数分" : "A few minutes")}</span>
         </div>
+
+        {
+          post.data.description && (
+            <p class="mt-5 max-w-3xl text-base leading-7 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
+              {post.data.description}
+            </p>
+          )
+        }
       </FadeIn>
     </div>
 
-    <FadeIn delay={130}>
-      <div class="rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_28px_70px_-48px_rgba(87,82,121,0.42)] dark:shadow-[0_28px_70px_-48px_rgba(25,23,36,0.95)] md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.metaTitle}
-        </p>
-        <dl class="mt-5 space-y-4">
-          {
-            copy.metaItems.map((item) => (
-              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {item.label}
-                </dt>
-                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base" style={typeStyle}>
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-        <p class="mt-5 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
-          {copy.metaNote}
-        </p>
-      </div>
-    </FadeIn>
+    {
+      post.data.coverImage && (
+        <FadeIn delay={110}>
+          <div class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+            <img src={post.data.coverImage} alt={post.data.title} class="aspect-[4/3] w-full object-cover" />
+          </div>
+        </FadeIn>
+      )
+    }
   </div>
 </section>
 
-{
-  post.data.coverImage && (
-    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 border-t border-[var(--color-border)] pt-16 md:pt-20">
-      <FadeIn>
-        <div class="overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] shadow-[0_34px_90px_-56px_rgba(87,82,121,0.45)]">
-          <img
-            src={post.data.coverImage}
-            alt={post.data.title}
-            class="aspect-[16/9] w-full object-cover"
-          />
-        </div>
-      </FadeIn>
-    </section>
-  )
-}
-
-<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 border-t border-[var(--color-border)] pt-20 md:pt-24">
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 border-t border-[var(--color-border)] pt-14 md:pt-16">
   <div class="grid gap-8 xl:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.5fr)]">
     <div>
-      <FadeIn>
-        <div class="max-w-3xl">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-            {copy.bodyEyebrow}
-          </p>
-          <h2
-            class="mt-5 text-[clamp(2.2rem,5vw,3.7rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
-            style={typeStyle}
-          >
-            {copy.bodyTitle}
-          </h2>
-          <p class="mt-5 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
-            {copy.bodyDescription}
-          </p>
-        </div>
-      </FadeIn>
-
       <FadeIn delay={90}>
-        <div class="mt-10 rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-7 shadow-[0_34px_90px_-56px_rgba(87,82,121,0.45)] dark:shadow-[0_34px_90px_-56px_rgba(25,23,36,0.98)] md:p-10">
+        <div class="rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-7 shadow-[0_34px_90px_-56px_rgba(87,82,121,0.45)] dark:shadow-[0_34px_90px_-56px_rgba(25,23,36,0.98)] md:p-10">
           <article class="editorial-prose" style={typeStyle}>
             <Content />
           </article>
+        </div>
+      </FadeIn>
+
+      <FadeIn delay={120}>
+        <div class="mt-8 rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 md:p-7">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+            {copy.bodyEyebrow}
+          </p>
+          <h2 class="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-heading)]" style={typeStyle}>
+            {copy.bodyTitle}
+          </h2>
+          <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+            {copy.bodyDescription}
+          </p>
+          <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+            {copy.lead}
+          </p>
+          <p class="mt-4 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
+            {copy.metaNote}
+          </p>
         </div>
       </FadeIn>
     </div>
