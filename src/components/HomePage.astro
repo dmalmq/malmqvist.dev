@@ -6,12 +6,11 @@ import SocialLinks from "./SocialLinks.astro";
 import Button from "./ui/Button.astro";
 import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
+import ResponsivePicture from "./ResponsivePicture.astro";
 import ScrollReveal from "./ui/ScrollReveal.astro";
 import SectionHeading from "./ui/SectionHeading.astro";
 import Tag from "./ui/Tag.astro";
 import FloatingShapes from "./animation/FloatingShapes";
-import CountUp from "./animation/CountUp";
-import TextReveal from "./animation/TextReveal";
 import MagneticButton from "./animation/MagneticButton";
 import Marquee from "./animation/Marquee";
 import ParallaxSection from "./animation/ParallaxSection";
@@ -174,7 +173,7 @@ const ctaShapes = [
             class="mt-8 max-w-2xl text-2xl font-medium leading-[1.15] text-[var(--color-text-heading)] md:text-[2rem]"
             style={typeStyle}
           >
-            <TextReveal text={t("hero.tagline")} mode="word" staggerDelay={0.06} client:visible />
+            {t("hero.tagline")}
           </p>
           <p
             class="mt-4 max-w-2xl text-lg leading-8 text-[var(--color-text-secondary)] md:text-xl"
@@ -205,7 +204,6 @@ const ctaShapes = [
                     label={fact.label}
                     value={fact.value}
                     icon={icons[i]}
-                    client:visible
                   />
                 );
               })
@@ -220,15 +218,13 @@ const ctaShapes = [
           <!-- Animated accent ring -->
           <div class="accent-ring-rotate absolute -inset-3 rounded-full" style="background: conic-gradient(from 0deg, var(--color-pine), var(--color-iris), var(--color-foam), var(--color-love), var(--color-pine)); opacity: 0.15; filter: blur(20px);"></div>
           <div class="relative blob-clip overflow-hidden">
-            <img
+            <ResponsivePicture
               src="/images/profile-img.JPG"
               alt="Daniel Malmqvist"
-              width="500"
-              height="667"
+              sizes="(min-width: 1024px) 28rem, (min-width: 768px) 22rem, 90vw"
               fetchpriority="high"
-              decoding="async"
               class="aspect-[3/4] w-full object-cover"
-              transition:name="profile-photo"
+              transitionName="profile-photo"
             />
           </div>
         </div>
@@ -260,24 +256,24 @@ const ctaShapes = [
   <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
     <div class="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
       <div class="text-center">
-        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-pine)]">
-          <CountUp target={8} suffix="+" client:idle />
+        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-pine)] tabular-nums">
+          8+
         </p>
         <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
           {copy.statsYears}
         </p>
       </div>
       <div class="text-center">
-        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-iris)]">
-          <CountUp target={4} client:idle />
+        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-iris)] tabular-nums">
+          4
         </p>
         <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
           {copy.statsProjects}
         </p>
       </div>
       <div class="text-center">
-        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-love)]">
-          <CountUp target={3} client:idle />
+        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-love)] tabular-nums">
+          3
         </p>
         <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
           {copy.statsLanguages}
@@ -339,8 +335,8 @@ const ctaShapes = [
 <!-- ====== TECHNOLOGY MARQUEE ====== -->
 <section class="w-full py-10 md:py-14 overflow-hidden">
   <div class="space-y-4">
-    <Marquee items={marqueeItems} className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-outline leading-none py-2" client:visible />
-    <Marquee items={[...marqueeItems].reverse()} reverse={true} className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-outline leading-none py-2" client:visible />
+    <Marquee items={marqueeItems} className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-outline leading-none py-2" />
+    <Marquee items={[...marqueeItems].reverse()} reverse={true} className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-outline leading-none py-2" />
   </div>
 </section>
 
@@ -353,27 +349,13 @@ const ctaShapes = [
       <!-- Image with parallax -->
       <ParallaxSection speed={0.15} className="rounded-xl overflow-hidden" client:visible>
         <div class="group/img relative overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-          <picture>
-            <source
-              type="image/webp"
-              srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
-              sizes="(min-width: 1024px) 55vw, 100vw"
-            />
-            <source
-              type="image/jpeg"
-              srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
-              sizes="(min-width: 1024px) 55vw, 100vw"
-            />
-            <img
-              src="/images/projects/shinjuku-nav-1-800.jpg"
-              alt="Shinjuku Indoor Navigation"
-              width="1400"
-              height="1050"
-              fetchpriority="high"
-              decoding="async"
-              class="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover/img:scale-105"
-            />
-          </picture>
+          <ResponsivePicture
+            src="/images/projects/shinjuku-nav-1-optimized.jpg"
+            alt="Shinjuku Indoor Navigation"
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            fetchpriority="high"
+            class="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover/img:scale-105"
+          />
           <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60 transition-opacity duration-300 group-hover/img:opacity-80"></div>
           <div class="pointer-events-none absolute inset-0 bg-[var(--color-accent)]/0 transition-all duration-500 group-hover/img:bg-[var(--color-accent)]/10"></div>
         </div>
@@ -489,7 +471,7 @@ const ctaShapes = [
           {copy.ctaEyebrow}
         </p>
         <h2 class="mt-3 max-w-3xl text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-accent)]" style={typeStyle}>
-          <TextReveal text={t("home.cta.title")} mode="word" staggerDelay={0.08} client:visible />
+          {t("home.cta.title")}
         </h2>
         <p class="mt-4 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
           {copy.ctaNote}

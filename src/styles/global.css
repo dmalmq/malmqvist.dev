@@ -76,7 +76,7 @@
     --bg-elevated: var(--card);
     --bg-surface: var(--muted);
     --text-primary: var(--foreground);
-    --text-secondary: #6e6a86;
+    --text-secondary: #55526b;
     --text-heading: var(--foreground);
     --accent-hover: #56949f;
     --accent-muted: #f2e9e1;
@@ -98,7 +98,7 @@
     --bg-grid-color: rgba(87, 82, 121, 0.06);
 
     /* Rose Pine palette accents */
-    --color-gold: #ea9d34;
+    --color-gold: #9b640f;
     --color-foam: #56949f;
     --color-pine: #286983;
     --color-love: #b4637a;

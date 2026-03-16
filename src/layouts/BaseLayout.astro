@@ -7,6 +7,7 @@ import ScrollProgress from "../components/animation/ScrollProgress.astro";
 import ImageLightbox from "../components/ImageLightbox";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { type Language } from "../i18n/utils";
+import { DEFAULT_SHARE_IMAGE, getShareImagePath } from "../lib/image-assets.mjs";
 
 // We want to persist early to avoid light/dark flicker, so we inject a script.
 // A simpler script handles dark mode before React inits.
@@ -50,7 +51,8 @@ const defaultUrl = new URL(
   currentPath.replace(/^\/(ja|en)/, "/en"),
   Astro.site ?? "https://malmqvist.dev",
 );
-const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
+const shareImagePath = getShareImagePath(image, DEFAULT_SHARE_IMAGE);
+const fullImageUrl = new URL(shareImagePath, Astro.site ?? "https://malmqvist.dev");
 ---
 
 <!doctype html>
@@ -63,6 +65,7 @@ const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta
       name="theme-color"

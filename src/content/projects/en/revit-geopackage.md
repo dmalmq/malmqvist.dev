@@ -4,10 +4,10 @@ description: "A direct pipeline collapsing complex 3-step BIM conversions into a
 publishDate: "2024-11-20"
 lang: "en"
 tags: ["C#", "Revit API", "Geospatial", "GeoPackage"]
-coverImage: "/images/projects/revitgeoconverter/revitaddin-1.jpg"
+coverImage: "/images/projects/revitgeoconverter/revitaddin-1.webp"
 galleryImages:
-  - "/images/projects/revitgeoconverter/revitaddin-1.jpg"
-  - "/images/projects/revitgeoconverter/revitaddin-2.jpg"
+  - "/images/projects/revitgeoconverter/revitaddin-1.webp"
+  - "/images/projects/revitgeoconverter/revitaddin-2.webp"
 featured: false
 problem: "The legacy workflow required converting Revit via DWG and then into Shapefile formats. It was a three-step process that lost metadata at each stage."
 solution: "Developed a native Revit plugin using C# and the Revit API for direct exports targeting the modern GeoPackage standard."

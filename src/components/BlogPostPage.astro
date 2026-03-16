@@ -4,6 +4,7 @@ import type { Language } from "../i18n/utils";
 import BlogPostCard from "./BlogPostCard.astro";
 import Button from "./ui/Button.astro";
 import FadeIn from "./ui/FadeIn.astro";
+import ResponsivePicture from "./ResponsivePicture.astro";
 import Tag from "./ui/Tag.astro";
 
 interface Props {
@@ -111,7 +112,12 @@ const copy = isJa
       post.data.coverImage && (
         <FadeIn delay={110}>
           <div class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-            <img src={post.data.coverImage} alt={post.data.title} class="aspect-[4/3] w-full object-cover" />
+            <ResponsivePicture
+              src={post.data.coverImage}
+              alt={post.data.title}
+              sizes="(min-width: 1024px) 16rem, 100vw"
+              class="aspect-[4/3] w-full object-cover"
+            />
           </div>
         </FadeIn>
       )

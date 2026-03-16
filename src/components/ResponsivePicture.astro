@@ -1,0 +1,76 @@
+---
+import {
+  getFallbackImagePath,
+  getImageAsset,
+  getPictureSourceSet,
+} from "../lib/image-assets.mjs";
+
+interface Props {
+  src: string;
+  alt: string;
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  transitionName?: string;
+}
+
+const {
+  src,
+  alt,
+  sizes = "100vw",
+  loading,
+  fetchpriority,
+  class: className,
+  transitionName,
+} = Astro.props;
+
+const asset = getImageAsset(src);
+const fallbackSrc = getFallbackImagePath(src);
+---
+
+{
+  asset ? (
+    <picture class="block h-full w-full">
+      {
+        asset.avif.length > 0 && (
+          <source
+            type="image/avif"
+            srcset={getPictureSourceSet(asset.avif)}
+            sizes={sizes}
+          />
+        )
+      }
+      {
+        asset.webp.length > 0 && (
+          <source
+            type="image/webp"
+            srcset={getPictureSourceSet(asset.webp)}
+            sizes={sizes}
+          />
+        )
+      }
+      <img
+        src={fallbackSrc}
+        alt={alt}
+        width={asset.width}
+        height={asset.height}
+        loading={loading}
+        fetchpriority={fetchpriority}
+        decoding="async"
+        class={className}
+        transition:name={transitionName}
+      />
+    </picture>
+  ) : (
+    <img
+      src={fallbackSrc}
+      alt={alt}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding="async"
+      class={className}
+      transition:name={transitionName}
+    />
+  )
+}

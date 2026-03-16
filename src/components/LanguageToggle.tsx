@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import type { Language } from '../i18n/utils';
 
 interface Props {
@@ -6,12 +5,6 @@ interface Props {
 }
 
 export default function LanguageToggle({ currentLang }: Props) {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
     const switchLanguage = () => {
         const nextLang = currentLang === 'en' ? 'ja' : 'en';
         localStorage.setItem('preferred-language', nextLang);
@@ -21,24 +14,17 @@ export default function LanguageToggle({ currentLang }: Props) {
         window.location.href = `${nextPath}${window.location.search}${window.location.hash}`;
     };
 
-    if (!mounted) {
-        return (
-            <button className="ui-pill-button px-3" disabled>
-                {currentLang.toUpperCase()}
-            </button>
-        );
-    }
-
     const toggleText = currentLang === 'en' ? '日本語' : 'EN';
+    const srText = currentLang === 'en' ? ' switch to Japanese' : ' switch to English';
 
     return (
         <button
             onClick={switchLanguage}
-            className="ui-pill-button px-3"
-            aria-label="Switch language"
+            className="ui-pill-button min-w-[4.75rem] px-3"
             title={currentLang === 'en' ? 'Switch to Japanese' : 'Switch to English'}
         >
-            {toggleText}
+            <span>{toggleText}</span>
+            <span className="sr-only">{srText}</span>
         </button>
     );
 }

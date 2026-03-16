@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import BlogPostPage from "../../../components/BlogPostPage.astro";
+import { buildArticleJsonLd } from "../../../lib/seo.mjs";
 
 export const prerender = true;
 
@@ -33,6 +34,17 @@ const relatedPosts = (await getCollection("blog", ({ id }) =>
             b.data.publishDate.getTime() - a.data.publishDate.getTime(),
     )
     .slice(0, 3);
+
+const jsonLd = buildArticleJsonLd({
+    type: "BlogPosting",
+    title: post.data.title,
+    description: post.data.description,
+    path: Astro.url.pathname,
+    image: post.data.coverImage,
+    publishedTime: post.data.publishDate.toISOString(),
+    lang: "ja",
+    keywords: post.data.tags,
+});
 ---
 
 <BaseLayout
@@ -43,6 +55,7 @@ const relatedPosts = (await getCollection("blog", ({ id }) =>
     publishedTime={post.data.publishDate.toISOString()}
     lang="ja"
 >
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <BlogPostPage
         lang="ja"
         post={post}
