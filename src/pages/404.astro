@@ -42,6 +42,20 @@ import Button from "../components/ui/Button.astro";
                 >Return Home</Button
             >
         </div>
+
+        <div
+            class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[var(--color-text-secondary)]"
+        >
+            <a href="/en/projects" id="link-projects" class="hover:underline">
+                Projects
+            </a>
+            <span aria-hidden="true">•</span>
+            <a href="/en/blog" id="link-blog" class="hover:underline">Blog</a>
+            <span aria-hidden="true">•</span>
+            <a href="/en/contact" id="link-contact" class="hover:underline">
+                Contact
+            </a>
+        </div>
     </div>
 
     <script>
@@ -56,12 +70,27 @@ import Button from "../components/ui/Button.astro";
             const jaContent = document.getElementById("ja-content");
             const enContent = jaContent?.previousElementSibling;
             const btnHome = document.getElementById("btn-home");
+            const linkProjects = document.getElementById("link-projects");
+            const linkBlog = document.getElementById("link-blog");
+            const linkContact = document.getElementById("link-contact");
 
             if (enContent) enContent.classList.add("hidden");
             if (jaContent) jaContent.classList.remove("hidden");
             if (btnHome) {
                 btnHome.textContent = "ホームに戻る";
                 btnHome.setAttribute("href", "/ja/");
+            }
+            if (linkProjects) {
+                linkProjects.textContent = "プロジェクト";
+                linkProjects.setAttribute("href", "/ja/projects");
+            }
+            if (linkBlog) {
+                linkBlog.textContent = "ブログ";
+                linkBlog.setAttribute("href", "/ja/blog");
+            }
+            if (linkContact) {
+                linkContact.textContent = "お問い合わせ";
+                linkContact.setAttribute("href", "/ja/contact");
             }
         }
     </script>
