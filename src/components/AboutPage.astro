@@ -57,7 +57,17 @@ const copy = isJa
 ---
 
 <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-[var(--space-section-lg)]">
-  <div class="grid gap-8 xl:grid-cols-[minmax(18rem,22rem)_minmax(0,1fr)] xl:items-start">
+  <FadeIn>
+    <SectionHeading
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      description={copy.description}
+      class="max-w-4xl"
+      style={typeStyle}
+    />
+  </FadeIn>
+
+  <div class="mt-10 grid gap-8 md:mt-12 xl:grid-cols-[minmax(18rem,22rem)_minmax(0,1fr)] xl:items-start">
     <FadeIn>
       <Card class="overflow-hidden p-0">
         <div class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6">
