@@ -52,9 +52,28 @@ const copy = isJa
 const accentColors = ["var(--color-pine)", "var(--color-love)", "var(--color-gold)", "var(--color-foam)", "var(--color-iris)"];
 ---
 
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-6 md:pt-10 pb-2 md:pb-3">
+  <FadeIn>
+    <div class="max-w-3xl">
+      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+        {copy.eyebrow}
+      </p>
+      <h1
+        class="mt-2 text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
+        style={typeStyle}
+      >
+        {copy.title}
+      </h1>
+      <p class="mt-3 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+        {copy.description}
+      </p>
+    </div>
+  </FadeIn>
+</section>
+
 {
   featuredProject && (
-    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-6 md:pt-10 pb-6">
+    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-2 md:pt-3 pb-6">
       <FadeIn>
         <a
           href={`/${lang}/projects/${featuredProject.id.split("/").pop()?.replace(/\.mdx?$/, "")}`}
