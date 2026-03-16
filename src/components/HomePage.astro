@@ -6,6 +6,7 @@ import SocialLinks from "./SocialLinks.astro";
 import Button from "./ui/Button.astro";
 import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
+import ResponsivePicture from "./ResponsivePicture.astro";
 import ScrollReveal from "./ui/ScrollReveal.astro";
 import SectionHeading from "./ui/SectionHeading.astro";
 import Tag from "./ui/Tag.astro";
@@ -220,15 +221,13 @@ const ctaShapes = [
           <!-- Animated accent ring -->
           <div class="accent-ring-rotate absolute -inset-3 rounded-full" style="background: conic-gradient(from 0deg, var(--color-pine), var(--color-iris), var(--color-foam), var(--color-love), var(--color-pine)); opacity: 0.15; filter: blur(20px);"></div>
           <div class="relative blob-clip overflow-hidden">
-            <img
+            <ResponsivePicture
               src="/images/profile-img.JPG"
               alt="Daniel Malmqvist"
-              width="500"
-              height="667"
+              sizes="(min-width: 1024px) 28rem, (min-width: 768px) 22rem, 90vw"
               fetchpriority="high"
-              decoding="async"
               class="aspect-[3/4] w-full object-cover"
-              transition:name="profile-photo"
+              transitionName="profile-photo"
             />
           </div>
         </div>
@@ -353,27 +352,13 @@ const ctaShapes = [
       <!-- Image with parallax -->
       <ParallaxSection speed={0.15} className="rounded-xl overflow-hidden" client:visible>
         <div class="group/img relative overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-          <picture>
-            <source
-              type="image/webp"
-              srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
-              sizes="(min-width: 1024px) 55vw, 100vw"
-            />
-            <source
-              type="image/jpeg"
-              srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
-              sizes="(min-width: 1024px) 55vw, 100vw"
-            />
-            <img
-              src="/images/projects/shinjuku-nav-1-800.jpg"
-              alt="Shinjuku Indoor Navigation"
-              width="1400"
-              height="1050"
-              fetchpriority="high"
-              decoding="async"
-              class="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover/img:scale-105"
-            />
-          </picture>
+          <ResponsivePicture
+            src="/images/projects/shinjuku-nav-1-optimized.jpg"
+            alt="Shinjuku Indoor Navigation"
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            fetchpriority="high"
+            class="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover/img:scale-105"
+          />
           <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60 transition-opacity duration-300 group-hover/img:opacity-80"></div>
           <div class="pointer-events-none absolute inset-0 bg-[var(--color-accent)]/0 transition-all duration-500 group-hover/img:bg-[var(--color-accent)]/10"></div>
         </div>

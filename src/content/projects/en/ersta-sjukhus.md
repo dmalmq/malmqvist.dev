@@ -24,19 +24,19 @@ It's one thing to model a building; it's another to ensure it can actually be co
 These direct 3D viewport exports show the raw BIM data. The complexity wasn't just in the massing, but in the exact window assemblies, the 38,000 m³ of blasted rock topography, and the heritage building integration.
 
 ### Design Review & Office Workflow
-![Tengbom Facade Material Board A](/images/projects/ersta/07-tengbom-facade-review-a.png)
-![Tengbom Facade Material Board B](/images/projects/ersta/08-tengbom-facade-review-b.png)
+![Tengbom Facade Material Board A](/images/projects/ersta/07-tengbom-facade-review-a.jpg)
+![Tengbom Facade Material Board B](/images/projects/ersta/08-tengbom-facade-review-b.jpg)
 
 Inside Tengbom, we didn't just look at screens. We continually cross-referenced the digital models against physical material studies—especially for the unique ocher brown anodized aluminum cladding.
 
 ### Construction & Fabrication
-![Ersta Facade Construction with Crane](/images/projects/ersta/04-construction-facade-crane.png)
-![Ersta Facade Golden Hour Detail](/images/projects/ersta/05-construction-facade-golden.png)
-![Ersta Street View Construction](/images/projects/ersta/06-construction-street-view.png)
+![Ersta Facade Construction with Crane](/images/projects/ersta/04-construction-facade-crane.jpg)
+![Ersta Facade Golden Hour Detail](/images/projects/ersta/05-construction-facade-golden.jpg)
+![Ersta Street View Construction](/images/projects/ersta/06-construction-street-view.jpg)
 
 Participating in facade fabrication coordination meetings allowed us to validate that the designed solutions could be manufactured and installed exactly as the Revit model dictated.
 
 ### The Result
-![Ersta BIM Render Exterior](/images/projects/ersta/09-bim-render-exterior.png)
+![Ersta BIM Render Exterior](/images/projects/ersta/09-bim-render-exterior.jpg)
 
 This project fundamentally taught me that true BIM Management is the connective tissue between design intent, raw data structures, and the physical reality on the construction site.

@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ProjectDetailPage from "../../../components/ProjectDetailPage.astro";
+import { buildArticleJsonLd } from "../../../lib/seo.mjs";
 
 export const prerender = true;
 
@@ -35,6 +36,17 @@ const relatedProjects = (await getCollection("projects", ({ id }) =>
             b.data.publishDate.getTime() - a.data.publishDate.getTime(),
     )
     .slice(0, 3);
+
+const jsonLd = buildArticleJsonLd({
+    type: "Article",
+    title: project.data.title,
+    description: project.data.description,
+    path: Astro.url.pathname,
+    image: project.data.coverImage,
+    publishedTime: project.data.publishDate.toISOString(),
+    lang: "ja",
+    keywords: Array.from(new Set([...project.data.tags, ...project.data.techStack])),
+});
 ---
 
 <BaseLayout
@@ -46,6 +58,7 @@ const relatedProjects = (await getCollection("projects", ({ id }) =>
     lang="ja"
     enableLightbox={true}
 >
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <ProjectDetailPage
         lang="ja"
         project={project}
