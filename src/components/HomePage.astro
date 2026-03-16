@@ -9,6 +9,12 @@ import FadeIn from "./ui/FadeIn.astro";
 import ScrollReveal from "./ui/ScrollReveal.astro";
 import SectionHeading from "./ui/SectionHeading.astro";
 import Tag from "./ui/Tag.astro";
+import FloatingShapes from "./animation/FloatingShapes";
+import CountUp from "./animation/CountUp";
+import TextReveal from "./animation/TextReveal";
+import MagneticButton from "./animation/MagneticButton";
+import Marquee from "./animation/Marquee";
+import ParallaxSection from "./animation/ParallaxSection";
 import { useTranslations, type Language } from "../i18n/utils";
 
 interface Props {
@@ -51,6 +57,11 @@ const copy = isJa
       latestEyebrow: "WRITING",
       ctaEyebrow: "LET'S TALK",
       ctaNote: "設計、BIM、自動化、空間データの実装について相談できます。",
+      statsYears: "年の経験",
+      statsProjects: "プロジェクト",
+      statsLanguages: "言語対応",
+      statsBased: "東京在住",
+      scrollHint: "スクロール",
     }
   : {
       heroEyebrow: "TOKYO / BIM / AGENTIC SYSTEMS",
@@ -81,6 +92,11 @@ const copy = isJa
       latestEyebrow: "WRITING",
       ctaEyebrow: "LET'S TALK",
       ctaNote: "Available for architecture, BIM, automation, and spatial-data collaborations.",
+      statsYears: "Years",
+      statsProjects: "Projects",
+      statsLanguages: "Languages",
+      statsBased: "Tokyo Based",
+      scrollHint: "Scroll",
     };
 
 const capabilityCards = [
@@ -102,9 +118,16 @@ const capabilityCards = [
 ];
 
 const projectTags = ["Revit", "Unity", "PLATEAU"];
+const marqueeItems = ["Revit", "Python", "TypeScript", "Unity", "CityGML", "IFC", "PLATEAU", "React", "Astro", "Framer Motion", "Tailwind", "C#"];
+const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color-gold)"];
 ---
 
-<section class="relative isolate pb-4 pt-2 md:pb-6 md:pt-4">
+<!-- ====== HERO SECTION ====== -->
+<section class="relative isolate min-h-[100svh] flex items-center">
+  <!-- Floating shapes background -->
+  <FloatingShapes client:idle />
+
+  <!-- Gradient background -->
   <div
     class="hero-gradient-bg pointer-events-none absolute left-1/2 -top-28 -z-10 h-[49rem] w-screen -translate-x-1/2 opacity-90"
     style="background:
@@ -116,139 +139,162 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
   ></div>
   <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent via-[color:color-mix(in_srgb,var(--color-bg-primary)_38%,transparent)] to-[var(--color-bg-primary)]"></div>
 
-  <div class="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,33rem)] lg:items-center lg:gap-8">
-    <div class="max-w-4xl">
-      <FadeIn delay={0}>
-        <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-          {copy.heroEyebrow}
-        </p>
-      </FadeIn>
-
-      <FadeIn delay={70}>
-        <h1
-          class:list={[
-            "mt-6 text-[clamp(3rem,7vw,5.5rem)] font-semibold leading-[0.84] tracking-[-0.08em] text-[var(--color-text-heading)]",
-            isJa && "text-[clamp(2.75rem,6.5vw,4.75rem)] tracking-[-0.05em]",
-          ]}
-          style={typeStyle}
-        >
-          <span class="hero-name-word inline-block">Daniel</span>
-          <span class="hero-name-word block">Malmqvist</span>
-        </h1>
-        <span class="hero-accent-line" aria-hidden="true"></span>
-      </FadeIn>
-
-      <FadeIn delay={130}>
-        <p
-          class="mt-8 max-w-2xl text-2xl font-medium leading-[1.15] text-[var(--color-text-heading)] md:text-[2rem]"
-          style={typeStyle}
-        >
-          {t("hero.tagline")}
-        </p>
-        <p
-          class="mt-4 max-w-2xl text-lg leading-8 text-[var(--color-text-secondary)] md:text-xl"
-          style={typeStyle}
-        >
-          {copy.heroSupport}
-        </p>
-      </FadeIn>
-
-      <FadeIn delay={190}>
-        <div class="mt-6 flex flex-wrap items-center gap-4">
-          <Button href={`/${lang}/contact`} variant="primary">
-            {t("hero.cta.primary")}
-          </Button>
-          <Button href={`/${lang}/projects`} variant="secondary">
-            {t("hero.cta.secondary")}
-          </Button>
-        </div>
-      </FadeIn>
-
-      <FadeIn delay={240}>
-        <dl class="mt-6 grid gap-3 sm:grid-cols-3">
-          {
-            copy.heroFacts.map((fact, i) => {
-              const icons = ["map", "target", "languages"] as const;
-              return (
-                <AnimatedFact
-                  label={fact.label}
-                  value={fact.value}
-                  icon={icons[i]}
-                  client:visible
-                />
-              );
-            })
-          }
-        </dl>
-      </FadeIn>
-    </div>
-
-    <FadeIn delay={150}>
-      <Card class="relative overflow-hidden p-5 md:p-6">
-        <div class="flex items-start justify-between gap-4">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-            {t("home.featured.title")}
+  <div class="w-full max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-12">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,28rem)] lg:items-center lg:gap-12">
+      <!-- Left: Content -->
+      <div class="max-w-4xl">
+        <FadeIn delay={0}>
+          <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+            {copy.heroEyebrow}
           </p>
-          <span class="mt-1 h-4 w-4 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)]"></span>
+        </FadeIn>
+
+        <div class="mt-6">
+          <h1
+            class:list={[
+              "text-[clamp(4rem,10vw,8rem)] font-semibold leading-[0.84] tracking-[-0.08em] text-[var(--color-text-heading)]",
+              isJa && "text-[clamp(3rem,8vw,6rem)] tracking-[-0.05em]",
+            ]}
+            style={typeStyle}
+          >
+            <span class="hero-name-word inline-block">Daniel</span>
+            <span class="hero-name-word block gradient-text">Malmqvist</span>
+          </h1>
+          <span class="hero-accent-line" aria-hidden="true"></span>
         </div>
 
-        <h2
-          class="mt-4 max-w-md text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[var(--color-text-heading)]"
-          style={typeStyle}
-        >
-          {t("home.featured.project.title")}
-        </h2>
+        <FadeIn delay={130}>
+          <p
+            class="mt-8 max-w-2xl text-2xl font-medium leading-[1.15] text-[var(--color-text-heading)] md:text-[2rem]"
+            style={typeStyle}
+          >
+            <TextReveal text={t("hero.tagline")} mode="word" staggerDelay={0.06} client:visible />
+          </p>
+          <p
+            class="mt-4 max-w-2xl text-lg leading-8 text-[var(--color-text-secondary)] md:text-xl"
+            style={typeStyle}
+          >
+            {copy.heroSupport}
+          </p>
+        </FadeIn>
 
-        <div class="group/img mt-4 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-          <div class="relative overflow-hidden">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
-                sizes="(min-width: 1024px) 33rem, 100vw"
-              />
-              <source
-                type="image/jpeg"
-                srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
-                sizes="(min-width: 1024px) 33rem, 100vw"
-              />
-              <img
-                src="/images/projects/shinjuku-nav-1-800.jpg"
-                alt="Shinjuku Indoor Navigation"
-                width="1400"
-                height="1050"
-                fetchpriority="high"
-                decoding="async"
-                class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover/img:scale-105"
-              />
-            </picture>
-            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        <FadeIn delay={190}>
+          <div class="mt-6 flex flex-wrap items-center gap-4">
+            <MagneticButton client:idle>
+              <Button href={`/${lang}/contact`} variant="primary">
+                {t("hero.cta.primary")}
+              </Button>
+            </MagneticButton>
+            <MagneticButton client:idle>
+              <Button href={`/${lang}/projects`} variant="secondary">
+                {t("hero.cta.secondary")}
+              </Button>
+            </MagneticButton>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={240}>
+          <dl class="mt-6 grid gap-3 sm:grid-cols-3">
+            {
+              copy.heroFacts.map((fact, i) => {
+                const icons = ["map", "target", "languages"] as const;
+                return (
+                  <AnimatedFact
+                    label={fact.label}
+                    value={fact.value}
+                    icon={icons[i]}
+                    client:visible
+                  />
+                );
+              })
+            }
+          </dl>
+        </FadeIn>
+      </div>
+
+      <!-- Right: Profile Photo with blob clip-path -->
+      <FadeIn delay={200}>
+        <div class="relative mx-auto max-w-sm lg:max-w-none">
+          <!-- Animated accent ring -->
+          <div class="accent-ring-rotate absolute -inset-3 rounded-full" style="background: conic-gradient(from 0deg, var(--color-pine), var(--color-iris), var(--color-foam), var(--color-love), var(--color-pine)); opacity: 0.15; filter: blur(20px);"></div>
+          <div class="relative blob-clip overflow-hidden">
+            <img
+              src="/images/profile-img.JPG"
+              alt="Daniel Malmqvist"
+              width="500"
+              height="667"
+              fetchpriority="high"
+              decoding="async"
+              class="aspect-[3/4] w-full object-cover"
+              transition:name="profile-photo"
+            />
           </div>
         </div>
+      </FadeIn>
+    </div>
+  </div>
 
-        <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
-          {t("home.featured.project.desc")}
-        </p>
-
-        <div class="mt-4 flex flex-wrap gap-2">
-          {projectTags.map((tag) => <Tag>{tag}</Tag>)}
-        </div>
-
-        <div class="mt-4 flex items-center gap-4">
-          <a
-            href={`/${lang}/projects/shinjuku-nav`}
-            class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)] transition-colors duration-300 hover:text-[var(--color-accent-hover)]"
-          >
-            {t("home.featured.readmore")}
-          </a>
-        </div>
-      </Card>
-    </FadeIn>
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+    <span class="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+      {copy.scrollHint}
+    </span>
+    <svg
+      class="h-5 w-5 text-[var(--color-text-secondary)]"
+      style="animation: scroll-bounce 2s ease-in-out infinite;"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7" />
+    </svg>
   </div>
 </section>
 
-<div class="section-divider"></div>
-<section class="py-[var(--space-section-lg)]">
+<!-- ====== STATS BAR ====== -->
+<section class="w-full bg-[var(--color-bg-secondary)] py-10 md:py-14">
+  <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
+    <div class="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
+      <div class="text-center">
+        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-pine)]">
+          <CountUp target={8} suffix="+" client:visible />
+        </p>
+        <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
+          {copy.statsYears}
+        </p>
+      </div>
+      <div class="text-center">
+        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-iris)]">
+          <CountUp target={4} client:visible />
+        </p>
+        <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
+          {copy.statsProjects}
+        </p>
+      </div>
+      <div class="text-center">
+        <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-love)]">
+          <CountUp target={3} client:visible />
+        </p>
+        <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
+          {copy.statsLanguages}
+        </p>
+      </div>
+      <div class="text-center">
+        <p class="text-[clamp(1.75rem,3vw,2.5rem)] font-bold leading-none tracking-[-0.04em] text-[var(--color-gold)]">
+          Tokyo
+        </p>
+        <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
+          {copy.statsBased}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CAPABILITIES ====== -->
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
   <FadeIn>
     <SectionHeading
       eyebrow={copy.capabilitiesEyebrow}
@@ -260,14 +306,17 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
 
   <div class="mt-8 grid gap-4 lg:grid-cols-3">
     {
-      capabilityCards.map((card, index) => (
+      capabilityCards.map((card, index) => {
+        const color = capabilityColors[index];
+        return (
         <ScrollReveal variant={index === 0 ? "slide-left" : index === 1 ? "fade-up" : "slide-right"} delay={index * 110}>
-          <Card class="flex h-full flex-col gap-6 p-5 md:p-6">
+          <div class="card-hover-lift relative flex h-full flex-col gap-6 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5 md:p-6 shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)]" style={`border-top: 3px solid ${color};`}>
+            <span class="watermark-number" style={`color: ${color}; opacity: 0.07;`}>{`0${index + 1}`}</span>
             <div class="flex items-center justify-between gap-4">
-              <span class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+              <span class="text-[0.72rem] font-semibold uppercase tracking-[0.28em]" style={`color: ${color};`}>
                 {`0${index + 1}`}
               </span>
-              <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+              <span class="rounded-full border px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em]" style={`border-color: ${color}; color: ${color}; background: color-mix(in srgb, ${color} 8%, transparent);`}>
                 {card.label}
               </span>
             </div>
@@ -277,52 +326,137 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
             <p class="text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
               {card.description}
             </p>
-          </Card>
+          </div>
         </ScrollReveal>
-      ))
+        );
+      })
     }
   </div>
 </section>
 
-<div class="section-divider"></div>
-<section class="py-[var(--space-section-lg)]">
-  <div class="grid gap-10 xl:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] xl:items-start">
-    <FadeIn>
-      <div class="space-y-8">
-        <SectionHeading
-          eyebrow={copy.toolsEyebrow}
-          title={copy.toolsTitle}
-          description={copy.toolsDesc}
-          style={typeStyle}
-        />
+<!-- ====== TECHNOLOGY MARQUEE ====== -->
+<section class="w-full py-10 md:py-14 overflow-hidden">
+  <div class="space-y-4">
+    <Marquee items={marqueeItems} className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-outline leading-none py-2" client:visible />
+    <Marquee items={[...marqueeItems].reverse()} reverse={true} className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-outline leading-none py-2" client:visible />
+  </div>
+</section>
 
-        <Card class="p-5 md:p-6">
-          <p class="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.toolsNoteTitle}
+<!-- ====== FEATURED PROJECT ====== -->
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
+  <div class="section-divider mb-10"></div>
+
+  <FadeIn>
+    <div class="grid gap-0 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-center">
+      <!-- Image with parallax -->
+      <ParallaxSection speed={0.15} className="rounded-xl overflow-hidden" client:visible>
+        <div class="group/img relative overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/images/projects/shinjuku-nav-1-800.webp 800w, /images/projects/shinjuku-nav-1-1400.webp 1400w"
+              sizes="(min-width: 1024px) 55vw, 100vw"
+            />
+            <source
+              type="image/jpeg"
+              srcset="/images/projects/shinjuku-nav-1-800.jpg 800w, /images/projects/shinjuku-nav-1-1400.jpg 1400w"
+              sizes="(min-width: 1024px) 55vw, 100vw"
+            />
+            <img
+              src="/images/projects/shinjuku-nav-1-800.jpg"
+              alt="Shinjuku Indoor Navigation"
+              width="1400"
+              height="1050"
+              fetchpriority="high"
+              decoding="async"
+              class="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover/img:scale-105"
+            />
+          </picture>
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60 transition-opacity duration-300 group-hover/img:opacity-80"></div>
+          <div class="pointer-events-none absolute inset-0 bg-[var(--color-accent)]/0 transition-all duration-500 group-hover/img:bg-[var(--color-accent)]/10"></div>
+        </div>
+      </ParallaxSection>
+
+      <!-- Content overlapping -->
+      <div class="relative lg:-ml-16 z-10">
+        <Card class="p-6 md:p-8">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+            {t("home.featured.title")}
           </p>
-          <ul class="mt-4 space-y-3">
-            {
-              copy.toolsNotes.map((note) => (
-                <li class="border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
-                  {note}
-                </li>
-              ))
-            }
-          </ul>
+          <h2
+            class="mt-4 max-w-md text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[0.94] tracking-[-0.06em] gradient-text"
+            style={typeStyle}
+          >
+            {t("home.featured.project.title")}
+          </h2>
+          <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
+            {t("home.featured.project.desc")}
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {projectTags.map((tag) => <Tag>{tag}</Tag>)}
+          </div>
+          <div class="mt-5">
+            <a
+              href={`/${lang}/projects/shinjuku-nav`}
+              class="group/arrow inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)] transition-colors duration-300 hover:text-[var(--color-accent-hover)]"
+            >
+              {t("home.featured.readmore")}
+              <svg class="h-4 w-4 transition-transform duration-300 group-hover/arrow:translate-x-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
         </Card>
       </div>
-    </FadeIn>
+    </div>
+  </FadeIn>
+</section>
 
-    <FadeIn delay={120}>
+<!-- ====== TOOLS & SKILLS ====== -->
+<div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
+  <div class="section-divider"></div>
+</div>
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
+  <FadeIn>
+    <SectionHeading
+      eyebrow={copy.toolsEyebrow}
+      title={copy.toolsTitle}
+      description={copy.toolsDesc}
+      style={typeStyle}
+    />
+  </FadeIn>
+
+  <div class="mt-8">
+    <FadeIn delay={80}>
       <SkillsGrid lang={lang} />
+    </FadeIn>
+  </div>
+
+  <div class="mt-8">
+    <FadeIn delay={160}>
+      <Card class="p-5 md:p-6">
+        <p class="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+          {copy.toolsNoteTitle}
+        </p>
+        <ul class="mt-4 space-y-3">
+          {
+            copy.toolsNotes.map((note) => (
+              <li class="border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+                {note}
+              </li>
+            ))
+          }
+        </ul>
+      </Card>
     </FadeIn>
   </div>
 </section>
 
+<!-- ====== BLOG PREVIEW ====== -->
 {
   latestPosts.length > 0 && (
-    <div class="section-divider"></div>
-    <section class="py-[var(--space-section-lg)]">
+    <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
+      <div class="section-divider"></div>
+    </div>
+    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
       <FadeIn>
         <SectionHeading
           eyebrow={copy.latestEyebrow}
@@ -335,7 +469,7 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
       <div class="mt-8 space-y-3">
         {latestPosts.map((post, index) => (
           <FadeIn delay={index * 110}>
-            <BlogPostCard post={post} lang={lang} />
+            <BlogPostCard post={post} lang={lang} accentColor={["var(--color-pine)", "var(--color-iris)", "var(--color-love)", "var(--color-gold)", "var(--color-foam)"][index % 5]} />
           </FadeIn>
         ))}
       </div>
@@ -343,32 +477,32 @@ const projectTags = ["Revit", "Unity", "PLATEAU"];
   )
 }
 
-<section class="py-[var(--space-section-lg)]">
-  <ScrollReveal variant="scale-up">
-    <Card class="relative overflow-hidden px-5 py-7 md:px-8 md:py-9" style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 6%, var(--color-bg-elevated)), var(--color-bg-elevated));">
-      <div class="absolute right-0 top-0 h-36 w-36 rounded-full bg-[var(--color-accent)]/10 blur-3xl"></div>
-      <div class="absolute left-12 bottom-8 h-28 w-28 rounded-full bg-[var(--color-ring)]/8 blur-3xl"></div>
-      <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-        <div class="relative">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-            {copy.ctaEyebrow}
-          </p>
-          <h2 class="mt-3 max-w-3xl text-[clamp(1.75rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-accent)]" style={typeStyle}>
-            {t("home.cta.title")}
-          </h2>
-          <p class="mt-3 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
-            {copy.ctaNote}
-          </p>
-        </div>
+<!-- ====== CONTACT CTA ====== -->
+<section class="relative w-full cta-gradient-bg py-[var(--space-section-lg)] overflow-hidden">
+  <FloatingShapes client:idle />
+  <div class="relative z-10 max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+      <div>
+        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+          {copy.ctaEyebrow}
+        </p>
+        <h2 class="mt-3 max-w-3xl text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-accent)]" style={typeStyle}>
+          <TextReveal text={t("home.cta.title")} mode="word" staggerDelay={0.08} client:visible />
+        </h2>
+        <p class="mt-4 max-w-2xl text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
+          {copy.ctaNote}
+        </p>
+      </div>
 
-        <div class="relative flex flex-col items-start gap-5">
+      <div class="flex flex-col items-start gap-5">
+        <MagneticButton client:idle>
           <Button href={`/${lang}/contact`} variant="primary" class="group/cta px-7 py-3.5 text-base">
             {t("home.cta.button")}
             <svg class="animated-arrow h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </Button>
-          <SocialLinks variant="buttons" />
-        </div>
+        </MagneticButton>
+        <SocialLinks variant="buttons" />
       </div>
-    </Card>
-  </ScrollReveal>
+    </div>
+  </div>
 </section>

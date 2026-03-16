@@ -11,11 +11,13 @@ const links = [
     id: "github",
     label: "GitHub",
     href: "https://github.com/dmalmq",
+    hoverColor: "var(--color-foam)",
   },
   {
     id: "linkedin",
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/daniel-malmqvist-profile/",
+    hoverColor: "var(--color-iris)",
   },
 ];
 
@@ -26,8 +28,8 @@ const wrapperClass =
 
 const linkClass =
   variant === "buttons"
-    ? "inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text-primary)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]"
-    : "inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]";
+    ? "social-link inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text-primary)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)]"
+    : "social-link inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)]";
 ---
 
 <div class={wrapperClass}>
@@ -38,6 +40,7 @@ const linkClass =
         target="_blank"
         rel="noopener noreferrer"
         class={linkClass}
+        style={`--social-hover: ${link.hoverColor};`}
         aria-label={link.label}
       >
         {link.id === "github" ? (

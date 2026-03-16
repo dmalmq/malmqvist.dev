@@ -3,6 +3,7 @@ import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import ScrollProgress from "../components/animation/ScrollProgress.astro";
 import ImageLightbox from "../components/ImageLightbox";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { type Language } from "../i18n/utils";
@@ -129,12 +130,13 @@ const fullImageUrl = new URL(image, Astro.site ?? "https://malmqvist.dev");
     <ViewTransitions />
   </head>
   <body
-    class="antialiased min-h-screen flex flex-col transition-colors duration-200"
+    class="antialiased min-h-screen flex flex-col transition-colors duration-200 overflow-x-hidden"
   >
+    <ScrollProgress />
     <Header currentLang={lang} currentPath={currentPath} transition:animate="none" />
 
     <main
-      class="flex-grow w-full max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-6 md:pt-10"
+      class="flex-grow w-full"
       transition:animate="fade"
     >
       <slot />

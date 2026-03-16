@@ -1,6 +1,7 @@
 ---
 import LanguageToggle from "./LanguageToggle";
 import ThemeToggle from "./ThemeToggle";
+import MagneticButton from "./animation/MagneticButton";
 import Button from "./ui/Button.astro";
 import SocialLinks from "./SocialLinks.astro";
 import { useTranslations, type Language } from "../i18n/utils";
@@ -24,7 +25,7 @@ const navItems = [
 
 <header
   id="site-header"
-  class="sticky top-0 z-50 w-full border-b border-transparent bg-[color:color-mix(in_srgb,var(--color-bg-primary)_82%,transparent)] backdrop-blur-xl transition-all duration-200"
+  class="sticky top-0 z-50 w-full border-b border-transparent bg-[color:color-mix(in_srgb,var(--color-bg-primary)_82%,transparent)] backdrop-blur-2xl transition-all duration-300"
 >
   <div class="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-10">
     <div class="flex h-20 items-center justify-between gap-6">
@@ -42,7 +43,7 @@ const navItems = [
         </a>
       </div>
 
-      <nav class="hidden md:flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-2">
+      <nav class="hidden md:flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-2 py-1.5">
         {
           navItems.map((item) => {
             const isActive =
@@ -53,9 +54,9 @@ const navItems = [
               <a
                 href={item.href}
                 class:list={[
-                  "rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300",
+                  "nav-link-underline relative rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300",
                   isActive
-                    ? "bg-[var(--color-bg-secondary)] text-[var(--color-accent)] shadow-[0_14px_32px_-28px_rgba(87,82,121,0.5)] border-b-2 border-[var(--color-accent)]"
+                    ? "bg-[var(--color-bg-secondary)] text-[var(--color-accent)] shadow-[0_14px_32px_-28px_rgba(87,82,121,0.5)]"
                     : "text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]",
                 ]}
               >
@@ -67,9 +68,11 @@ const navItems = [
       </nav>
 
       <div class="hidden md:flex items-center gap-3">
-        <Button href={`/${currentLang}/contact`} variant="secondary" class="px-4 py-2 text-sm">
-          {t("nav.contact")}
-        </Button>
+        <MagneticButton strength={0.2} client:idle>
+          <Button href={`/${currentLang}/contact`} variant="secondary" class="px-4 py-2 text-sm">
+            {t("nav.contact")}
+          </Button>
+        </MagneticButton>
         <SocialLinks />
         <LanguageToggle currentLang={currentLang} client:idle />
         <ThemeToggle client:idle />
@@ -105,6 +108,7 @@ const navItems = [
   </div>
 </header>
 
+<!-- Mobile: full-screen overlay menu -->
 <div
   id="mobile-menu-overlay"
   class="fixed inset-0 z-40 hidden bg-[#191724]/45 backdrop-blur-sm md:hidden"
@@ -113,83 +117,82 @@ const navItems = [
 
 <div
   id="mobile-menu"
-  class="fixed inset-y-0 right-0 z-50 w-screen max-w-[23rem] translate-x-full overflow-hidden border-l border-[var(--color-border)] shadow-[-24px_0_72px_-38px_rgba(25,23,36,0.95)] transition-transform duration-300 md:hidden sm:w-[min(92vw,23rem)]"
+  class="fixed inset-0 z-50 flex flex-col translate-y-full invisible overflow-auto bg-[var(--color-bg-primary)] transition-[transform,visibility] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden"
   role="dialog"
   aria-modal="true"
   aria-labelledby="mobile-menu-title"
   aria-hidden="true"
   tabindex="-1"
 >
-  <div class="absolute inset-0 bg-[var(--color-bg-primary)]"></div>
-  <div class="relative z-10 flex h-full flex-col px-5 py-6">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-          {navigationLabel}
-        </p>
-        <p id="mobile-menu-title" class="mt-2 text-lg font-semibold text-[var(--color-text-heading)]">
-          Daniel Malmqvist
-        </p>
-      </div>
-      <button
-        type="button"
-        class="ui-icon-button"
-        data-close-mobile-nav
-        data-mobile-menu-close-button
-      >
-        <span class="sr-only">Close menu</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
-      </button>
+  <div class="flex items-start justify-between gap-4 px-5 py-6">
+    <div>
+      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+        {navigationLabel}
+      </p>
+      <p id="mobile-menu-title" class="mt-2 text-lg font-semibold text-[var(--color-text-heading)]">
+        Daniel Malmqvist
+      </p>
     </div>
+    <button
+      type="button"
+      class="ui-icon-button"
+      data-close-mobile-nav
+      data-mobile-menu-close-button
+    >
+      <span class="sr-only">Close menu</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    </button>
+  </div>
 
-    <nav class="mt-8 flex flex-1 flex-col gap-2">
-      {
-        navItems.map((item) => {
-          const isActive =
-            currentPath === item.href || currentPath.startsWith(`${item.href}/`);
+  <nav class="flex flex-1 flex-col justify-center gap-3 px-5">
+    {
+      navItems.map((item, i) => {
+        const isActive =
+          currentPath === item.href || currentPath.startsWith(`${item.href}/`);
 
-          return (
-            <a
-              href={item.href}
-              class:list={[
-                "rounded-[1.2rem] border px-4 py-3 text-base font-semibold transition-all duration-300",
-                isActive
-                  ? "border-[var(--color-border-hover)] bg-[var(--color-bg-secondary)] text-[var(--color-text-heading)]"
-                  : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]",
-              ]}
-              data-close-mobile-nav
-              data-mobile-menu-link
-            >
-              {item.label}
-            </a>
-          );
-        })
-      }
-    </nav>
+        return (
+          <a
+            href={item.href}
+            class:list={[
+              "mobile-nav-item rounded-[1.2rem] border px-5 py-4 text-xl font-semibold transition-all duration-300",
+              `opacity-0 translate-y-8`,
+              isActive
+                ? "border-[var(--color-border-hover)] bg-[var(--color-bg-secondary)] text-[var(--color-text-heading)]"
+                : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]",
+            ]}
+            style={`transition-delay: ${i * 80}ms;`}
+            data-close-mobile-nav
+            data-mobile-menu-link
+          >
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
 
-    <div class="mt-6 space-y-4 border-t border-[var(--color-border)] pt-6">
-      <Button href={`/${currentLang}/contact`} variant="primary" class="w-full justify-center">
-        {t("nav.contact")}
-      </Button>
-      <div class="flex items-center justify-between gap-3">
-        <SocialLinks />
-        <div class="flex items-center gap-2">
-          <LanguageToggle currentLang={currentLang} client:idle />
-          <ThemeToggle client:idle />
-        </div>
+  <div class="space-y-4 border-t border-[var(--color-border)] px-5 py-6">
+    <Button href={`/${currentLang}/contact`} variant="primary" class="w-full justify-center text-lg py-4">
+      {t("nav.contact")}
+    </Button>
+    <div class="flex items-center justify-between gap-3">
+      <SocialLinks />
+      <div class="flex items-center gap-2">
+        <LanguageToggle currentLang={currentLang} client:idle />
+        <ThemeToggle client:idle />
       </div>
     </div>
   </div>
@@ -203,15 +206,22 @@ const navItems = [
     const closeTargets = document.querySelectorAll("[data-close-mobile-nav]");
     const closeButton = menu?.querySelector("[data-mobile-menu-close-button]");
     const firstMenuLink = menu?.querySelector("[data-mobile-menu-link]");
+    const mobileNavItems = menu?.querySelectorAll(".mobile-nav-item");
     const desktopMq = window.matchMedia("(min-width: 768px)");
 
     if (btn && menu && overlay) {
       const openMenu = () => {
         btn.setAttribute("aria-expanded", "true");
-        menu.classList.remove("translate-x-full");
+        menu.classList.remove("translate-y-full", "invisible");
         menu.setAttribute("aria-hidden", "false");
         overlay.classList.remove("hidden");
         document.body.classList.add("overflow-hidden");
+
+        // Stagger nav items in from bottom
+        mobileNavItems?.forEach((item) => {
+          item.classList.remove("opacity-0", "translate-y-8");
+        });
+
         window.requestAnimationFrame(() => {
           (closeButton || firstMenuLink || menu).focus();
         });
@@ -219,10 +229,16 @@ const navItems = [
 
       const closeMenu = ({ restoreFocus = true } = {}) => {
         btn.setAttribute("aria-expanded", "false");
-        menu.classList.add("translate-x-full");
+        menu.classList.add("translate-y-full", "invisible");
         menu.setAttribute("aria-hidden", "true");
         overlay.classList.add("hidden");
         document.body.classList.remove("overflow-hidden");
+
+        // Reset nav items
+        mobileNavItems?.forEach((item) => {
+          item.classList.add("opacity-0", "translate-y-8");
+        });
+
         if (restoreFocus) {
           btn.focus();
         }
@@ -263,7 +279,7 @@ const navItems = [
       }
     }
 
-    // Header scroll shadow
+    // Header scroll state with gradient border
     const header = document.getElementById("site-header");
     if (header) {
       const onScroll = () => {

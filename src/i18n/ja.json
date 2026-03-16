@@ -30,5 +30,13 @@
     "about.resume.title": "履歴書",
     "about.resume.desc": "英語版または日本語版のPDFをダウンロードできます。",
     "about.resume.en": "英語版 PDF",
-    "about.resume.ja": "日本語版 PDF"
+    "about.resume.ja": "日本語版 PDF",
+    "home.stats.years": "年の経験",
+    "home.stats.projects": "プロジェクト",
+    "home.stats.languages": "言語対応",
+    "home.stats.based": "東京在住",
+    "home.marquee.label": "技術スタック",
+    "home.hero.scroll": "スクロール",
+    "footer.built": "Astro + React + 情熱で構築",
+    "footer.backToTop": "トップへ戻る"
 }

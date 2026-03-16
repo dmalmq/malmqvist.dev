@@ -1,7 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import MagneticButton from './animation/MagneticButton';
 
 export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+    const [focused, setFocused] = useState<Record<string, boolean>>({});
+    const [filled, setFilled] = useState<Record<string, boolean>>({});
+
     const labelClass = "ui-field-label";
     const fieldClass = "ui-control";
     const buttonClass = "inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
@@ -41,6 +46,14 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
 
     const t = texts[lang];
 
+    const handleFocus = (field: string) => setFocused(p => ({ ...p, [field]: true }));
+    const handleBlur = (field: string, value: string) => {
+        setFocused(p => ({ ...p, [field]: false }));
+        setFilled(p => ({ ...p, [field]: value.length > 0 }));
+    };
+
+    const isFloating = (field: string) => focused[field] || filled[field];
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setStatus('submitting');
@@ -48,9 +61,8 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData);
 
-        // Honeypot check
         if (data.bot_field) {
-            setStatus('success'); // Silently ignore spam
+            setStatus('success');
             return;
         }
 
@@ -73,10 +85,33 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
 
     if (status === 'success') {
         return (
-            <div className="rounded-[1.5rem] border border-[var(--color-success)] bg-[var(--color-bg-secondary)] p-8 text-center shadow-[0_24px_64px_-46px_rgba(86,148,159,0.4)]" aria-live="polite">
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="relative rounded-[1.5rem] border border-[var(--color-success)] bg-[var(--color-bg-secondary)] p-8 text-center shadow-[0_24px_64px_-46px_rgba(86,148,159,0.4)] overflow-hidden"
+                aria-live="polite"
+            >
+                {/* Success burst dots */}
+                {[...Array(8)].map((_, i) => {
+                    const angle = (i / 8) * Math.PI * 2;
+                    const x = Math.cos(angle) * 60;
+                    const y = Math.sin(angle) * 60;
+                    return (
+                        <motion.div
+                            key={i}
+                            className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full"
+                            style={{
+                                background: `var(--color-${['pine', 'iris', 'foam', 'love', 'gold', 'pine', 'iris', 'foam'][i]})`,
+                            }}
+                            initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+                            animate={{ x, y, scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.8, delay: i * 0.05, ease: "easeOut" }}
+                        />
+                    );
+                })}
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 lucide lucide-check-circle-2"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
                 <p className="text-lg font-medium text-[var(--color-text-heading)]">{t.success}</p>
-            </div>
+            </motion.div>
         );
     }
 
@@ -85,31 +120,40 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
             <input type="text" name="bot_field" className="hidden" aria-hidden="true" tabIndex={-1} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label htmlFor="name" className={labelClass}>{t.name}</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        readOnly={status === 'submitting'}
-                        className={fieldClass}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <label htmlFor="email" className={labelClass}>{t.email}</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        readOnly={status === 'submitting'}
-                        className={fieldClass}
-                    />
-                </div>
+                {(['name', 'email'] as const).map((field, i) => (
+                    <motion.div
+                        key={field}
+                        className="relative space-y-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1, duration: 0.4 }}
+                    >
+                        <label
+                            htmlFor={field}
+                            className={`${labelClass} transition-colors duration-200 ${isFloating(field) ? 'text-[var(--color-accent)]' : ''}`}
+                        >
+                            {field === 'name' ? t.name : t.email}
+                        </label>
+                        <input
+                            type={field === 'email' ? 'email' : 'text'}
+                            id={field}
+                            name={field}
+                            required
+                            readOnly={status === 'submitting'}
+                            className={fieldClass}
+                            onFocus={() => handleFocus(field)}
+                            onBlur={(e) => handleBlur(field, e.target.value)}
+                        />
+                    </motion.div>
+                ))}
             </div>
 
-            <div className="space-y-2">
+            <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+            >
                 <label htmlFor="subject" className={labelClass}>{t.subject}</label>
                 <div className="relative">
                     <select
@@ -139,10 +183,20 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                         <path d="m6 9 6 6 6-6" />
                     </svg>
                 </div>
-            </div>
+            </motion.div>
 
-            <div className="space-y-2">
-                <label htmlFor="message" className={labelClass}>{t.message}</label>
+            <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+            >
+                <label
+                    htmlFor="message"
+                    className={`${labelClass} transition-colors duration-200 ${isFloating('message') ? 'text-[var(--color-accent)]' : ''}`}
+                >
+                    {t.message}
+                </label>
                 <textarea
                     id="message"
                     name="message"
@@ -150,30 +204,47 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                     rows={6}
                     readOnly={status === 'submitting'}
                     className={`${fieldClass} min-h-[11rem] resize-y`}
+                    onFocus={() => handleFocus('message')}
+                    onBlur={(e) => handleBlur('message', e.target.value)}
                 ></textarea>
-            </div>
+            </motion.div>
 
-            {status === 'error' && (
-                <div className="rounded-[1rem] border border-[var(--color-error)] bg-[var(--color-error)]/10 p-4 text-sm font-medium text-[var(--color-error)] shadow-[0_18px_52px_-42px_rgba(180,99,122,0.45)]">
-                    {t.error}
-                </div>
-            )}
+            <AnimatePresence>
+                {status === 'error' && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="rounded-[1rem] border border-[var(--color-error)] bg-[var(--color-error)]/10 p-4 text-sm font-medium text-[var(--color-error)] shadow-[0_18px_52px_-42px_rgba(180,99,122,0.45)]"
+                    >
+                        {t.error}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className={buttonClass}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
             >
-                {status === 'submitting' ? (
-                    <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        {t.sending}
-                    </>
-                ) : t.send}
-            </button>
+                <MagneticButton className="w-full">
+                    <button
+                        type="submit"
+                        disabled={status === 'submitting'}
+                        className={buttonClass}
+                    >
+                        {status === 'submitting' ? (
+                            <>
+                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                {t.sending}
+                            </>
+                        ) : t.send}
+                    </button>
+                </MagneticButton>
+            </motion.div>
         </form>
     );
 }

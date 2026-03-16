@@ -1,25 +1,27 @@
 ---
-import { getCollection } from "astro:content";
-import { type Language } from "../../i18n/utils";
+import { type Language } from "../i18n/utils";
 
 interface Props {
   project: any;
   lang: Language;
+  accentColor?: string;
 }
 
-const { project, lang } = Astro.props;
+const { project, lang, accentColor = "var(--color-pine)" } = Astro.props;
 
-// project.id includes 'en/shinjuku-nav' or 'ja/shinjuku-nav'
-// We extract the base slug to generate the link.
 const slugParts = project.id.split("/");
 const slugRoute = slugParts[slugParts.length - 1].replace(/\.mdx?$/, "");
 const url = `/${lang}/projects/${slugRoute}`;
+const viewText = lang === "ja" ? "詳細を見る" : "View Project";
 ---
 
 <a
   href={url}
-  class="group block overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)]"
+  class="group block overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)] card-hover-lift"
 >
+  <!-- Colored accent stripe at top -->
+  <div class="h-[3px] w-full" style={`background: ${accentColor};`}></div>
+
   {
     project.data.coverImage ? (
       <div class="relative w-full aspect-[4/3] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]">
@@ -28,9 +30,15 @@ const url = `/${lang}/projects/${slugRoute}`;
           alt={project.data.title}
           loading="lazy"
           decoding="async"
-          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-60"></div>
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-70"></div>
+        {/* "View Project" text reveal on hover */}
+        <div class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <span class="rounded-full bg-[var(--color-bg-primary)]/90 px-5 py-2.5 text-sm font-semibold text-[var(--color-accent)] shadow-lg backdrop-blur-sm">
+            {viewText}
+          </span>
+        </div>
       </div>
     ) : (
       <div class="flex aspect-[4/3] w-full items-center justify-center border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]">
@@ -42,7 +50,7 @@ const url = `/${lang}/projects/${slugRoute}`;
   }
 
   <div class="p-4 md:p-5">
-    <div class="flex flex-wrap gap-2 mb-4">
+    <div class="flex flex-wrap gap-2 mb-4 transition-transform duration-300 group-hover:-translate-y-0.5">
       {
         project.data.tags
           .slice(0, 3)

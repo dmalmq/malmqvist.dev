@@ -2,10 +2,12 @@
 import Button from "./ui/Button.astro";
 import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
-import PageLead from "./ui/PageLead.astro";
+
+import ScrollReveal from "./ui/ScrollReveal.astro";
 import SectionHeading from "./ui/SectionHeading.astro";
 import SkillsGrid from "./SkillsGrid.astro";
 import Timeline from "./Timeline.astro";
+import MagneticButton from "./animation/MagneticButton";
 import { useTranslations, type Language } from "../i18n/utils";
 
 interface Props {
@@ -54,30 +56,23 @@ const copy = isJa
     };
 ---
 
-<section class="pb-6 pt-8 md:pt-12">
-  <FadeIn>
-    <PageLead
-      eyebrow={copy.eyebrow}
-      title={copy.title}
-      description={copy.description}
-      style={typeStyle}
-    />
-  </FadeIn>
-</section>
-
-<div class="section-divider"></div>
-<section class="py-[var(--space-section-lg)]">
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-[var(--space-section-lg)]">
   <div class="grid gap-8 xl:grid-cols-[minmax(18rem,22rem)_minmax(0,1fr)] xl:items-start">
     <FadeIn>
       <Card class="overflow-hidden p-0">
         <div class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6">
-          <div class="group/photo relative overflow-hidden rounded-[1.4rem] ring-2 ring-[var(--color-accent)]/20 ring-offset-4 ring-offset-[var(--color-bg-secondary)]">
-            <img
-              src="/images/profile-img.JPG"
-              alt="Daniel Malmqvist"
-              class="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover/photo:scale-[1.02]"
-            />
-            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent"></div>
+          <!-- Profile photo with blob clip-path and colored accent ring -->
+          <div class="relative">
+            <div class="accent-ring-rotate absolute -inset-2 rounded-full" style="background: conic-gradient(from 0deg, var(--color-pine), var(--color-iris), var(--color-foam), var(--color-love), var(--color-pine)); opacity: 0.12; filter: blur(16px);"></div>
+            <div class="relative blob-clip overflow-hidden ring-2 ring-[var(--color-accent)]/20 ring-offset-4 ring-offset-[var(--color-bg-secondary)]">
+              <img
+                src="/images/profile-img.JPG"
+                alt="Daniel Malmqvist"
+                class="aspect-[3/4] w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+                transition:name="profile-photo"
+              />
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent"></div>
+            </div>
           </div>
         </div>
         <div class="p-6 md:p-7">
@@ -105,19 +100,27 @@ const copy = isJa
     </FadeIn>
 
     <div class="space-y-6">
-      <FadeIn delay={70}>
+      <ScrollReveal variant="slide-right" delay={70}>
         <Card class="p-5 md:p-6">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.narrativeTitle}
           </p>
           <div class="mt-5 space-y-5 text-base leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-lg" style={typeStyle}>
-            {copy.paragraphs.map((paragraph) => <p set:html={paragraph} />)}
+            {copy.paragraphs.map((paragraph, i) => (
+              <ScrollReveal variant={i % 2 === 0 ? "slide-left" : "slide-right"} delay={i * 80}>
+                <p set:html={paragraph} />
+              </ScrollReveal>
+            ))}
           </div>
-          <p class="mt-6 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-heading)] md:text-base" style={typeStyle}>
-            {copy.quote}
-          </p>
+          <!-- Decorative quote block -->
+          <div class="relative mt-6 border-l-2 border-[var(--color-iris)] pl-5">
+            <span class="absolute -left-3 -top-2 text-5xl font-bold leading-none text-[var(--color-iris)] opacity-20" aria-hidden="true">&ldquo;</span>
+            <p class="text-sm leading-7 text-[var(--color-text-heading)] md:text-base italic" style={typeStyle}>
+              {copy.quote}
+            </p>
+          </div>
         </Card>
-      </FadeIn>
+      </ScrollReveal>
 
       <FadeIn delay={120}>
         <Card class="p-5 md:p-6">
@@ -131,12 +134,16 @@ const copy = isJa
               </p>
             </div>
             <div class="flex flex-wrap gap-3">
-              <Button href="/cv/resume-en.pdf" variant={isJa ? "secondary" : "primary"}>
-                {t("about.resume.en")}
-              </Button>
-              <Button href="/cv/resume-jp.pdf" variant={isJa ? "primary" : "secondary"}>
-                {t("about.resume.ja")}
-              </Button>
+              <MagneticButton client:idle>
+                <Button href="/cv/resume-en.pdf" variant={isJa ? "secondary" : "primary"}>
+                  {t("about.resume.en")}
+                </Button>
+              </MagneticButton>
+              <MagneticButton client:idle>
+                <Button href="/cv/resume-jp.pdf" variant={isJa ? "primary" : "secondary"}>
+                  {t("about.resume.ja")}
+                </Button>
+              </MagneticButton>
             </div>
           </div>
         </Card>
@@ -149,8 +156,10 @@ const copy = isJa
   </div>
 </section>
 
-<div class="section-divider"></div>
-<section class="py-[var(--space-section-md)]">
+<div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
+  <div class="section-divider"></div>
+</div>
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-md)]">
   <FadeIn>
     <SectionHeading
       eyebrow={copy.experienceEyebrow}

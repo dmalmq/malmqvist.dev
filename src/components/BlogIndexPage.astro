@@ -1,8 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BlogPostCard from "./BlogPostCard.astro";
-import FadeIn from "./ui/FadeIn.astro";
-import PageLead from "./ui/PageLead.astro";
+import ScrollReveal from "./ui/ScrollReveal.astro";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -13,6 +12,8 @@ interface Props {
 const { lang, allPosts } = Astro.props;
 const isJa = lang === "ja";
 const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
+
+const blogColors = ["var(--color-pine)", "var(--color-iris)", "var(--color-love)", "var(--color-gold)", "var(--color-foam)"];
 
 const copy = isJa
   ? {
@@ -29,21 +30,12 @@ const copy = isJa
     };
 ---
 
-<section class="pb-6 pt-8 md:pt-12">
-  <FadeIn>
-    <PageLead
-      eyebrow={copy.eyebrow}
-      title={copy.title}
-      description={copy.description}
-      style={typeStyle}
-    />
-  </FadeIn>
-
-  <div class="mt-8 space-y-3">
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-6">
+  <div class="space-y-3">
     {allPosts.map((post, index) => (
-      <FadeIn delay={index * 110}>
-        <BlogPostCard post={post} lang={lang} />
-      </FadeIn>
+      <ScrollReveal variant="fade-up" delay={index * 90}>
+        <BlogPostCard post={post} lang={lang} accentColor={blogColors[index % blogColors.length]} />
+      </ScrollReveal>
     ))}
   </div>
 </section>

@@ -4,7 +4,10 @@ description: "Automating the geospatial conversion process for Apple's Indoor Ma
 publishDate: "2025-08-15"
 lang: "en"
 tags: ["Python", "Geospatial", "IMDF"]
-coverImage: ""
+coverImage: "/images/projects/imdf-converter/review-map.png"
+galleryImages:
+  - "/images/projects/imdf-converter/review-map.png"
+  - "/images/projects/imdf-converter/wizard-classification.png"
 featured: false
 problem: "Converting spatial data to Apple's Indoor Mapping Data Format was a heavy manual task and highly error-prone."
 solution: "Built a Python-enabled pipeline mapping layered Shapefile polygons and attribute data directly into validated IMDF GeoJSON standards."

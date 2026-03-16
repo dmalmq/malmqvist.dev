@@ -1,12 +1,13 @@
 ---
-import { type Language } from "../../i18n/utils";
+import { type Language } from "../i18n/utils";
 
 interface Props {
     post: any;
     lang: Language;
+    accentColor?: string;
 }
 
-const { post, lang } = Astro.props;
+const { post, lang, accentColor = "var(--color-accent)" } = Astro.props;
 
 const slugParts = post.id.split("/");
 const slugRoute = slugParts[slugParts.length - 1].replace(/\.mdx?$/, "");
@@ -25,8 +26,11 @@ const formattedDate = new Intl.DateTimeFormat(
 
 <a
     href={url}
-    class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-5 py-5 shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)] md:px-6"
+    class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-5 py-5 shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)] hover:translate-x-1 md:px-6 relative overflow-hidden"
 >
+    <!-- Accent left border that slides in from bottom on hover -->
+    <div class="absolute left-0 top-0 bottom-0 w-[3px] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={`background: ${accentColor};`}></div>
+
     <div
         class="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
     >

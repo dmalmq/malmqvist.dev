@@ -1,6 +1,7 @@
 ---
 import { useTranslations, type Language } from "../i18n/utils";
 import SocialLinks from "./SocialLinks.astro";
+import MagneticButton from "./animation/MagneticButton";
 
 interface Props {
   currentLang: Language;
@@ -11,6 +12,8 @@ const t = useTranslations(currentLang);
 const copy = currentLang === "ja"
   ? "建築のディテールから空間システムまでを横断する、建築エンジニア・BIMマネージャー・Agentic Programmer。"
   : "Architectural engineer, BIM manager, and agentic programmer working between architectural detail and spatial systems.";
+const backToTopText = currentLang === "ja" ? "トップへ戻る" : "Back to top";
+const builtText = currentLang === "ja" ? "Astro + React + 情熱で構築" : "Built with Astro, React & passion";
 
 const navItems = [
   { href: `/${currentLang}/projects`, label: t("nav.projects") },
@@ -21,8 +24,8 @@ const navItems = [
 ---
 
 <footer
-  class="mt-12 border-t border-transparent bg-[var(--color-bg-secondary)]/80 py-8 transition-colors duration-200"
-  style="border-image: linear-gradient(to right, transparent, var(--color-accent), transparent) 1;"
+  class="relative mt-12 border-t border-transparent py-10 transition-colors duration-200 overflow-hidden"
+  style="border-image: linear-gradient(to right, transparent, var(--color-accent), transparent) 1; background: linear-gradient(180deg, var(--color-bg-secondary), color-mix(in srgb, var(--color-bg-secondary) 60%, var(--color-bg-primary)));"
 >
   <div class="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-10">
     <div class="grid gap-8 md:grid-cols-[1fr_auto_auto]">
@@ -36,13 +39,16 @@ const navItems = [
         <p class="mt-3 max-w-xl text-sm leading-7 text-[var(--color-text-secondary)]">
           {copy}
         </p>
+        <p class="mt-4 text-xs text-[var(--color-text-secondary)] opacity-60">
+          {builtText}
+        </p>
       </div>
 
       <nav class="flex flex-col gap-2">
         {navItems.map((item) => (
           <a
             href={item.href}
-            class="text-sm font-medium text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-accent)]"
+            class="nav-link-underline text-sm font-medium text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-accent)] w-fit"
           >
             {item.label}
           </a>
@@ -51,14 +57,19 @@ const navItems = [
 
       <div class="flex flex-col items-start gap-4 md:items-end">
         <SocialLinks />
-        <button
-          id="back-to-top"
-          type="button"
-          class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-accent)]"
-        >
-          <svg class="h-3.5 w-3.5 rotate-180" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-          {currentLang === "ja" ? "トップへ戻る" : "Back to top"}
-        </button>
+
+        <!-- Back to top floating circle with MagneticButton -->
+        <MagneticButton strength={0.25} client:idle>
+          <button
+            id="back-to-top"
+            type="button"
+            class="inline-flex items-center justify-center h-12 w-12 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] shadow-[0_16px_40px_-28px_rgba(87,82,121,0.4)] transition-all duration-300 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)] hover:-translate-y-1"
+            aria-label={backToTopText}
+          >
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+          </button>
+        </MagneticButton>
+
         <p class="text-sm text-[var(--color-text-secondary)]">
           &copy; {new Date().getFullYear()} Daniel Malmqvist
         </p>
@@ -68,10 +79,14 @@ const navItems = [
 </footer>
 
 <script>
-  const btn = document.getElementById("back-to-top");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+  function initFooter() {
+    const btn = document.getElementById("back-to-top");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
   }
+  initFooter();
+  document.addEventListener("astro:after-swap", initFooter);
 </script>

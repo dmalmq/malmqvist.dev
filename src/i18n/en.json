@@ -30,5 +30,13 @@
     "about.resume.title": "Resume",
     "about.resume.desc": "Download a concise PDF version in English or Japanese.",
     "about.resume.en": "English PDF",
-    "about.resume.ja": "Japanese PDF"
+    "about.resume.ja": "Japanese PDF",
+    "home.stats.years": "Years",
+    "home.stats.projects": "Projects",
+    "home.stats.languages": "Languages",
+    "home.stats.based": "Tokyo Based",
+    "home.marquee.label": "Tech Stack",
+    "home.hero.scroll": "Scroll",
+    "footer.built": "Built with Astro, React & passion",
+    "footer.backToTop": "Back to top"
 }

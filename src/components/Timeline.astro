@@ -7,6 +7,9 @@ interface Props {
   lang: Language;
 }
 const { lang } = Astro.props;
+const typeStyle = lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : "";
+
+const timelineColors = ["var(--color-foam)", "var(--color-iris)", "var(--color-gold)"];
 
 const timelineData = [
   {
@@ -46,52 +49,171 @@ const timelineData = [
 ];
 ---
 
-<div class="relative pl-8">
-  <div class="absolute left-0 top-0 bottom-0 w-px bg-[var(--color-accent)]/30"></div>
-  <div class="space-y-4">
-    {
-      timelineData.map((item, i) => (
-        <ScrollReveal variant="slide-right" delay={i * 120}>
-          <div class="relative">
-            <div class="absolute -left-8 top-7 h-2.5 w-2.5 -translate-x-[calc(50%-0.5px)] rounded-full border-2 border-[var(--color-accent)] bg-[var(--color-bg-primary)]"></div>
-            <Card class="p-4 md:p-5">
-              <div class="grid gap-6 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-8">
-                <div>
-                  <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                    {item.year}
-                  </p>
-                  <p
-                    class="mt-4 text-sm font-semibold leading-7 text-[var(--color-accent)]"
-                    style={
-                      lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
-                    }
-                  >
-                    {item.company}
-                  </p>
+<div id="timeline-root" class="relative">
+  <!-- Desktop: alternating sides -->
+  <div class="hidden md:block">
+    <!-- Center line that draws itself -->
+    <div class="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-[var(--color-accent)]/10">
+      <div id="timeline-draw" class="timeline-draw-line absolute inset-0 w-full bg-[var(--color-accent)]/40"></div>
+    </div>
+
+    <div class="space-y-8">
+      {
+        timelineData.map((item, i) => {
+          const isLeft = i % 2 === 0;
+          const dotColor = timelineColors[i % timelineColors.length];
+          return (
+            <ScrollReveal variant={isLeft ? "slide-left" : "slide-right"} delay={i * 120}>
+              <div class="relative grid grid-cols-[1fr_auto_1fr] gap-8 items-start">
+                {/* Left column */}
+                <div class={isLeft ? "" : "order-3"}>
+                  {isLeft && (
+                    <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
+                      <div>
+                        <h3
+                          class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
+                          style={typeStyle}
+                        >
+                          {item.role}
+                        </h3>
+                        <p
+                          class="mt-2 text-sm font-semibold leading-7"
+                          style={`color: ${dotColor}; ${typeStyle || ''}`}
+                        >
+                          {item.company}
+                        </p>
+                        <p
+                          class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
+                          style={typeStyle}
+                        >
+                          {item.desc}
+                        </p>
+                      </div>
+                    </Card>
+                  )}
                 </div>
-                <div>
-                  <h3
-                    class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                    style={
-                      lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
-                    }
-                  >
-                    {item.role}
-                  </h3>
-                  <p
-                    class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                    style={
-                      lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""
-                    }
-                  >
-                    {item.desc}
-                  </p>
+
+                {/* Center: dot + year */}
+                <div class="flex flex-col items-center gap-3 pt-4">
+                  <div class="relative h-3.5 w-3.5 rounded-full border-2 bg-[var(--color-bg-primary)]" style={`border-color: ${dotColor}; animation: pulse-glow 2s ease-in-out infinite;`}></div>
+                  <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)] whitespace-nowrap" style={`box-shadow: 0 0 12px -4px ${dotColor};`}>
+                    {item.year}
+                  </span>
+                </div>
+
+                {/* Right column */}
+                <div class={isLeft ? "order-3" : ""}>
+                  {!isLeft && (
+                    <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
+                      <div>
+                        <h3
+                          class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
+                          style={typeStyle}
+                        >
+                          {item.role}
+                        </h3>
+                        <p
+                          class="mt-2 text-sm font-semibold leading-7"
+                          style={`color: ${dotColor}; ${typeStyle || ''}`}
+                        >
+                          {item.company}
+                        </p>
+                        <p
+                          class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
+                          style={typeStyle}
+                        >
+                          {item.desc}
+                        </p>
+                      </div>
+                    </Card>
+                  )}
                 </div>
               </div>
-            </Card>
-          </div>
-        </ScrollReveal>
-      ))
-    }
+            </ScrollReveal>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <!-- Mobile: single column with left line -->
+  <div class="md:hidden relative pl-8">
+    <div class="absolute left-0 top-0 bottom-0 w-px bg-[var(--color-accent)]/30"></div>
+    <div class="space-y-4">
+      {
+        timelineData.map((item, i) => {
+          const dotColor = timelineColors[i % timelineColors.length];
+          return (
+          <ScrollReveal variant="slide-right" delay={i * 120}>
+            <div class="relative">
+              <div class="absolute -left-8 top-7 h-2.5 w-2.5 -translate-x-[calc(50%-0.5px)] rounded-full border-2 bg-[var(--color-bg-primary)]" style={`border-color: ${dotColor}; animation: pulse-glow 2s ease-in-out infinite;`}></div>
+              <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
+                <div class="grid gap-4">
+                  <div>
+                    <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                      {item.year}
+                    </p>
+                    <p
+                      class="mt-4 text-sm font-semibold leading-7"
+                      style={`color: ${dotColor}; ${typeStyle || ''}`}
+                    >
+                      {item.company}
+                    </p>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
+                      style={typeStyle}
+                    >
+                      {item.role}
+                    </h3>
+                    <p
+                      class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
+                      style={typeStyle}
+                    >
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </ScrollReveal>
+          );
+        })
+      }
+    </div>
   </div>
 </div>
+
+<script>
+  function initTimelineDraw() {
+    const drawLine = document.getElementById("timeline-draw");
+    if (!drawLine) return;
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      drawLine.style.transform = "scaleY(1)";
+      return;
+    }
+
+    const root = document.getElementById("timeline-root");
+    if (!root) return;
+
+    const update = () => {
+      const rect = root.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      const totalH = rect.height;
+      if (totalH <= 0) return;
+
+      const scrolled = Math.max(0, windowH - rect.top);
+      const progress = Math.min(1, scrolled / totalH);
+      drawLine.style.transform = `scaleY(${progress})`;
+    };
+
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+
+  initTimelineDraw();
+  document.addEventListener("astro:after-swap", initTimelineDraw);
+</script>

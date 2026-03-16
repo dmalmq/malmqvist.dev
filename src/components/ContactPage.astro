@@ -1,9 +1,11 @@
 ---
 import Card from "./ui/Card.astro";
 import FadeIn from "./ui/FadeIn.astro";
-import PageLead from "./ui/PageLead.astro";
+import ScrollReveal from "./ui/ScrollReveal.astro";
+
 import SocialLinks from "./SocialLinks.astro";
 import ContactForm from "./ContactForm";
+import FloatingShapes from "./animation/FloatingShapes";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -63,42 +65,36 @@ const copy = isJa
     };
 ---
 
-<section class="pb-6 pt-8 md:pt-12">
-  <FadeIn>
-    <PageLead
-      eyebrow={copy.eyebrow}
-      title={copy.title}
-      description={copy.description}
-      style={typeStyle}
-    >
-      <Card slot="aside" class="p-6 md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.statsTitle}
-        </p>
-        <dl class="mt-5 space-y-4">
-          {
-            copy.stats.map((item) => (
-              <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {item.label}
-                </dt>
-                <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-      </Card>
-    </PageLead>
-  </FadeIn>
-</section>
-
-<div class="section-divider"></div>
-<section class="py-[var(--space-section-lg)]">
+<section class="relative max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-[var(--space-section-lg)]">
+  <FloatingShapes client:idle />
   <div class="grid gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
     <div class="space-y-6">
-      <FadeIn>
+      <ScrollReveal variant="slide-left">
+        <Card class="p-5 md:p-6">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+            {copy.statsTitle}
+          </p>
+          <dl class="mt-5 space-y-4">
+            {
+              (() => {
+                const statColors = ["var(--color-foam)", "var(--color-gold)", "var(--color-iris)"];
+                return copy.stats.map((item, i) => (
+                  <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
+                    <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em]" style={`color: ${statColors[i]};`}>
+                      {item.label}
+                    </dt>
+                    <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
+                      {item.value}
+                    </dd>
+                  </div>
+                ));
+              })()
+            }
+          </dl>
+        </Card>
+      </ScrollReveal>
+
+      <ScrollReveal variant="slide-left" delay={80}>
         <Card class="p-5 md:p-6">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.directTitle}
@@ -116,30 +112,33 @@ const copy = isJa
             Tokyo, Japan / Stockholm, Sweden
           </p>
         </Card>
-      </FadeIn>
+      </ScrollReveal>
 
-      <FadeIn delay={100}>
+      <ScrollReveal variant="slide-left" delay={100}>
         <Card class="p-5 md:p-6">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.focusTitle}
           </p>
           <ul class="mt-5 space-y-4">
             {
-              copy.focusItems.map((item) => (
-                <li class="border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
-                  {item}
-                </li>
-              ))
+              (() => {
+                const focusColors = ["var(--color-pine)", "var(--color-love)", "var(--color-gold)"];
+                return copy.focusItems.map((item, i) => (
+                  <li class="border-l-2 pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={`border-color: ${focusColors[i]}; ${typeStyle || ''}`}>
+                    {item}
+                  </li>
+                ));
+              })()
             }
           </ul>
           <div class="mt-6">
             <SocialLinks variant="buttons" />
           </div>
         </Card>
-      </FadeIn>
+      </ScrollReveal>
     </div>
 
-    <FadeIn delay={140}>
+    <ScrollReveal variant="slide-right" delay={140}>
       <Card class="p-5 md:p-7">
         <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
           {copy.formTitle}
@@ -151,6 +150,6 @@ const copy = isJa
           <ContactForm lang={lang} client:load />
         </div>
       </Card>
-    </FadeIn>
+    </ScrollReveal>
   </div>
 </section>
