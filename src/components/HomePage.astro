@@ -120,13 +120,19 @@ const capabilityCards = [
 const projectTags = ["Revit", "Unity", "PLATEAU"];
 const marqueeItems = ["Revit", "Python", "TypeScript", "Unity", "CityGML", "IFC", "PLATEAU", "React", "Astro", "Framer Motion", "Tailwind", "C#"];
 const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color-gold)"];
+
+const ctaShapes = [
+  { type: "circle", size: 120, x: "8%", y: "15%", color: "var(--color-iris)", delay: 0, duration: 18 },
+  { type: "hexagon", size: 80, x: "78%", y: "10%", color: "var(--color-pine)", delay: 2, duration: 22 },
+  { type: "ring", size: 100, x: "85%", y: "65%", color: "var(--color-foam)", delay: 4, duration: 20 },
+  { type: "circle", size: 60, x: "15%", y: "72%", color: "var(--color-love)", delay: 1, duration: 16 },
+  { type: "hexagon", size: 90, x: "50%", y: "80%", color: "var(--color-gold)", delay: 3, duration: 24 },
+  { type: "ring", size: 70, x: "35%", y: "20%", color: "var(--color-iris)", delay: 5, duration: 19 },
+];
 ---
 
 <!-- ====== HERO SECTION ====== -->
 <section class="relative isolate min-h-[100svh] flex items-center">
-  <!-- Floating shapes background -->
-  <FloatingShapes client:idle />
-
   <!-- Gradient background -->
   <div
     class="hero-gradient-bg pointer-events-none absolute left-1/2 -top-28 -z-10 h-[49rem] w-screen -translate-x-1/2 opacity-90"
@@ -180,16 +186,12 @@ const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color
 
         <FadeIn delay={190}>
           <div class="mt-6 flex flex-wrap items-center gap-4">
-            <MagneticButton client:idle>
-              <Button href={`/${lang}/contact`} variant="primary">
-                {t("hero.cta.primary")}
-              </Button>
-            </MagneticButton>
-            <MagneticButton client:idle>
-              <Button href={`/${lang}/projects`} variant="secondary">
-                {t("hero.cta.secondary")}
-              </Button>
-            </MagneticButton>
+            <Button href={`/${lang}/contact`} variant="primary">
+              {t("hero.cta.primary")}
+            </Button>
+            <Button href={`/${lang}/projects`} variant="secondary">
+              {t("hero.cta.secondary")}
+            </Button>
           </div>
         </FadeIn>
 
@@ -259,7 +261,7 @@ const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color
     <div class="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
       <div class="text-center">
         <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-pine)]">
-          <CountUp target={8} suffix="+" client:visible />
+          <CountUp target={8} suffix="+" client:idle />
         </p>
         <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
           {copy.statsYears}
@@ -267,7 +269,7 @@ const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color
       </div>
       <div class="text-center">
         <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-iris)]">
-          <CountUp target={4} client:visible />
+          <CountUp target={4} client:idle />
         </p>
         <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
           {copy.statsProjects}
@@ -275,7 +277,7 @@ const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color
       </div>
       <div class="text-center">
         <p class="text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none tracking-[-0.06em] text-[var(--color-love)]">
-          <CountUp target={3} client:visible />
+          <CountUp target={3} client:idle />
         </p>
         <p class="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]" style={typeStyle}>
           {copy.statsLanguages}
@@ -479,7 +481,7 @@ const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color
 
 <!-- ====== CONTACT CTA ====== -->
 <section class="relative w-full cta-gradient-bg py-[var(--space-section-lg)] overflow-hidden">
-  <FloatingShapes client:idle />
+  <FloatingShapes shapes={ctaShapes} client:visible />
   <div class="relative z-10 max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
       <div>
