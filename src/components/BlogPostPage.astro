@@ -26,8 +26,7 @@ const copy = isJa
   ? {
       eyebrow: "PRACTICE NOTE",
       back: "記事一覧に戻る",
-      lead:
-        "実務の中で詰まった技術課題や、そのときに取った判断を整理したノートです。抽象論よりも、現場でどう効いたかを重視しています。",
+      lead: "この記事を読み、関連投稿を見つけ、次のアクションへ進めます。",
       metaTitle: "記事メタ",
       metaItems: [
         { label: "公開日", value: formattedDate },
@@ -42,25 +41,20 @@ const copy = isJa
       bodyEyebrow: "ARTICLE",
       bodyTitle: "本文",
       bodyDescription:
-        "実務に近い判断、データの扱い方、ワークフロー上のボトルネックに焦点を当てています。",
+        "まず本文で、実装判断の背景と手順を整理して確認します。",
       topicsTitle: "主なトピック",
-      topicsNote:
-        "書き方の基準は、あとから自分や他人が実装に使えるかどうかです。",
       nextTitle: "次に見るもの",
-      nextDescription:
-        "関連する記事、プロジェクト、または直接の相談につながる導線を置いています。",
       primaryCta: "プロジェクトを見る",
       secondaryCta: "問い合わせる",
       relatedEyebrow: "MORE WRITING",
       relatedTitle: "関連記事",
       relatedDescription:
-        "同じ問題意識を別の角度から扱っている記事です。",
+        "次に、近い課題を扱う関連記事を見つけます。",
     }
   : {
       eyebrow: "PRACTICE NOTE",
       back: "Back to writing",
-      lead:
-        "A note from practice: what the technical issue was, what decision was made, and why it mattered inside real project work.",
+      lead: "Read this article, discover related posts, then move to your next action.",
       metaTitle: "Article profile",
       metaItems: [
         { label: "Published", value: formattedDate },
@@ -75,19 +69,15 @@ const copy = isJa
       bodyEyebrow: "ARTICLE",
       bodyTitle: "The full note",
       bodyDescription:
-        "The emphasis is on workflow friction, data handling, and the kinds of decisions that determine whether a system is actually usable.",
+        "Start with the article to review the implementation decisions and execution details.",
       topicsTitle: "Primary topics",
-      topicsNote:
-        "The bar for publishing is simple: it should be usable later by me or by someone else trying to implement something similar.",
       nextTitle: "Continue from here",
-      nextDescription:
-        "Use these links to move into related writing, project case studies, or a direct conversation.",
       primaryCta: "See projects",
       secondaryCta: "Get in touch",
       relatedEyebrow: "MORE WRITING",
       relatedTitle: "Related posts",
       relatedDescription:
-        "Adjacent notes that approach similar technical concerns from a different angle.",
+        "Then discover related posts that explore similar technical problems.",
     };
 ---
 
@@ -132,11 +122,6 @@ const copy = isJa
         </p>
       </FadeIn>
 
-      <FadeIn delay={140}>
-        <div class="mt-8 flex flex-wrap gap-2">
-          {post.data.tags.map((tag) => <Tag>{tag}</Tag>)}
-        </div>
-      </FadeIn>
     </div>
 
     <FadeIn delay={130}>
@@ -220,9 +205,6 @@ const copy = isJa
           <div class="mt-5 flex flex-wrap gap-2">
             {post.data.tags.map((tag) => <Tag>{tag}</Tag>)}
           </div>
-          <p class="mt-5 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
-            {copy.topicsNote}
-          </p>
         </div>
       </FadeIn>
 
@@ -230,9 +212,6 @@ const copy = isJa
         <div class="rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 shadow-[0_18px_48px_-42px_rgba(87,82,121,0.34)] dark:shadow-[0_18px_48px_-42px_rgba(25,23,36,0.95)] md:p-7">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
             {copy.nextTitle}
-          </p>
-          <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
-            {copy.nextDescription}
           </p>
           <div class="mt-6 flex flex-wrap gap-3">
             <Button href={`/${lang}/projects`} variant="primary">
