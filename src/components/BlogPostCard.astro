@@ -1,5 +1,6 @@
 ---
 import { type Language } from "../i18n/utils";
+import ResponsivePicture from "./ResponsivePicture.astro";
 
 interface Props {
     post: any;
@@ -22,72 +23,97 @@ const formattedDate = new Intl.DateTimeFormat(
     lang === "en" ? "en-US" : "ja-JP",
     dateOptions,
 ).format(post.data.publishDate);
+
+const hasCover = !!post.data.coverImage;
 ---
 
 <a
     href={url}
-    class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-5 py-5 shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)] hover:translate-x-1 md:px-6 relative overflow-hidden"
+    class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_16px_48px_-36px_rgba(87,82,121,0.42)] transition-all duration-300 hover:border-[var(--color-border-hover)] hover:translate-x-1 relative overflow-hidden"
 >
     <!-- Accent left border that slides in from bottom on hover -->
     <div class="absolute left-0 top-0 bottom-0 w-[3px] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={`background: ${accentColor};`}></div>
 
-    <div
-        class="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
-    >
-        <div class="flex flex-wrap items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-            <time
-                datetime={post.data.publishDate.toISOString()}
-                class="shrink-0 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 font-sans"
+    <div class={hasCover ? "flex flex-col md:flex-row" : ""}>
+        <!-- Cover image / placeholder -->
+        {hasCover ? (
+            <div class="relative w-full md:w-40 md:shrink-0 aspect-[16/9] md:aspect-auto md:h-auto overflow-hidden">
+                <ResponsivePicture
+                    src={post.data.coverImage}
+                    alt={post.data.title}
+                    sizes="(min-width: 768px) 160px, 100vw"
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+            </div>
+        ) : (
+            <div class="hidden md:block w-40 shrink-0 overflow-hidden" style={`background: linear-gradient(135deg, color-mix(in srgb, ${accentColor} 12%, var(--color-bg-secondary)), var(--color-bg-secondary));`}>
+                <div class="flex h-full items-center justify-center">
+                    <svg class="h-8 w-8 opacity-20" style={`color: ${accentColor};`} xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                </div>
+            </div>
+        )}
+
+        <div class="flex-1 px-5 py-5 md:px-6">
+            <div
+                class="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
             >
-                {formattedDate}
-            </time>
-            {
-                post.data.tags
-                    .slice(0, 2)
-                    .map((tag: string) => (
-                        <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[var(--color-accent)]">
-                            {tag}
-                        </span>
-                    ))
-            }
-        </div>
-        {
-            post.data.readingTime && (
-                <span class="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-clock"
+                <div class="flex flex-wrap items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                    <time
+                        datetime={post.data.publishDate.toISOString()}
+                        class="shrink-0 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 font-sans"
                     >
-                        <>
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </>
-                    </svg>
-                    {post.data.readingTime}
-                </span>
-            )
-        }
+                        {formattedDate}
+                    </time>
+                    {
+                        post.data.tags
+                            .slice(0, 2)
+                            .map((tag: string) => (
+                                <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[var(--color-accent)]">
+                                    {tag}
+                                </span>
+                            ))
+                    }
+                </div>
+                {
+                    post.data.readingTime && (
+                        <span class="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-clock"
+                            >
+                                <>
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </>
+                            </svg>
+                            {post.data.readingTime}
+                        </span>
+                    )
+                }
+            </div>
+
+            <h3
+                class="mb-2 text-[clamp(1.35rem,2.5vw,1.75rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
+                style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
+            >
+                {post.data.title}
+            </h3>
+
+            <p
+                class="max-w-3xl text-base leading-8 text-[var(--color-text-secondary)]"
+                style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
+            >
+                {post.data.description}
+            </p>
+        </div>
     </div>
-
-    <h3
-        class="mb-2 text-[clamp(1.35rem,2.5vw,1.75rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
-        style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
-    >
-        {post.data.title}
-    </h3>
-
-    <p
-        class="max-w-3xl text-base leading-8 text-[var(--color-text-secondary)]"
-        style={lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : ""}
-    >
-        {post.data.description}
-    </p>
 </a>

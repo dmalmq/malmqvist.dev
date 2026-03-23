@@ -68,7 +68,7 @@ const shouldShowFallback = allPosts.length < 4;
 
   {
     shouldShowFallback && (
-      <div class="mt-10 border-t border-[var(--color-border)] pt-7">
+      <div class="mt-10 border-t border-transparent pt-7" style="border-image: linear-gradient(to right, transparent, var(--color-accent), transparent) 1;">
         <div class="max-w-2xl">
           <h2 class="text-lg font-semibold text-[var(--color-text-heading)] md:text-xl" style={typeStyle}>
             {copy.fallbackTitle}
@@ -79,14 +79,14 @@ const shouldShowFallback = allPosts.length < 4;
           <div class="mt-5 flex flex-wrap gap-3">
             <a
               href={`/${lang}/projects`}
-              class="inline-flex items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              class="ui-pill-button"
               style={typeStyle}
             >
               {copy.fallbackProjects}
             </a>
             <a
               href={`/${lang}/contact`}
-              class="inline-flex items-center rounded-full border border-[var(--color-border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              class="ui-pill-button"
               style={typeStyle}
             >
               {copy.fallbackContact}
