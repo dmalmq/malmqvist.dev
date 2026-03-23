@@ -293,18 +293,21 @@ const copy = isJa
     <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 section-divider"></div>
     <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
       <div class="grid gap-5 lg:grid-cols-3">
-        {overviewCards.map((item, index) => (
-          <FadeIn delay={index * 90}>
-            <div class="rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_22px_62px_-46px_rgba(87,82,121,0.36)] dark:shadow-[0_22px_62px_-46px_rgba(25,23,36,0.95)] md:p-7">
-              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-                {item.label}
-              </p>
-              <p class="mt-4 text-sm leading-7 text-[var(--color-text-heading)] md:text-base" style={typeStyle}>
-                {item.value}
-              </p>
-            </div>
-          </FadeIn>
-        ))}
+        {(() => {
+          const overviewColors = ["var(--color-pine)", "var(--color-iris)", "var(--color-gold)"];
+          return overviewCards.map((item, index) => (
+            <FadeIn delay={index * 90}>
+              <div class="rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_22px_62px_-46px_rgba(87,82,121,0.36)] dark:shadow-[0_22px_62px_-46px_rgba(25,23,36,0.95)] md:p-7" style={`border-left: 3px solid ${overviewColors[index % overviewColors.length]};`}>
+                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+                  {item.label}
+                </p>
+                <p class="mt-4 text-sm leading-7 text-[var(--color-text-heading)] md:text-base" style={typeStyle}>
+                  {item.value}
+                </p>
+              </div>
+            </FadeIn>
+          ));
+        })()}
       </div>
     </section>
   )

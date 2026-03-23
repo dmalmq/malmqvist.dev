@@ -76,6 +76,9 @@ const copy = isJa
         {copy.title}
       </h1>
       <p class="mt-6 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle} set:html={copy.description} />
+      <div class="mt-6">
+        <SocialLinks variant="buttons" />
+      </div>
     </div>
   </FadeIn>
 
@@ -143,9 +146,6 @@ const copy = isJa
               })()
             }
           </ul>
-          <div class="mt-6">
-            <SocialLinks variant="buttons" />
-          </div>
         </Card>
       </ScrollReveal>
     </div>

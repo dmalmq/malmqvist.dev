@@ -9,7 +9,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
 
     const labelClass = "ui-field-label";
     const fieldClass = "ui-control";
-    const buttonClass = "inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
+    const buttonClass = "inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:shadow-[0_8px_30px_-8px_var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
 
     const texts = {
         en: {

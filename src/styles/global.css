@@ -259,10 +259,11 @@ body {
 
   .ui-control:focus-visible {
     outline: none;
-    border-color: var(--color-border-hover);
+    border-color: var(--color-accent);
     box-shadow:
-      0 0 0 4px color-mix(in srgb, var(--color-ring) 20%, transparent),
+      0 0 0 6px color-mix(in srgb, var(--color-ring) 20%, transparent),
       0 22px 46px -40px rgba(87, 82, 121, 0.38);
+    transform: translateY(-1px);
   }
 
   .ui-control:disabled,
@@ -351,7 +352,7 @@ body {
   .editorial-prose {
     color: var(--color-text-primary);
     font-size: 1.05rem;
-    line-height: 1.95;
+    line-height: 2.0;
   }
 
   .editorial-prose > :first-child {
@@ -373,8 +374,15 @@ body {
     margin-bottom: 1rem;
   }
 
+  .editorial-prose h2,
+  .editorial-prose h3 {
+    padding-left: 1rem;
+    border-left: 3px solid var(--color-accent);
+  }
+
   .editorial-prose h2 {
     font-size: clamp(2rem, 4vw, 3rem);
+    margin-top: 2.5rem;
   }
 
   .editorial-prose h3 {
