@@ -6,13 +6,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const latestPosts = (await getCollection("blog", ({ id }) => id.startsWith("ja/")))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
   .slice(0, 2);
+
+const toolSlugs = ["ja/revit-geopackage", "ja/imdf-converter"];
+const featuredTools = (await getCollection("projects", ({ id }) => toolSlugs.includes(id)))
+  .sort((a, b) => toolSlugs.indexOf(a.id) - toolSlugs.indexOf(b.id));
 ---
 
 <BaseLayout
-  title="Daniel Malmqvist | 建築エンジニア / BIMマネージャー / Agentic Programmer"
-  description="東京を拠点に、デジタルツイン、自動化、空間データ実装に取り組む建築エンジニア / BIMマネージャーのポートフォリオ。"
+  title="Daniel Malmqvist | 建築エンジニア / BIMツール開発"
+  description="東京を拠点に、Revitプラグイン、地理空間データのコンバータ、BIMデータパイプラインを開発する建築エンジニアのポートフォリオ。"
   image="/images/projects/shinjuku-nav-1-optimized.jpg"
   lang="ja"
 >
-  <HomePage lang="ja" latestPosts={latestPosts} />
+  <HomePage lang="ja" latestPosts={latestPosts} featuredTools={featuredTools} />
 </BaseLayout>
