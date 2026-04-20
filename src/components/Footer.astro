@@ -10,8 +10,8 @@ interface Props {
 const { currentLang } = Astro.props;
 const t = useTranslations(currentLang);
 const copy = currentLang === "ja"
-  ? "建築のディテールから空間システムまでを横断する、建築エンジニア・BIMマネージャー・Agentic Programmer。"
-  : "Architectural engineer, BIM manager, and agentic programmer working between architectural detail and spatial systems.";
+  ? "建築エンジニアとして、BIMの実務と、空間データを動かすコードのあいだで仕事をしています。"
+  : "Architectural engineer working between BIM practice and the code that moves spatial data between tools.";
 const backToTopText = currentLang === "ja" ? "トップへ戻る" : "Back to top";
 const builtText = currentLang === "ja" ? "Astro + React + 情熱で構築" : "Built with Astro, React & passion";
 

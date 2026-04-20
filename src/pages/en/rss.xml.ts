@@ -8,7 +8,7 @@ export async function GET(context: any) {
 
     return rss({
         title: 'Daniel Malmqvist | Blog',
-        description: 'Thoughts on architecture, agentic automation, and building better data pipelines for the AEC industry.',
+        description: 'Notes on BIM practice, geospatial data pipelines, and digital twin work for the AEC industry.',
         site: context.site || 'https://malmqvist.dev',
         items: posts.map((post) => ({
             title: post.data.title,

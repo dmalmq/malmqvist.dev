@@ -1,21 +1,23 @@
 ---
 title: "Shinjuku Indoor Navigation"
-description: "Creating detailed Revit models of Tokyo's underground stations to integrate with the PLATEAU digital twin."
+description: "Revit models of the buildings around Shinjuku Station, delivered as FBX for an indoor navigation app and as CityGML / 3D Tiles for Japan's PLATEAU 3D city model."
 publishDate: "2026-03-01"
 lang: "en"
-tags: ["Revit", "Unity", "Digital Twin", "PLATEAU"]
+tags: ["Revit", "PLATEAU", "Digital Twin", "CityGML"]
 coverImage: "/images/projects/shinjuku-nav-1-optimized.jpg"
 featured: true
 problem: "Tokyo's complex underground station networks are nearly impossible to navigate with traditional 2D maps. PLATEAU provides city-scale 3D data but stops at building exteriors."
-solution: "Create detailed Revit models of station interiors and convert to FBX for Unity-based indoor navigation. Integrate with PLATEAU's CityGML digital twin for seamless indoor-outdoor continuity."
-techStack: ["Revit", "FBX", "Unity", "CityGML", "Blender", "Bonsai"]
-impact: "Seamless indoor-outdoor transitions mapped at absolute city-scale accuracy, bridging the gap between urban modeling and micro-indoor navigation."
+solution: "Model the buildings surrounding Shinjuku Station — Lumine 1, Lumine EST, NEWoMan, Busta, and Yodobashi East and West — plus the station's connection points in Revit. Export FBX for the third-party Unity studio building the navigation app, and CityGML / 3D Tiles for public release through PLATEAU."
+techStack: ["Revit", "FBX", "CityGML", "3D Tiles", "Blender", "Bonsai"]
+impact: "Indoor geometry tied accurately to city-scale coordinates, bridging the gap between PLATEAU's exterior 3D map and the indoor navigation experience."
 ---
 
-My role within this flagship project focused precisely on the **BIM modeling and data pipeline** required to feed the application, rather than the end-user Unity development. By capturing the sprawling labyrinth of Shinjuku Station as native Revit components, we preserved architectural intent and semantic object data.
+My role on this project was the **BIM modeling and data pipeline** — not the end-user app. We captured the buildings around Shinjuku Station as native Revit components so that architectural intent and semantic object data survived the trip into downstream platforms.
+
+The Revit output went two places: FBX for the Unity-based navigation app (built by a third-party studio), and CityGML / 3D Tiles for public release under MLIT's **PLATEAU** national 3D city model.
 
 ### Bridging the Extents
 
-The core challenge was aligning strict indoor millimeter precision with macro-scale geo-coordinates inherent to Japan's MLIT **PLATEAU** data set. We developed custom Blender + Bonsai extraction workflows that connected our detailed indoor models directly to the city's exterior 3D map, establishing an unbroken link between deep underground platforms and adjacent street networks. 
+The hard part was reconciling strict indoor millimetre precision with the macro-scale geo-coordinates that PLATEAU expects. We built custom Blender + Bonsai extraction workflows that connected our detailed indoor models directly to the city's exterior 3D map, so deep underground platforms and the surrounding street network sit in the same coordinate system.
 
 ![Street Level View](/images/projects/shinjuku-nav-2-optimized.jpg)

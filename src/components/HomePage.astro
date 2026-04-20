@@ -1,6 +1,7 @@
 ---
 import AnimatedFact from "./AnimatedFact";
 import BlogPostCard from "./BlogPostCard.astro";
+import ProjectCard from "./ProjectCard.astro";
 import SkillsGrid from "./SkillsGrid.astro";
 import SocialLinks from "./SocialLinks.astro";
 import Button from "./ui/Button.astro";
@@ -21,16 +22,17 @@ import { useTranslations, type Language } from "../i18n/utils";
 interface Props {
   lang: Language;
   latestPosts: any[];
+  featuredTools?: any[];
 }
 
-const { lang, latestPosts } = Astro.props;
+const { lang, latestPosts, featuredTools = [] } = Astro.props;
 const t = useTranslations(lang);
 const isJa = lang === "ja";
 const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
 
 const copy = isJa
   ? {
-      heroEyebrow: "TOKYO / BIM / AGENTIC SYSTEMS",
+      heroEyebrow: "TOKYO / BIM / SPATIAL DATA",
       heroSupport:
         "建築実務、空間データ、そして自動化をつなぎ、複雑なプロジェクトを動くデジタルシステムへ変換します。",
       heroFacts: [
@@ -39,21 +41,21 @@ const copy = isJa
         { label: "対応言語", value: "EN / SV / 日本語" },
       ],
       projectMetaLeft: "TOKYO / CASE STUDY",
-      projectMetaRight: "REVIT / UNITY / PLATEAU",
+      projectMetaRight: "REVIT / PLATEAU / CITYGML",
       projectStatus: "進行中の実践領域",
       capabilitiesEyebrow: "CORE PRACTICE",
       capabilitiesDesc:
-        "受賞歴のある建築実務から、AIを活用した自動化、都市スケールのデジタルツインまで。扱う領域は違っても、重視しているのは精度と運用可能性です。",
-      capabilityLabels: ["実務", "自動化", "統合"],
+        "実際に取り組んでいるのは、BIMの実務、ツール間で空間データを動かすコード、そしてその両者をつなぐデジタルツインの仕事です。",
+      capabilityLabels: ["実務", "ツール", "デジタルツイン"],
       toolsEyebrow: "WORKING SYSTEM",
-      toolsTitle: "使う技術と扱うデータのレイヤー",
+      toolsTitle: "扱う技術と空間データのレイヤー",
       toolsDesc:
-        "プロジェクトごとに道具は変わりますが、共通しているのは複雑な空間情報を読み替え、つなぎ、扱える形へ整えることです。",
+        "プロジェクトによって使う道具は変わりますが、共通しているのは元のモデルを正しく理解し、必要な情報を保ったまま使える形へ変換することです。",
       toolsNoteTitle: "現在のフォーカス",
       toolsNotes: [
-        "詳細なBIMモデルを、インタラクティブな環境向けに変換すること。",
-        "レガシーな変換工程を減らすために、AIを活用したワークフローを組むこと。",
-        "屋内外をまたぐナビゲーション体験を、都市スケールの文脈に接続すること。",
+        "詳細なRevitモデルをインタラクティブな環境向けの形式（FBX, CityGML, 3D Tiles）へ書き出すこと。",
+        "古くて手間のかかる多段階の変換工程を、PythonやC#で書いたコンバータに置き換えること。",
+        "屋内ナビゲーションのモデルを、PLATEAUの都市スケールデータへつなげること。",
       ],
       latestEyebrow: "WRITING",
       ctaEyebrow: "LET'S TALK",
@@ -65,7 +67,7 @@ const copy = isJa
       scrollHint: "スクロール",
     }
   : {
-      heroEyebrow: "TOKYO / BIM / AGENTIC SYSTEMS",
+      heroEyebrow: "TOKYO / BIM / SPATIAL DATA",
       heroSupport:
         "I connect architectural practice, spatial data, and automation to turn complex project information into working digital systems.",
       heroFacts: [
@@ -74,21 +76,21 @@ const copy = isJa
         { label: "Languages", value: "EN / SV / 日本語" },
       ],
       projectMetaLeft: "TOKYO / CASE STUDY",
-      projectMetaRight: "REVIT / UNITY / PLATEAU",
+      projectMetaRight: "REVIT / PLATEAU / CITYGML",
       projectStatus: "Active practice area",
       capabilitiesEyebrow: "CORE PRACTICE",
       capabilitiesDesc:
-        "From award-winning healthcare and airport work to AI-assisted automation and city-scale digital twins, the throughline is precision, interoperability, and systems thinking.",
-      capabilityLabels: ["Practice", "Automation", "Integration"],
+        "What I actually work on: BIM practice, the code that moves spatial data between tools, and the digital twin work tying it together.",
+      capabilityLabels: ["Practice", "Tools", "Digital Twin"],
       toolsEyebrow: "WORKING SYSTEM",
       toolsTitle: "The tools and data layers I actually work across",
       toolsDesc:
         "The stack changes from project to project. The method stays the same: understand the source model, preserve the important information, and translate it into something usable.",
       toolsNoteTitle: "Current focus",
       toolsNotes: [
-        "Converting detailed BIM geometry into formats that work in interactive environments.",
-        "Building AI-assisted workflows that remove brittle legacy conversion steps.",
-        "Connecting indoor navigation layers to city-scale digital twin context.",
+        "Getting detailed Revit models out into formats interactive apps can use (FBX, CityGML, 3D Tiles).",
+        "Replacing brittle multi-step legacy conversion workflows with Python and C# converters.",
+        "Connecting indoor navigation models to PLATEAU's city-scale data.",
       ],
       latestEyebrow: "WRITING",
       ctaEyebrow: "LET'S TALK",
@@ -118,7 +120,7 @@ const capabilityCards = [
   },
 ];
 
-const projectTags = ["Revit", "Unity", "PLATEAU"];
+const projectTags = ["Revit", "PLATEAU", "CityGML"];
 const marqueeItems = ["Revit", "Python", "TypeScript", "Unity", "CityGML", "IFC", "PLATEAU", "React", "Astro", "Framer Motion", "Tailwind", "C#"];
 const capabilityColors = ["var(--color-pine)", "var(--color-iris)", "var(--color-gold)"];
 
@@ -396,6 +398,37 @@ const ctaShapes = [
     </div>
   </FadeIn>
 </section>
+
+<!-- ====== TOOLS I'VE BUILT ====== -->
+{
+  featuredTools.length > 0 && (
+    <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
+      <div class="section-divider"></div>
+    </div>
+    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
+      <FadeIn>
+        <SectionHeading
+          eyebrow={t("home.tools.eyebrow")}
+          title={t("home.tools.title")}
+          description={t("home.tools.desc")}
+          style={typeStyle}
+        />
+      </FadeIn>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2">
+        {featuredTools.map((tool, index) => (
+          <ScrollReveal variant="fade-up" delay={index * 110}>
+            <ProjectCard
+              project={tool}
+              lang={lang}
+              accentColor={["var(--color-iris)", "var(--color-foam)"][index % 2]}
+            />
+          </ScrollReveal>
+        ))}
+      </div>
+    </section>
+  )
+}
 
 <!-- ====== TOOLS & SKILLS ====== -->
 <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
