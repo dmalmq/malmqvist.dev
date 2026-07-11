@@ -1,14 +1,9 @@
 ---
-import Button from "./ui/Button.astro";
-import Card from "./ui/Card.astro";
-import FadeIn from "./ui/FadeIn.astro";
-import ResponsivePicture from "./ResponsivePicture.astro";
-
-import ScrollReveal from "./ui/ScrollReveal.astro";
-import SectionHeading from "./ui/SectionHeading.astro";
+import Reveal from "./animation/Reveal.astro";
+import ProfileCard from "./sections/ProfileCard.astro";
 import SkillsGrid from "./SkillsGrid.astro";
 import Timeline from "./Timeline.astro";
-import MagneticButton from "./animation/MagneticButton";
+import { Card } from "./ui/card";
 import { useTranslations, type Language } from "../i18n/utils";
 
 interface Props {
@@ -16,173 +11,100 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const isJa = lang === "ja";
-const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
 const t = useTranslations(lang);
-
-const copy = isJa
-  ? {
-      eyebrow: "ABOUT",
-      title: t("about.title"),
-      description:
-        "建築の設計意図、BIMの実務、そして自動化をつなぐ仕事をしています。空間データを正しく理解し、運用可能なシステムに変換することが自分の役割です。",
-      narrativeTitle: "Background",
-      paragraphs: [
-        "スウェーデンでの伝統的な建築実務から、現在の東京における都市スケールのデジタルツインまで、一貫して空間をどう構成し、どう扱うかを仕事にしてきました。",
-        "Tengbomでは受賞歴のある病院建築や空港拡張に携わり、単なるファイル管理ではなく、実際に施工へつながるBIMモデルの再構築、ファサード調整、他分野との衝突解消を担いました。",
-        "その後、既存のAECツールだけでは処理しきれない課題に対して、自分でコードを書き、データ変換や自動化のパイプラインを組む方向へ進みました。今は東京で、建築のネイティブな情報を空間システムへ直接つなげる実装に取り組んでいます。",
-      ],
-      quote:
-        "建築家の意図する緻密な空間と、実装のための技術的データパイプライン。その両方を理解することが、良いBIMシステムの前提だと考えています。",
-      experienceEyebrow: "EXPERIENCE",
-      experienceDesc:
-        "建築事務所でのBIM実務から、東京でのデジタルツイン開発へと軸足を移してきました。",
-    }
-  : {
-      eyebrow: "ABOUT",
-      title: t("about.title"),
-      description:
-        "I work where architectural intent, BIM practice, and automation meet. The consistent thread is translating complex spatial information into systems that can actually be used.",
-      narrativeTitle: "Background",
-      paragraphs: [
-        "My work spans the path from traditional architectural production in Sweden to city-scale <a href='/en/blog/what-is-a-digital-twin'>digital twin</a> work in Tokyo. The core interest has stayed the same: how space is described, coordinated, and made operational.",
-        "At Tengbom, I worked on award-winning healthcare and airport projects, not as a passive file coordinator but as someone rebuilding living BIM models, coordinating complex facade systems, and resolving interdisciplinary issues under real delivery pressure.",
-        "Over time, the limits of legacy AEC tooling became too obvious to ignore. That pushed me toward writing code, building conversion pipelines, and treating BIM information as something that should move cleanly into broader spatial systems instead of getting trapped in brittle intermediate steps.",
-      ],
-      quote:
-        "The strongest BIM systems are built by people who understand both the discipline-specific design intent and the technical pipeline required to deploy it.",
-      experienceEyebrow: "EXPERIENCE",
-      experienceDesc:
-        "The trajectory runs from BIM-heavy architectural practice in Stockholm to digital-twin implementation work in Tokyo.",
-    };
+const copy = {
+  en: {
+    description: "I work where architectural intent, BIM practice, and automation meet. The consistent thread is translating complex spatial information into systems that can actually be used.",
+    narrativeTitle: "Background",
+    paragraphs: [
+      "My work spans the path from traditional architectural production in Sweden to city-scale digital twin work in Tokyo. The core interest has stayed the same: how space is described, coordinated, and made operational.",
+      "At Tengbom, I worked on award-winning healthcare and airport projects, not as a passive file coordinator but as someone rebuilding living BIM models, coordinating complex facade systems, and resolving interdisciplinary issues under real delivery pressure.",
+      "Over time, the limits of legacy AEC tooling became too obvious to ignore. That pushed me toward writing code, building conversion pipelines, and treating BIM information as something that should move cleanly into broader spatial systems instead of getting trapped in brittle intermediate steps.",
+    ],
+    quote: "The strongest BIM systems are built by people who understand both the discipline-specific design intent and the technical pipeline required to deploy it.",
+    timelineTitle: "Experience",
+    timelineDesc: "The trajectory runs from BIM-heavy architectural practice in Stockholm to digital-twin implementation work in Tokyo.",
+  },
+  ja: {
+    description: "建築の設計意図、BIMの実務、そして自動化をつなぐ仕事をしています。空間データを正しく理解し、運用可能なシステムに変換することが自分の役割です。",
+    narrativeTitle: "Background",
+    paragraphs: [
+      "スウェーデンでの伝統的な建築実務から、現在の東京における都市スケールのデジタルツインまで、一貫して空間をどう構成し、どう扱うかを仕事にしてきました。",
+      "Tengbomでは受賞歴のある病院建築や空港拡張に携わり、単なるファイル管理ではなく、実際に施工へつながるBIMモデルの再構築、ファサード調整、他分野との衝突解消を担いました。",
+      "その後、既存のAECツールだけでは処理しきれない課題に対して、自分でコードを書き、データ変換や自動化のパイプラインを組む方向へ進みました。今は東京で、建築のネイティブな情報を空間システムへ直接つなげる実装に取り組んでいます。",
+    ],
+    quote: "建築家の意図する緻密な空間と、実装のための技術的データパイプライン。その両方を理解することが、良いBIMシステムの前提だと考えています。",
+    timelineTitle: "職歴",
+    timelineDesc: "建築事務所でのBIM実務から、東京でのデジタルツイン開発へと軸足を移してきました。",
+  },
+  sv: {
+    description: "Jag arbetar där arkitektonisk avsikt, BIM-praktik och automation möts. Den röda tråden är att översätta komplex rumslig information till system som faktiskt går att använda.",
+    narrativeTitle: "Bakgrund",
+    paragraphs: [
+      "Mitt arbete spänner från traditionell arkitekturproduktion i Sverige till digitala tvillingar i stadsskala i Tokyo. Kärnintresset har varit detsamma: hur rum beskrivs, samordnas och görs operativa.",
+      "På Tengbom arbetade jag med prisbelönta vård- och flygplatsprojekt — inte som passiv filhanterare, utan med att bygga levande BIM-modeller, samordna komplexa fasadsystem och lösa tvärdisciplinära frågor under verkligt leveranstryck.",
+      "Med tiden blev begränsningarna i äldre AEC-verktyg omöjliga att blunda för. Det drev mig mot att skriva kod, bygga konverteringspipelines och behandla BIM-information som något som ska kunna röra sig rent in i bredare spatiala system — i stället för att fastna i sköra mellansteg.",
+    ],
+    quote: "De starkaste BIM-systemen byggs av personer som förstår både den disciplinspecifika designavsikten och den tekniska pipeline som krävs för att sätta den i drift.",
+    timelineTitle: "Erfarenhet",
+    timelineDesc: "Banan går från BIM-tung arkitekturpraktik i Stockholm till implementering av digitala tvillingar i Tokyo.",
+  },
+}[lang];
 ---
 
-<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-[var(--space-section-lg)]">
-  <FadeIn>
-    <SectionHeading
-      eyebrow={copy.eyebrow}
-      title={copy.title}
-      description={copy.description}
-      class="max-w-4xl"
-      style={typeStyle}
-    />
-  </FadeIn>
+<div class="bg-[var(--bg)] text-[var(--text)]">
+  <section class="container py-[clamp(4rem,8vw,8rem)]">
+    <Reveal>
+      <p class="text-[length:var(--font-meta)] font-bold uppercase tracking-[0.28em] text-[var(--text-muted)]">
+        {t("about.title")}
+      </p>
+      <h1 class="mt-4 max-w-5xl text-[length:var(--font-hero)] font-bold tracking-[-0.06em]">
+        Daniel Malmqvist
+      </h1>
+      <p class="mt-6 max-w-3xl text-[length:var(--font-body)] leading-8 text-[var(--text-muted)]">
+        {copy.description}
+      </p>
+    </Reveal>
 
-  <div class="mt-10 grid gap-8 md:mt-12 xl:grid-cols-[minmax(18rem,22rem)_minmax(0,1fr)] xl:items-start">
-    <FadeIn>
-      <Card class="overflow-hidden p-0">
-        <div class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6">
-          <!-- Profile photo with blob clip-path and colored accent ring -->
-          <div class="relative">
-            <div class="accent-ring-rotate absolute -inset-2 rounded-full" style="background: conic-gradient(from 0deg, var(--color-pine), var(--color-iris), var(--color-foam), var(--color-love), var(--color-pine)); opacity: 0.12; filter: blur(16px);"></div>
-            <div class="relative blob-clip overflow-hidden ring-2 ring-[var(--color-accent)]/20 ring-offset-4 ring-offset-[var(--color-bg-secondary)]">
-              <ResponsivePicture
-                src="/images/profile-img.JPG"
-                alt="Daniel Malmqvist"
-                sizes="(min-width: 1280px) 22rem, (min-width: 768px) 18rem, 90vw"
-                class="aspect-[3/4] w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-                transitionName="profile-photo"
-              />
-              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent"></div>
-            </div>
-          </div>
+    <Reveal delay={120}>
+      <Card className="mt-10 p-6 md:p-8">
+        <p class="text-[length:var(--font-meta)] font-bold uppercase tracking-[0.28em] text-[var(--text-muted)]">
+          {copy.narrativeTitle}
+        </p>
+        <div class="mt-5 space-y-5">
+          {copy.paragraphs.map((paragraph) => <p class="max-w-4xl text-base leading-8 text-[var(--text-muted)] md:text-lg">{paragraph}</p>)}
         </div>
-        <div class="p-6 md:p-7">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            Daniel Malmqvist
-          </p>
-          <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
-            {isJa
-              ? "家族と東京で暮らしながら、建築・BIM・空間データ実装を横断する仕事をしています。"
-              : "Based in Tokyo with my family, working across architecture, BIM, and spatial-data implementation."}
-          </p>
-          <div class="mt-6 flex flex-wrap gap-2">
-            <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-secondary)]">
-              Tokyo
-            </span>
-            <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-secondary)]">
-              JLPT N3 · N2 2026/7
-            </span>
-            <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-secondary)]">
-              EN / SV / 日本語
-            </span>
-          </div>
-        </div>
+        <blockquote class="mt-6 border-l border-[var(--accent)] pl-5 text-base leading-8 text-[var(--text)]">
+          {copy.quote}
+        </blockquote>
       </Card>
-    </FadeIn>
+    </Reveal>
+  </section>
 
-    <div class="space-y-6">
-      <ScrollReveal variant="slide-right" delay={70}>
-        <Card class="p-5 md:p-6">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.narrativeTitle}
-          </p>
-          <div class="mt-5 space-y-5 text-base leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-lg" style={typeStyle}>
-            {copy.paragraphs.map((paragraph, i) => (
-              <ScrollReveal variant={i % 2 === 0 ? "slide-left" : "slide-right"} delay={i * 80}>
-                <p set:html={paragraph} />
-              </ScrollReveal>
-            ))}
-          </div>
-          <!-- Decorative quote block -->
-          <div class="relative mt-6 border-l-2 border-[var(--color-iris)] pl-5">
-            <span class="absolute -left-3 -top-2 text-5xl font-bold leading-none text-[var(--color-iris)] opacity-20" aria-hidden="true">&ldquo;</span>
-            <p class="text-sm leading-7 text-[var(--color-text-heading)] md:text-base italic" style={typeStyle}>
-              {copy.quote}
-            </p>
-          </div>
-        </Card>
-      </ScrollReveal>
-
-      <FadeIn delay={120}>
-        <Card class="p-5 md:p-6">
-          <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div class="max-w-2xl">
-              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-                {t("about.resume.title")}
-              </p>
-              <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
-                {t("about.resume.desc")}
-              </p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-              <MagneticButton client:idle>
-                <Button href="/cv/resume-en.pdf" variant={isJa ? "secondary" : "primary"}>
-                  {t("about.resume.en")}
-                </Button>
-              </MagneticButton>
-              <MagneticButton client:idle>
-                <Button href="/cv/resume-jp.pdf" variant={isJa ? "primary" : "secondary"}>
-                  {t("about.resume.ja")}
-                </Button>
-              </MagneticButton>
-            </div>
-          </div>
-        </Card>
-      </FadeIn>
-
-      <FadeIn delay={160}>
-        <SkillsGrid lang={lang} />
-      </FadeIn>
-    </div>
-  </div>
-</section>
-
-<div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
-  <div class="section-divider"></div>
-</div>
-<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-md)]">
-  <FadeIn>
-    <SectionHeading
-      eyebrow={copy.experienceEyebrow}
-      title={isJa ? "職歴" : "Experience"}
-      description={copy.experienceDesc}
-      style={typeStyle}
-    />
-  </FadeIn>
-  <div class="mt-8">
-    <FadeIn delay={100}>
+  <section class="container py-[clamp(4rem,8vw,8rem)]" aria-labelledby="timeline-title">
+    <Reveal>
+      <p class="text-[length:var(--font-meta)] font-bold uppercase tracking-[0.28em] text-[var(--text-muted)]">Experience</p>
+      <h2 id="timeline-title" class="mt-3 text-[length:var(--font-h2)] font-bold tracking-[-0.05em]">{copy.timelineTitle}</h2>
+      <p class="mt-4 max-w-3xl text-base leading-8 text-[var(--text-muted)]">{copy.timelineDesc}</p>
+    </Reveal>
+    <div class="mt-10">
       <Timeline lang={lang} />
-    </FadeIn>
-  </div>
-</section>
+    </div>
+  </section>
+
+  <section class="container py-[clamp(4rem,8vw,8rem)]" aria-labelledby="skills-title">
+    <Reveal>
+      <p class="text-[length:var(--font-meta)] font-bold uppercase tracking-[0.28em] text-[var(--text-muted)]">Skills</p>
+      <h2 id="skills-title" class="mt-3 text-[length:var(--font-h2)] font-bold tracking-[-0.05em]">{t("home.skills.title")}</h2>
+    </Reveal>
+    <div class="mt-10">
+      <SkillsGrid lang={lang} />
+    </div>
+  </section>
+
+  <section class="container py-[clamp(4rem,8vw,8rem)]">
+    <Reveal>
+      <ProfileCard lang={lang} />
+    </Reveal>
+  </section>
+</div>

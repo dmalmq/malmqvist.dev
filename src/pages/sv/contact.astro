@@ -1,0 +1,25 @@
+---
+import ContactPage from "../../components/ContactPage.astro";
+import Seo from "../../components/Seo.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+    title="Kontakt | Daniel Malmqvist"
+    description="Kontakta Daniel Malmqvist om BIM-arbetsflöden, digitala tvillingar, automation och implementation av spatial data."
+    image="/images/profile-img.JPG"
+    lang="sv"
+>
+    <Seo
+        slot="head"
+        title="Kontakt | Daniel Malmqvist"
+        description="Kontakta Daniel Malmqvist om BIM-arbetsflöden, digitala tvillingar, automation och implementation av spatial data."
+        lang="sv"
+        ogImage="/images/profile-img.JPG"
+        canonical="/sv/contact/"
+        alternateEn="/en/contact/"
+        alternateJa="/ja/contact/"
+        alternateSv="/sv/contact/"
+    />
+    <ContactPage lang="sv" />
+</BaseLayout>

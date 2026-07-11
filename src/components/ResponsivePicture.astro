@@ -2,12 +2,15 @@
 import {
   getFallbackImagePath,
   getImageAsset,
+  getLightboxImagePath,
   getPictureSourceSet,
 } from "../lib/image-assets.mjs";
 
 interface Props {
   src: string;
   alt: string;
+  priority?: boolean;
+  aspect?: "wide" | "square";
   sizes?: string;
   loading?: "eager" | "lazy";
   fetchpriority?: "high" | "low" | "auto";
@@ -18,7 +21,9 @@ interface Props {
 const {
   src,
   alt,
-  sizes = "100vw",
+  priority = false,
+  aspect = "square",
+  sizes: customSizes,
   loading,
   fetchpriority,
   class: className,
@@ -27,50 +32,115 @@ const {
 
 const asset = getImageAsset(src);
 const fallbackSrc = getFallbackImagePath(src);
+const lightboxSrc = getLightboxImagePath(src);
+const widths = aspect === "wide" ? [800, 1400, 1920] : [800, 1400];
+const sizes = customSizes ?? (aspect === "wide"
+  ? "(min-width: 1024px) 1920px, (min-width: 640px) 1400px, 800px"
+  : "(min-width: 1024px) 1400px, 800px");
+const resolvedLoading = priority ? "eager" : (loading ?? "lazy");
+const resolvedFetchPriority = priority ? "high" : (fetchpriority ?? "auto");
+const filterVariants = (variants: { src: string; width: number; height: number }[] = []) => variants.filter((variant) => widths.includes(variant.width));
+const avifVariants = asset ? filterVariants(asset.avif) : [];
+const webpVariants = asset ? filterVariants(asset.webp) : [];
+const desktopAvifVariants = aspect === "wide" ? avifVariants.filter((variant) => variant.width >= 1920) : [];
+const desktopWebpVariants = aspect === "wide" ? webpVariants.filter((variant) => variant.width >= 1920) : [];
 ---
 
-{
-  asset ? (
-    <picture class="block h-full w-full">
-      {
-        asset.avif.length > 0 && (
+<div class:list={["responsive-picture", `aspect-${aspect}`]}>
+  {
+    asset ? (
+      <picture class="block h-full w-full">
+        {desktopAvifVariants.length > 0 && (
           <source
+            media="(min-width: 1024px)"
             type="image/avif"
-            srcset={getPictureSourceSet(asset.avif)}
-            sizes={sizes}
+            srcset={getPictureSourceSet(desktopAvifVariants)}
+            sizes="1920px"
           />
-        )
-      }
-      {
-        asset.webp.length > 0 && (
+        )}
+        {desktopWebpVariants.length > 0 && (
           <source
+            media="(min-width: 1024px)"
             type="image/webp"
-            srcset={getPictureSourceSet(asset.webp)}
-            sizes={sizes}
+            srcset={getPictureSourceSet(desktopWebpVariants)}
+            sizes="1920px"
           />
-        )
-      }
+        )}
+        {avifVariants.length > 0 && (
+          <source type="image/avif" srcset={getPictureSourceSet(avifVariants)} sizes={sizes} />
+        )}
+        {webpVariants.length > 0 && (
+          <source type="image/webp" srcset={getPictureSourceSet(webpVariants)} sizes={sizes} />
+        )}
+        {
+          resolvedLoading === "lazy" ? (
+            <img
+              src={fallbackSrc}
+              alt={alt}
+              width={asset.width}
+              height={asset.height}
+              loading="lazy"
+              fetchpriority={resolvedFetchPriority}
+              decoding="async"
+              data-lightbox
+              data-lightbox-src={lightboxSrc}
+              class={className}
+              transition:name={transitionName}
+            />
+          ) : (
+            <img
+              src={fallbackSrc}
+              alt={alt}
+              width={asset.width}
+              height={asset.height}
+              loading="eager"
+              fetchpriority={resolvedFetchPriority}
+              decoding="async"
+              data-lightbox
+              data-lightbox-src={lightboxSrc}
+              class={className}
+              transition:name={transitionName}
+            />
+          )
+        }
+      </picture>
+    ) : resolvedLoading === "lazy" ? (
       <img
         src={fallbackSrc}
         alt={alt}
-        width={asset.width}
-        height={asset.height}
-        loading={loading}
-        fetchpriority={fetchpriority}
+        loading="lazy"
+        fetchpriority={resolvedFetchPriority}
         decoding="async"
+        data-lightbox
+        data-lightbox-src={lightboxSrc}
         class={className}
         transition:name={transitionName}
       />
-    </picture>
-  ) : (
-    <img
-      src={fallbackSrc}
-      alt={alt}
-      loading={loading}
-      fetchpriority={fetchpriority}
-      decoding="async"
-      class={className}
-      transition:name={transitionName}
-    />
-  )
-}
+    ) : (
+      <img
+        src={fallbackSrc}
+        alt={alt}
+        loading="eager"
+        fetchpriority={resolvedFetchPriority}
+        decoding="async"
+        data-lightbox
+        data-lightbox-src={lightboxSrc}
+        class={className}
+        transition:name={transitionName}
+      />
+    )
+  }
+</div>
+
+<style>
+  .responsive-picture {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .responsive-picture :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>

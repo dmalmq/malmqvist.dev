@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface SkillCardProps {
@@ -9,7 +9,7 @@ interface SkillCardProps {
   icon: string;
 }
 
-const iconPaths: Record<string, JSX.Element> = {
+const iconPaths: Record<string, ReactNode> = {
   building: (
     <>
       <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />

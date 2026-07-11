@@ -1,0 +1,40 @@
+---
+import ConsultingPage from "../../components/ConsultingPage.astro";
+import Seo from "../../components/Seo.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const title = "Konsulttjänster | Daniel Malmqvist — BIM, Revit & digitala tvillingar";
+const description =
+  "Konsulttjänster för BIM-drivna verksamheter: BIM-ledning, Revit-automation, BIM–GIS / digitala tvillingar och arkitektoniskt designstöd — remote från Tokyo.";
+
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "BIM and digital twin consulting",
+  provider: {
+    "@type": "Person",
+    name: "Daniel Malmqvist",
+    url: "https://malmqvist.dev",
+  },
+  areaServed: ["SE", "JP"],
+  availableChannel: {
+    "@type": "ServiceChannel",
+    serviceUrl: "https://malmqvist.dev/sv/contact/",
+  },
+};
+---
+
+<BaseLayout title={title} description={description} lang="sv">
+  <Seo
+    slot="head"
+    title={title}
+    description={description}
+    lang="sv"
+    canonical="/sv/consulting/"
+    alternateEn="/en/consulting/"
+    alternateJa="/ja/consulting/"
+    alternateSv="/sv/consulting/"
+    jsonLd={serviceJsonLd}
+  />
+  <ConsultingPage lang="sv" />
+</BaseLayout>

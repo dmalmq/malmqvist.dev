@@ -1,70 +1,67 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from "react";
+import { Moon, Sun } from "lucide-react";
+
+const themeChangeEvent = "portfolio:theme-change";
+
+function subscribe(onStoreChange: () => void): () => void {
+  window.addEventListener(themeChangeEvent, onStoreChange);
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", onStoreChange);
+
+  return () => {
+    window.removeEventListener(themeChangeEvent, onStoreChange);
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .removeEventListener("change", onStoreChange);
+  };
+}
+
+function readDarkClass(): boolean | null {
+  if (typeof document === "undefined") return null;
+  return document.documentElement.classList.contains('dark');
+}
+
+function readServerTheme(): boolean | null {
+  return null;
+}
 
 export default function ThemeToggle() {
-    const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const isDark = useSyncExternalStore(subscribe, readDarkClass, readServerTheme);
 
-    const applyTheme = (nextTheme: 'light' | 'dark') => {
-        setTheme(nextTheme);
+  const toggleTheme = () => {
+    const nextDark = !document.documentElement.classList.contains("dark");
 
-        if (nextTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    };
+    if (nextDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
 
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const forcedTheme = params.get('theme');
-        const storedTheme = localStorage.getItem('theme');
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const initialTheme =
-            forcedTheme === 'light' || forcedTheme === 'dark'
-                ? forcedTheme
-                : storedTheme === 'dark' || (!storedTheme && systemDark)
-                  ? 'dark'
-                  : 'light';
+    window.dispatchEvent(new Event(themeChangeEvent));
+  };
 
-        applyTheme(initialTheme);
-    }, []);
+  const ready = isDark !== null;
 
-    const toggleTheme = () => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        const url = new URL(window.location.href);
-
-        localStorage.setItem('theme', newTheme);
-        if (url.searchParams.has('theme')) {
-            url.searchParams.set('theme', newTheme);
-            window.history.replaceState({}, '', url);
-        }
-
-        applyTheme(newTheme);
-    };
-
-    return (
-        <button
-            onClick={toggleTheme}
-            className="ui-icon-button"
-            aria-label="Toggle theme"
-            title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-        >
-            {theme === 'light' ? (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                </svg>
-            ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2" />
-                    <path d="M12 20v2" />
-                    <path d="m4.93 4.93 1.41 1.41" />
-                    <path d="m17.66 17.66 1.41 1.41" />
-                    <path d="M2 12h2" />
-                    <path d="M20 12h2" />
-                    <path d="m6.34 17.66-1.41 1.41" />
-                    <path d="m19.07 4.93-1.41 1.41" />
-                </svg>
-            )}
-        </button>
-    );
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="relative inline-grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      aria-label="Toggle theme"
+      title="Toggle theme"
+    >
+      <Sun
+        className={`absolute h-4.5 w-4.5 transition-opacity duration-200 ${ready && !isDark ? "opacity-100" : "opacity-0"}`}
+        aria-hidden="true"
+      />
+      <Moon
+        className={`absolute h-4.5 w-4.5 transition-opacity duration-200 ${ready && isDark ? "opacity-100" : "opacity-0"}`}
+        aria-hidden="true"
+      />
+      <span className="sr-only">Toggle theme</span>
+    </button>
+  );
 }

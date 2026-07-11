@@ -18,6 +18,8 @@
         const browserLang = navigator.language;
         if (browserLang && browserLang.startsWith('ja')) {
           window.location.replace('/ja/');
+        } else if (browserLang && browserLang.startsWith('sv')) {
+          window.location.replace('/sv/');
         } else {
           window.location.replace('/en/');
         }
@@ -28,7 +30,7 @@
     {/* Fallbacks if JS disabled */}
     <div style="padding: 2rem;">
       <p>Please select your language:</p>
-      <a href="/en/">English</a> | <a href="/ja/">日本語</a>
+      <a href="/en/">English</a> | <a href="/ja/">日本語</a> | <a href="/sv/">Svenska</a>
     </div>
   </body>
 </html>

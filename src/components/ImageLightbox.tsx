@@ -1,63 +1,96 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+
+type LightboxImage = {
+  readonly src: string;
+  readonly alt: string;
+};
 
 export default function ImageLightbox() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [imgSrc, setImgSrc] = useState('');
+  const [open, setOpen] = useState(false);
+  const [image, setImage] = useState<LightboxImage | null>(null);
 
-    useEffect(() => {
-        const handleOpen = (e: any) => {
-            setImgSrc(e.detail?.src || '');
-            setIsOpen(true);
-            document.body.style.overflow = 'hidden';
-        };
+  useEffect(() => {
+    const handler = (event: MouseEvent) => {
+      const target = event.target;
 
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') close();
-        };
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
 
-        window.addEventListener('open-lightbox', handleOpen);
-        document.addEventListener('keydown', handleEscape);
+      const trigger = target.closest<HTMLImageElement>("[data-lightbox]");
 
-        return () => {
-            window.removeEventListener('open-lightbox', handleOpen);
-            document.removeEventListener('keydown', handleEscape);
-        };
-    }, []);
+      if (!trigger) {
+        return;
+      }
 
-    const close = () => {
-        setIsOpen(false);
-        setTimeout(() => setImgSrc(''), 300); // Wait for transition
-        document.body.style.overflow = '';
+      event.preventDefault();
+      setImage({
+        src: trigger.dataset.lightboxSrc || trigger.src,
+        alt: trigger.alt || "",
+      });
+      setOpen(true);
     };
 
-    if (!isOpen && !imgSrc) return null;
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
 
-    return (
-        <div
-            className={`fixed inset-0 z-[100] flex items-center justify-center bg-[var(--color-bg-primary)]/95 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-            onClick={close}
-            aria-modal="true"
-            role="dialog"
-        >
-            <button
-                onClick={close}
-                className="absolute top-6 right-6 p-2 rounded-full bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
-                aria-label="Close fullscreen image"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 6 6 18" /><path d="m6 6 12 12" />
-                </svg>
-            </button>
+  useEffect(() => {
+    if (!open || !window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
 
-            <div className="w-full max-w-6xl max-h-[90vh] p-4 flex items-center justify-center transform transition-transform duration-300 scale-95 origin-center" style={{ transform: isOpen ? 'scale(1)' : 'scale(0.95)' }} onClick={e => e.stopPropagation()}>
-                {imgSrc && (
-                    <img
-                        src={imgSrc}
-                        alt="Fullscreen view"
-                        className="max-w-full max-h-[85vh] object-contain rounded-[4px] shadow-2xl border border-[var(--color-border)]"
-                    />
-                )}
-            </div>
-        </div>
-    );
+    let startY = 0;
+
+    const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+
+      if (!touch) {
+        return;
+      }
+
+      startY = touch.clientY;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const touch = event.touches[0];
+
+      if (!touch) {
+        return;
+      }
+
+      const deltaY = touch.clientY - startY;
+
+      if (deltaY > 100) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [open]);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent
+        className="max-h-[95vh] max-w-[95vw] border-0 bg-transparent p-0 shadow-none"
+        aria-describedby={undefined}
+        showCloseButton={false}
+      >
+        <DialogTitle className="sr-only">{image?.alt || "Image"}</DialogTitle>
+        {image && (
+          <img
+            src={image.src}
+            alt={image.alt}
+            className="h-auto max-h-[90vh] w-full object-contain"
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }

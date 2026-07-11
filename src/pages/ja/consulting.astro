@@ -1,0 +1,40 @@
+---
+import ConsultingPage from "../../components/ConsultingPage.astro";
+import Seo from "../../components/Seo.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const title = "コンサルティング | Daniel Malmqvist — BIM・Revit・デジタルツイン";
+const description =
+  "BIMを軸にした実務向けコンサルティング：BIMマネジメント、Revit自動化、BIM–GIS / デジタルツイン統合、建築設計サポート。東京からリモートで提供。";
+
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "BIM and digital twin consulting",
+  provider: {
+    "@type": "Person",
+    name: "Daniel Malmqvist",
+    url: "https://malmqvist.dev",
+  },
+  areaServed: ["SE", "JP"],
+  availableChannel: {
+    "@type": "ServiceChannel",
+    serviceUrl: "https://malmqvist.dev/ja/contact/",
+  },
+};
+---
+
+<BaseLayout title={title} description={description} lang="ja">
+  <Seo
+    slot="head"
+    title={title}
+    description={description}
+    lang="ja"
+    canonical="/ja/consulting/"
+    alternateEn="/en/consulting/"
+    alternateJa="/ja/consulting/"
+    alternateSv="/sv/consulting/"
+    jsonLd={serviceJsonLd}
+  />
+  <ConsultingPage lang="ja" />
+</BaseLayout>

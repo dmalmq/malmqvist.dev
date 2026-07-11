@@ -80,7 +80,7 @@ export default function CesiumViewerGate({
   return (
     <div className="border-t border-[var(--line)] pt-8">
       <p className="eyebrow">{t.eyebrow}</p>
-      <h2 className="mt-3 text-[var(--font-h3)]">{t.title}</h2>
+      <h2 className="mt-3 text-[length:var(--font-h3)]">{t.title}</h2>
 
       {!open && (
         <div className="mt-6 overflow-hidden rounded-[var(--radius-feature)] border border-[var(--line)] bg-[var(--surface)]">
@@ -101,7 +101,7 @@ export default function CesiumViewerGate({
                 type="button"
                 disabled={!canLoad}
                 onClick={() => setOpen(true)}
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] bg-[var(--accent)] px-6 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] bg-[var(--accent)] px-6 py-3 text-sm font-bold text-[var(--accent-ink)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.load}
               </button>

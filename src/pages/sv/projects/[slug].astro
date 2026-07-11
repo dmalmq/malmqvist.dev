@@ -1,0 +1,71 @@
+---
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectDetailPage from "../../../components/ProjectDetailPage.astro";
+import Seo from "../../../components/Seo.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+    const projects = await getCollection("projects", ({ id }) =>
+        id.startsWith("sv/"),
+    );
+    return projects.map((p) => {
+        const slugParts = p.id.split("/");
+        const basename = slugParts[slugParts.length - 1].replace(/\.mdx?$/, "");
+        return {
+            params: { slug: basename },
+            props: { project: p },
+        };
+    });
+}
+
+interface Props {
+    project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const relatedProjects = (await getCollection("projects", ({ id }) =>
+    id.startsWith("sv/"),
+))
+    .filter((candidate) => candidate.id !== project.id)
+    .sort(
+        (a, b) =>
+            b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+    )
+    .slice(0, 3);
+
+const canonical = Astro.url.pathname;
+const alternateEn = canonical.replace(/^\/sv/, "/en");
+const alternateJa = canonical.replace(/^\/sv/, "/ja");
+---
+
+<BaseLayout
+    title={`${project.data.title} | Projekt`}
+    description={project.data.description}
+    image={project.data.coverImage}
+    ogType="article"
+    publishedTime={project.data.publishDate.toISOString()}
+    lang="sv"
+    enableLightbox={true}
+>
+    <Seo
+        slot="head"
+        title={`${project.data.title} | Projekt`}
+        description={project.data.description}
+        lang="sv"
+        ogImage={project.data.coverImage}
+        canonical={canonical}
+        alternateEn={alternateEn}
+        alternateJa={alternateJa}
+        alternateSv={canonical}
+    />
+    <ProjectDetailPage
+        lang="sv"
+        project={project}
+        Content={Content}
+        relatedProjects={relatedProjects}
+    />
+</BaseLayout>

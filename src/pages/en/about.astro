@@ -1,26 +1,26 @@
 ---
 import AboutPage from "../../components/AboutPage.astro";
+import Seo from "../../components/Seo.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-// SEO JSON-LD structured data
-const jsonLd = {
+const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Daniel Malmqvist",
+  jobTitle: "BIM Manager & Agentic Programmer",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Tokyo",
+    addressCountry: "JP",
+  },
   url: "https://malmqvist.dev",
-  image: "https://malmqvist.dev/images/profile-img.JPG",
-  jobTitle: "Architectural Engineer, BIM Manager & Developer",
-  worksFor: [
-    {
-      "@type": "Organization",
-      name: "JRE Consultants",
-    },
-    {
-      "@type": "Organization",
-      name: "Tengbom",
-    },
+  sameAs: [
+    "https://github.com/dmalmq",
+    "https://www.linkedin.com/in/daniel-malmqvist-profile/",
   ],
-  sameAs: ["https://github.com/dmalmq", "https://linkedin.com/in/dmalmq"],
+  knowsAbout: ["BIM", "Revit", "PLATEAU", "CityGML", "GeoPackage", "IMDF", "Digital Twin"],
+  knowsLanguage: ["en", "sv", "ja"],
+  award: "JLPT N3 passed, N2 in progress (July 2026)",
 };
 ---
 
@@ -30,7 +30,17 @@ const jsonLd = {
   image="/images/profile-img.JPG"
   lang="en"
 >
-  <!-- Schema.org Script -->
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Seo
+    slot="head"
+    title="About | Daniel Malmqvist"
+    description="Background, experience, and working approach across architectural engineering, BIM practice, and spatial-data systems."
+    lang="en"
+    ogImage="/images/profile-img.JPG"
+    canonical="/en/about/"
+    alternateEn="/en/about/"
+    alternateJa="/ja/about/"
+    alternateSv="/sv/about/"
+    jsonLd={personJsonLd}
+  />
   <AboutPage lang="en" />
 </BaseLayout>

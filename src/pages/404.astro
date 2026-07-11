@@ -14,26 +14,35 @@ import Button from "../components/ui/Button.astro";
         class="flex flex-col items-center justify-center py-24 md:py-32 text-center px-4 max-w-[90rem] mx-auto"
     >
         <h1
-            class="text-8xl md:text-9xl font-black text-[var(--color-text-heading)] mb-6 opacity-20"
+            class="text-8xl md:text-9xl font-black text-[var(--text)] mb-6 opacity-20"
         >
             404
         </h1>
 
-        <div class="max-w-md space-y-4 mb-10">
-            <h2 class="text-2xl font-bold text-[var(--color-text-heading)]">
+        <div class="max-w-md space-y-4 mb-10" id="en-content">
+            <h2 class="text-2xl font-bold text-[var(--text)]">
                 Page not found
             </h2>
-            <p class="text-[var(--color-text-secondary)]">
+            <p class="text-[var(--text-muted)]">
                 The page you're looking for doesn't exist or has been moved.
             </p>
         </div>
 
         <div class="max-w-md space-y-4 mb-10 hidden" id="ja-content">
-            <h2 class="text-2xl font-bold text-[var(--color-text-heading)]">
+            <h2 class="text-2xl font-bold text-[var(--text)]">
                 ページが見つかりません
             </h2>
-            <p class="text-[var(--color-text-secondary)]">
+            <p class="text-[var(--text-muted)]">
                 お探しのページは存在しないか、移動した可能性があります。
+            </p>
+        </div>
+
+        <div class="max-w-md space-y-4 mb-10 hidden" id="sv-content">
+            <h2 class="text-2xl font-bold text-[var(--text)]">
+                Sidan hittades inte
+            </h2>
+            <p class="text-[var(--text-muted)]">
+                Sidan du letar efter finns inte eller har flyttats.
             </p>
         </div>
 
@@ -44,7 +53,7 @@ import Button from "../components/ui/Button.astro";
         </div>
 
         <div
-            class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[var(--color-text-secondary)]"
+            class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[var(--text-muted)]"
         >
             <a href="/en/projects" id="link-projects" class="hover:underline">
                 Projects
@@ -60,37 +69,75 @@ import Button from "../components/ui/Button.astro";
 
     <script>
         // Extremely lightweight language checking for 404
-        const isJa =
-            window.location.pathname.startsWith("/ja") ||
-            (typeof localStorage !== "undefined" &&
-                localStorage.getItem("preferred-language") === "ja") ||
-            window.navigator.language.startsWith("ja");
+        const path = window.location.pathname;
+        const preferred =
+            typeof localStorage !== "undefined"
+                ? localStorage.getItem("preferred-language")
+                : null;
+        const browserLang = window.navigator.language;
 
-        if (isJa) {
+        let lang: "en" | "ja" | "sv" = "en";
+        if (
+            path.startsWith("/sv") ||
+            preferred === "sv" ||
+            browserLang.startsWith("sv")
+        ) {
+            lang = "sv";
+        } else if (
+            path.startsWith("/ja") ||
+            preferred === "ja" ||
+            browserLang.startsWith("ja")
+        ) {
+            lang = "ja";
+        }
+
+        if (lang !== "en") {
+            const enContent = document.getElementById("en-content");
             const jaContent = document.getElementById("ja-content");
-            const enContent = jaContent?.previousElementSibling;
+            const svContent = document.getElementById("sv-content");
             const btnHome = document.getElementById("btn-home");
             const linkProjects = document.getElementById("link-projects");
             const linkBlog = document.getElementById("link-blog");
             const linkContact = document.getElementById("link-contact");
 
             if (enContent) enContent.classList.add("hidden");
-            if (jaContent) jaContent.classList.remove("hidden");
-            if (btnHome) {
-                btnHome.textContent = "ホームに戻る";
-                btnHome.setAttribute("href", "/ja/");
-            }
-            if (linkProjects) {
-                linkProjects.textContent = "プロジェクト";
-                linkProjects.setAttribute("href", "/ja/projects");
-            }
-            if (linkBlog) {
-                linkBlog.textContent = "ブログ";
-                linkBlog.setAttribute("href", "/ja/blog");
-            }
-            if (linkContact) {
-                linkContact.textContent = "お問い合わせ";
-                linkContact.setAttribute("href", "/ja/contact");
+
+            if (lang === "ja") {
+                if (jaContent) jaContent.classList.remove("hidden");
+                if (btnHome) {
+                    btnHome.textContent = "ホームに戻る";
+                    btnHome.setAttribute("href", "/ja/");
+                }
+                if (linkProjects) {
+                    linkProjects.textContent = "プロジェクト";
+                    linkProjects.setAttribute("href", "/ja/projects");
+                }
+                if (linkBlog) {
+                    linkBlog.textContent = "ブログ";
+                    linkBlog.setAttribute("href", "/ja/blog");
+                }
+                if (linkContact) {
+                    linkContact.textContent = "お問い合わせ";
+                    linkContact.setAttribute("href", "/ja/contact");
+                }
+            } else {
+                if (svContent) svContent.classList.remove("hidden");
+                if (btnHome) {
+                    btnHome.textContent = "Till startsidan";
+                    btnHome.setAttribute("href", "/sv/");
+                }
+                if (linkProjects) {
+                    linkProjects.textContent = "Projekt";
+                    linkProjects.setAttribute("href", "/sv/projects");
+                }
+                if (linkBlog) {
+                    linkBlog.textContent = "Blogg";
+                    linkBlog.setAttribute("href", "/sv/blog");
+                }
+                if (linkContact) {
+                    linkContact.textContent = "Kontakt";
+                    linkContact.setAttribute("href", "/sv/contact");
+                }
             }
         }
     </script>

@@ -1,5 +1,6 @@
 ---
 import ContactPage from "../../components/ContactPage.astro";
+import Seo from "../../components/Seo.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 ---
 
@@ -9,5 +10,16 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     image="/images/profile-img.JPG"
     lang="en"
 >
+    <Seo
+        slot="head"
+        title="Contact | Daniel Malmqvist"
+        description="Contact Daniel Malmqvist about BIM workflows, digital twins, automation, and spatial-data implementation."
+        lang="en"
+        ogImage="/images/profile-img.JPG"
+        canonical="/en/contact/"
+        alternateEn="/en/contact/"
+        alternateJa="/ja/contact/"
+        alternateSv="/sv/contact/"
+    />
     <ContactPage lang="en" />
 </BaseLayout>

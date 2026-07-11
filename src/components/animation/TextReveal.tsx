@@ -25,7 +25,8 @@ export default function TextReveal({
   const separator = mode === "word" ? "\u00A0" : "";
 
   return (
-    <Tag ref={ref as any} className={className} aria-label={text}>
+    <div ref={ref} style={{ display: "contents" }}>
+      <Tag className={className} aria-label={text}>
       {units.map((unit, i) => (
         <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", paddingBottom: "0.15em" }}>
           <motion.span
@@ -49,5 +50,6 @@ export default function TextReveal({
         </span>
       ))}
     </Tag>
+    </div>
   );
 }

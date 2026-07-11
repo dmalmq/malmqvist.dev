@@ -1,5 +1,6 @@
 ---
 import ContactPage from "../../components/ContactPage.astro";
+import Seo from "../../components/Seo.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 ---
 
@@ -9,5 +10,16 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     image="/images/profile-img.JPG"
     lang="ja"
 >
+    <Seo
+        slot="head"
+        title="お問い合わせ | Daniel Malmqvist"
+        description="BIMワークフロー、デジタルツイン、自動化、空間データ実装に関するお問い合わせはこちら。"
+        lang="ja"
+        ogImage="/images/profile-img.JPG"
+        canonical="/ja/contact/"
+        alternateEn="/en/contact/"
+        alternateJa="/ja/contact/"
+        alternateSv="/sv/contact/"
+    />
     <ContactPage lang="ja" />
 </BaseLayout>

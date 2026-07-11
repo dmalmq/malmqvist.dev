@@ -1,0 +1,46 @@
+---
+import AboutPage from "../../components/AboutPage.astro";
+import Seo from "../../components/Seo.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Daniel Malmqvist",
+  jobTitle: "BIM Manager & Agentic Programmer",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Tokyo",
+    addressCountry: "JP",
+  },
+  url: "https://malmqvist.dev",
+  sameAs: [
+    "https://github.com/dmalmq",
+    "https://www.linkedin.com/in/daniel-malmqvist-profile/",
+  ],
+  knowsAbout: ["BIM", "Revit", "PLATEAU", "CityGML", "GeoPackage", "IMDF", "Digital Twin"],
+  knowsLanguage: ["en", "sv", "ja"],
+  award: "JLPT N3 passed, N2 in progress (July 2026)",
+};
+---
+
+<BaseLayout
+  title="Om mig | Daniel Malmqvist"
+  description="Bakgrund, erfarenhet och arbetssätt inom arkitekturteknik, BIM-praktik och spatiala datasystem."
+  image="/images/profile-img.JPG"
+  lang="sv"
+>
+  <Seo
+    slot="head"
+    title="Om mig | Daniel Malmqvist"
+    description="Bakgrund, erfarenhet och arbetssätt inom arkitekturteknik, BIM-praktik och spatiala datasystem."
+    lang="sv"
+    ogImage="/images/profile-img.JPG"
+    canonical="/sv/about/"
+    alternateEn="/en/about/"
+    alternateJa="/ja/about/"
+    alternateSv="/sv/about/"
+    jsonLd={personJsonLd}
+  />
+  <AboutPage lang="sv" />
+</BaseLayout>

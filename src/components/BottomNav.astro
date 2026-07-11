@@ -1,0 +1,61 @@
+---
+import { Briefcase, FolderKanban, Mail, User } from "lucide-react";
+import BottomNavMore from "./BottomNavMore";
+import { useTranslations, type Language } from "../i18n/utils";
+
+interface Props {
+  currentLang: Language;
+  currentPath: string;
+}
+
+const { currentLang, currentPath } = Astro.props;
+const t = useTranslations(currentLang);
+
+const navItems = [
+  { href: `/${currentLang}/projects/`, label: t("nav.projects"), Icon: FolderKanban },
+  { href: `/${currentLang}/consulting/`, label: t("nav.consulting.short"), Icon: Briefcase },
+  { href: `/${currentLang}/about/`, label: t("nav.about"), Icon: User },
+  { href: `/${currentLang}/contact/`, label: t("nav.contact"), Icon: Mail },
+];
+
+const normalizedPath = currentPath.endsWith("/") ? currentPath : `${currentPath}/`;
+const isActive = (href: string) =>
+  normalizedPath === href || normalizedPath.startsWith(href);
+---
+
+<nav class="bottom-nav fixed inset-x-0 bottom-0 z-50 lg:hidden" aria-label="Primary">
+  <ul class="grid h-14 grid-cols-5">
+    {
+      navItems.map(({ href, label, Icon }) => (
+        <li class="min-w-0">
+          <a
+            href={href}
+            aria-current={isActive(href) ? "page" : undefined}
+            class:list={[
+              "flex h-full w-full flex-col items-center justify-center gap-1 transition-colors",
+              isActive(href)
+                ? "text-[var(--accent)]"
+                : "text-[var(--text-muted)] hover:text-[var(--accent)]",
+            ]}
+          >
+            <Icon className="h-5 w-5" aria-hidden="true" />
+            <span class="max-w-full truncate px-1 text-[length:var(--font-tab)] font-bold leading-none">{label}</span>
+          </a>
+        </li>
+      ))
+    }
+    <li class="min-w-0">
+      <BottomNavMore currentLang={currentLang} client:idle />
+    </li>
+  </ul>
+</nav>
+
+<style>
+  .bottom-nav {
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+</style>

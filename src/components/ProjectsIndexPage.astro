@@ -1,13 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import Card from "./ui/Card.astro";
-import FadeIn from "./ui/FadeIn.astro";
-import ScrollReveal from "./ui/ScrollReveal.astro";
-
 import ProjectCard from "./ProjectCard.astro";
-import ResponsivePicture from "./ResponsivePicture.astro";
-import Tag from "./ui/Tag.astro";
-import ParallaxSection from "./animation/ParallaxSection";
+import Reveal from "./animation/Reveal.astro";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -19,158 +13,53 @@ const { lang, allProjects } = Astro.props;
 const isJa = lang === "ja";
 const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
 
-const featuredProject =
-  allProjects.find((project) => project.data.featured) ?? allProjects[0];
-const remainingProjects = allProjects.filter(
-  (project) => project.id !== featuredProject?.id,
-);
-const copy = isJa
-  ? {
-      eyebrow: "SELECTED WORK",
-      title: "プロジェクト",
-      description:
-        "建築の実務、BIM運用、空間データ変換、自動化をまたぐ仕事をまとめています。単なる成果物一覧ではなく、どのように複雑な情報を扱い、実装へつなげたかを示すページです。",
-      featureEyebrow: "FEATURED CASE",
-      featureNote: "現在の代表的な実装領域",
-      gridEyebrow: "PROJECT INDEX",
-      gridTitle: "その他のプロジェクト",
-      gridDesc:
-        "プラグイン開発、変換パイプライン、病院建築のBIM実務まで、扱う粒度の異なるプロジェクトを並べています。",
-    }
-  : {
-      eyebrow: "SELECTED WORK",
-      title: "Projects",
-      description:
-        "A working selection of projects across architecture, BIM operations, spatial-data conversion, and automation. The emphasis is on how complex information becomes usable systems.",
-      featureEyebrow: "FEATURED CASE",
-      featureNote: "Current flagship implementation area",
-      gridEyebrow: "PROJECT INDEX",
-      gridTitle: "Other projects",
-      gridDesc:
-        "From plugins and conversion pipelines to hospital-scale BIM practice, the projects span different scales but follow the same systems-oriented approach.",
-    };
-
-const accentColors = ["var(--color-pine)", "var(--color-love)", "var(--color-gold)", "var(--color-foam)", "var(--color-iris)"];
+const copy = {
+  en: {
+    eyebrow: "PROJECTS",
+    title: "Projects",
+    description:
+      "A working selection of projects across architecture, BIM operations, spatial-data conversion, and automation.",
+  },
+  ja: {
+    eyebrow: "プロジェクト",
+    title: "プロジェクト一覧",
+    description:
+      "建築の実務、BIM運用、空間データ変換、自動化をまたぐ仕事をまとめています。",
+  },
+  sv: {
+    eyebrow: "PROJEKT",
+    title: "Projekt",
+    description:
+      "Ett urval av projekt inom arkitektur, BIM-drift, spatial datakonvertering och automation.",
+  },
+}[lang];
 ---
 
 <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-6 md:pt-10 pb-2 md:pb-3">
-  <FadeIn>
+  <Reveal>
     <div class="max-w-3xl">
-      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+      <p class="text-[length:var(--font-meta)] font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]">
         {copy.eyebrow}
       </p>
       <h1
-        class="mt-2 text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
+        class="mt-2 text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--text)]"
         style={typeStyle}
       >
         {copy.title}
       </h1>
-      <p class="mt-3 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
+      <p class="mt-3 text-[length:var(--font-body)] leading-7 text-[var(--text-muted)]" style={typeStyle}>
         {copy.description}
       </p>
     </div>
-  </FadeIn>
+  </Reveal>
 </section>
 
-{
-  featuredProject && (
-    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-2 md:pt-3 pb-6">
-      <FadeIn>
-        <a
-          href={`/${lang}/projects/${featuredProject.id.split("/").pop()?.replace(/\.mdx?$/, "")}`}
-          class="group block"
-        >
-          <Card class="overflow-hidden p-0">
-            <div class="grid gap-0 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-              <div class="relative border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] lg:border-b-0 lg:border-r overflow-hidden">
-                <ParallaxSection speed={0.1} client:visible>
-                  <ResponsivePicture
-                    src={featuredProject.data.coverImage || "/images/projects/shinjuku-nav-1-optimized.jpg"}
-                    alt={featuredProject.data.title}
-                    sizes="(min-width: 1024px) 60vw, 100vw"
-                    class="aspect-[5/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                </ParallaxSection>
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent transition-opacity group-hover:opacity-70"></div>
-                <div class="pointer-events-none absolute inset-0 bg-[var(--color-accent)]/0 transition-all duration-500 group-hover:bg-[var(--color-accent)]/8"></div>
-              </div>
-              <div class="flex flex-col justify-between p-5 md:p-6">
-                <div>
-                  <div class="flex items-center justify-between gap-3">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-                      {copy.featureEyebrow}
-                    </p>
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-                      {featuredProject.data.publishDate.toLocaleDateString(
-                        isJa ? "ja-JP" : "en-US",
-                        { year: "numeric", month: "long" },
-                      )}
-                    </p>
-                  </div>
-                  <h2
-                    class="mt-4 text-[clamp(1.5rem,2.5vw,2rem)] font-semibold leading-[0.95] tracking-[-0.05em] gradient-text transition-colors"
-                    style={typeStyle}
-                  >
-                    {featuredProject.data.title}
-                  </h2>
-                  <p
-                    class="mt-3 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base"
-                    style={typeStyle}
-                  >
-                    {featuredProject.data.description}
-                  </p>
-                  {
-                    featuredProject.data.impact && (
-                      <p
-                        class="mt-3 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)]"
-                        style={typeStyle}
-                      >
-                        {featuredProject.data.impact}
-                      </p>
-                    )
-                  }
-                </div>
-
-                <div class="mt-4 flex flex-wrap gap-2">
-                  {featuredProject.data.tags.map((tag) => <Tag>{tag}</Tag>)}
-                </div>
-              </div>
-            </div>
-          </Card>
-        </a>
-      </FadeIn>
-    </section>
-  )
-}
-
-<div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10">
-  <div class="section-divider"></div>
-</div>
 <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-6 md:py-8">
-  <FadeIn>
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-          {copy.gridEyebrow}
-        </p>
-        <h2
-          class="mt-2 text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
-          style={typeStyle}
-        >
-          {copy.gridTitle}
-        </h2>
-      </div>
-      <p class="max-w-xl text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
-        {copy.gridDesc}
-      </p>
-    </div>
-  </FadeIn>
-
-  <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-    {(remainingProjects.length > 0 ? remainingProjects : allProjects).map((project, index) => (
-      <ScrollReveal variant="fade-up" delay={index * 90 + Math.random() * 40}>
-        <ProjectCard project={project} lang={lang} accentColor={accentColors[index % accentColors.length]} />
-      </ScrollReveal>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    {allProjects.map((project, index) => (
+      <Reveal delay={index * 90}>
+        <ProjectCard project={project} lang={lang} priority={index === 0} />
+      </Reveal>
     ))}
   </div>
 </section>

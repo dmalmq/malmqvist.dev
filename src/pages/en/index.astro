@@ -1,22 +1,26 @@
 ---
-import { getCollection } from "astro:content";
 import HomePage from "../../components/HomePage.astro";
+import Seo from "../../components/Seo.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const latestPosts = (await getCollection("blog", ({ id }) => id.startsWith("en/")))
-  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-  .slice(0, 2);
-
-const toolSlugs = ["en/revit-geopackage", "en/imdf-converter"];
-const featuredTools = (await getCollection("projects", ({ id }) => toolSlugs.includes(id)))
-  .sort((a, b) => toolSlugs.indexOf(a.id) - toolSlugs.indexOf(b.id));
+const description = "Daniel Malmqvist — BIM Manager & Agentic Programmer in Tokyo. From award-winning hospitals and airports in Sweden to digital twin navigation systems in Japan.";
 ---
 
 <BaseLayout
   title="Daniel Malmqvist | Architectural Engineer & BIM Tools Developer"
-  description="Architectural engineer in Tokyo writing Revit plugins, geospatial converters, and BIM data pipelines for digital twin work."
-  image="/images/projects/shinjuku-nav-1-optimized.jpg"
+  description={description}
+  image="/og/home.png"
   lang="en"
 >
-  <HomePage lang="en" latestPosts={latestPosts} featuredTools={featuredTools} />
+  <Seo
+    slot="head"
+    title="Daniel Malmqvist | Architectural Engineer & BIM Tools Developer"
+    description={description}
+    lang="en"
+    canonical="/en/"
+    alternateEn="/en/"
+    alternateJa="/ja/"
+    alternateSv="/sv/"
+  />
+  <HomePage lang="en" />
 </BaseLayout>

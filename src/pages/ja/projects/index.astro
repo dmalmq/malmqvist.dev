@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import ProjectsIndexPage from "../../../components/ProjectsIndexPage.astro";
+import Seo from "../../../components/Seo.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 
 const allProjects = await getCollection("projects", ({ id }) => {
@@ -20,5 +21,16 @@ const featuredImage =
   image={featuredImage}
   lang="ja"
 >
+  <Seo
+    slot="head"
+    title="プロジェクト | Daniel Malmqvist"
+    description="建築エンジニアリング、BIM運用、デジタルツイン、空間データ変換に関する事例集。"
+    lang="ja"
+    ogImage={featuredImage}
+    canonical="/ja/projects/"
+    alternateEn="/en/projects/"
+    alternateJa="/ja/projects/"
+    alternateSv="/sv/projects/"
+  />
   <ProjectsIndexPage lang="ja" allProjects={allProjects} />
 </BaseLayout>

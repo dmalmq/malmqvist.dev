@@ -1,219 +1,50 @@
 ---
-import Card from "./ui/Card.astro";
-import ScrollReveal from "./ui/ScrollReveal.astro";
+import Reveal from "./animation/Reveal.astro";
+import { Card } from "./ui/card";
 import { type Language } from "../i18n/utils";
 
 interface Props {
   lang: Language;
 }
+
 const { lang } = Astro.props;
-const typeStyle = lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : "";
-
-const timelineColors = ["var(--color-foam)", "var(--color-iris)", "var(--color-gold)"];
-
-const timelineData = [
-  {
-    year: "2023 - Present",
-    role:
-      lang === "ja"
-        ? "BIMデジタルツイン・エンジニア"
-        : "BIM Digital Twin Engineer",
-    company:
-      lang === "ja" ? "JRE Consultants (東京)" : "JRE Consultants (Tokyo)",
-    desc:
-      lang === "ja"
-        ? "日本の国土交通省主導の3D都市モデル「PLATEAU」と連携し、詳細な屋内モデリングや都市スケールのデジタルツインを構築。ネイティブなBIMモデルを、Unity等で動作するインタラクティブプラットフォーム向けに変換する堅牢なデータパイプラインを開発。"
-        : "Building deep indoor navigation workflows and digital twins by integrating native BIM geometry into the Japanese government-backed PLATEAU 3D city model. Developing custom agentic pipelines to convert and connect complex spatial data formats.",
-  },
-  {
-    year: "2021 - 2023",
-    role: lang === "ja" ? "BIMマネージャー" : "BIM Manager",
-    company: lang === "ja" ? "Tengbom (ストックホルム)" : "Tengbom (Stockholm)",
-    desc:
-      lang === "ja"
-        ? "ストックホルム・アーランダ空港第5ターミナル拡張プロジェクト（330m規模）において、BIMマネジメントを牽引。複雑なモデルの統合と品質管理を指揮しました。"
-        : "Led BIM management for the 330m Terminal 5 expansion at Stockholm Arlanda Airport. Managed weekly model exports, quality control, and served as the key technical resource for the project team.",
-  },
-  {
-    year: "2016 - 2021",
-    role:
-      lang === "ja"
-        ? "建築エンジニア / BIMモデラー"
-        : "Architectural Engineer / BIM Modeler",
-    company: lang === "ja" ? "Tengbom (ストックホルム)" : "Tengbom (Stockholm)",
-    desc:
-      lang === "ja"
-        ? "受賞歴のある「Ersta Sjukhus（病院）」プロジェクトにおいて、他社のIFCデータからRevitモデルをゼロから再構築。特徴的なファサードシステムのプライマリモデラーを務め、設備・構造との干渉チェックと施工調整を主導しました。"
-        : "Rebuilt the entire Revit model from scratch based on an IFC model for the award-winning Ersta Sjukhus hospital. Served as primary modeler for the complex facade system, leading interdisciplinary coordination and fabrication meetings.",
-  },
-];
+const entries = {
+  en: [
+    { year: "2016 - 2021", company: "Tengbom (Stockholm)", role: "Architect / BIM Modeler", desc: "Rebuilt the Ersta Sjukhus Revit model from IFC and led facade modeling, coordination, and fabrication-ready BIM work." },
+    { year: "2021 - 2023", company: "Tengbom (Stockholm)", role: "BIM Manager", desc: "Led BIM delivery for Stockholm Arlanda Airport Terminal 5 expansion, including weekly exports, quality control, and team support." },
+    { year: "2023 - 2026", company: "JRE Consultants (Tokyo)", role: "BIM Digital Twin Engineer", desc: "Built indoor-navigation BIM models and spatial data pipelines connected to Japan's PLATEAU 3D city model." },
+    { year: "Present", company: "Tokyo", role: "Architecture, BIM, and automation", desc: "Focused on moving native architectural information directly into operational spatial systems." },
+  ],
+  ja: [
+    { year: "2016 - 2021", company: "Tengbom (ストックホルム)", role: "建築エンジニア / BIMモデラー", desc: "Ersta SjukhusのRevitモデルをIFCから再構築し、特徴的なファサードシステムと分野間調整を担当。" },
+    { year: "2021 - 2023", company: "Tengbom (ストックホルム)", role: "BIMマネージャー", desc: "ストックホルム・アーランダ空港第5ターミナル拡張で、モデル書き出し、品質管理、BIMサポートを主導。" },
+    { year: "2023 - 2026", company: "JRE Consultants (東京)", role: "BIMデジタルツイン・エンジニア", desc: "PLATEAUと連携する屋内ナビゲーション向けに、BIMモデルと空間データ変換パイプラインを構築。" },
+    { year: "Present", company: "Tokyo", role: "建築・BIM・自動化", desc: "建築のネイティブな情報を、運用できる空間システムへ直接つなげる実装に注力。" },
+  ],
+  sv: [
+    { year: "2016 - 2021", company: "Tengbom (Stockholm)", role: "Arkitekt / BIM-modellerare", desc: "Byggde upp Ersta Sjukhus Revit-modell från IFC och ledde fasadmodellering, samordning och tillverkningsklar BIM." },
+    { year: "2021 - 2023", company: "Tengbom (Stockholm)", role: "BIM-manager", desc: "Ledde BIM-leveransen för utbyggnaden av Stockholm Arlanda Airport Terminal 5, inklusive veckovisa exporter, kvalitetskontroll och teamstöd." },
+    { year: "2023 - 2026", company: "JRE Consultants (Tokyo)", role: "BIM Digital Twin Engineer", desc: "Byggde BIM-modeller för inomhusnavigation och spatiala datapipelines kopplade till Japans PLATEAU 3D-stadsmodell." },
+    { year: "Present", company: "Tokyo", role: "Arkitektur, BIM och automation", desc: "Fokuserar på att föra arkitekturens nativa information direkt in i operativa spatiala system." },
+  ],
+}[lang];
 ---
 
-<div id="timeline-root" class="relative">
-  <!-- Desktop: alternating sides -->
-  <div class="hidden md:block">
-    <!-- Center line that draws itself -->
-    <div class="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-[var(--color-accent)]/10">
-      <div id="timeline-draw" class="timeline-draw-line absolute inset-0 w-full bg-[var(--color-accent)]/40"></div>
-    </div>
-
-    <div class="space-y-8">
-      {
-        timelineData.map((item, i) => {
-          const isLeft = i % 2 === 0;
-          const dotColor = timelineColors[i % timelineColors.length];
-          return (
-            <ScrollReveal variant={isLeft ? "slide-left" : "slide-right"} delay={i * 120}>
-              <div class="relative grid grid-cols-[1fr_auto_1fr] gap-8 items-start">
-                {/* Left column */}
-                <div class={isLeft ? "" : "order-3"}>
-                  {isLeft && (
-                    <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
-                      <div>
-                        <h3
-                          class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                          style={typeStyle}
-                        >
-                          {item.role}
-                        </h3>
-                        <p
-                          class="mt-2 text-sm font-semibold leading-7"
-                          style={`color: ${dotColor}; ${typeStyle || ''}`}
-                        >
-                          {item.company}
-                        </p>
-                        <p
-                          class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                          style={typeStyle}
-                        >
-                          {item.desc}
-                        </p>
-                      </div>
-                    </Card>
-                  )}
-                </div>
-
-                {/* Center: dot + year */}
-                <div class="flex flex-col items-center gap-3 pt-4">
-                  <div class="relative h-3.5 w-3.5 rounded-full border-2 bg-[var(--color-bg-primary)]" style={`border-color: ${dotColor}; animation: pulse-glow 2s ease-in-out infinite;`}></div>
-                  <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)] whitespace-nowrap" style={`box-shadow: 0 0 12px -4px ${dotColor};`}>
-                    {item.year}
-                  </span>
-                </div>
-
-                {/* Right column */}
-                <div class={isLeft ? "order-3" : ""}>
-                  {!isLeft && (
-                    <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
-                      <div>
-                        <h3
-                          class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                          style={typeStyle}
-                        >
-                          {item.role}
-                        </h3>
-                        <p
-                          class="mt-2 text-sm font-semibold leading-7"
-                          style={`color: ${dotColor}; ${typeStyle || ''}`}
-                        >
-                          {item.company}
-                        </p>
-                        <p
-                          class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                          style={typeStyle}
-                        >
-                          {item.desc}
-                        </p>
-                      </div>
-                    </Card>
-                  )}
-                </div>
-              </div>
-            </ScrollReveal>
-          );
-        })
-      }
-    </div>
-  </div>
-
-  <!-- Mobile: single column with left line -->
-  <div class="md:hidden relative pl-8">
-    <div class="absolute left-0 top-0 bottom-0 w-px bg-[var(--color-accent)]/30"></div>
-    <div class="space-y-4">
-      {
-        timelineData.map((item, i) => {
-          const dotColor = timelineColors[i % timelineColors.length];
-          return (
-          <ScrollReveal variant="slide-right" delay={i * 120}>
-            <div class="relative">
-              <div class="absolute -left-8 top-7 h-2.5 w-2.5 -translate-x-[calc(50%-0.5px)] rounded-full border-2 bg-[var(--color-bg-primary)]" style={`border-color: ${dotColor}; animation: pulse-glow 2s ease-in-out infinite;`}></div>
-              <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
-                <div class="grid gap-4">
-                  <div>
-                    <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                      {item.year}
-                    </p>
-                    <p
-                      class="mt-4 text-sm font-semibold leading-7"
-                      style={`color: ${dotColor}; ${typeStyle || ''}`}
-                    >
-                      {item.company}
-                    </p>
-                  </div>
-                  <div>
-                    <h3
-                      class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                      style={typeStyle}
-                    >
-                      {item.role}
-                    </h3>
-                    <p
-                      class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                      style={typeStyle}
-                    >
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </ScrollReveal>
-          );
-        })
-      }
-    </div>
+<div class="relative">
+  <div class="absolute bottom-0 left-0 top-0 w-px bg-[var(--line)] md:left-36" aria-hidden="true"></div>
+  <div class="space-y-5">
+    {entries.map((entry, index) => (
+      <Reveal delay={index * 120}>
+        <article class="relative grid gap-3 pl-6 md:grid-cols-[9rem_minmax(0,1fr)] md:gap-8 md:pl-0">
+          <div class="absolute left-0 top-6 h-3 w-3 -translate-x-1/2 rounded-full border border-[var(--accent)] bg-[var(--bg)] md:left-36" aria-hidden="true"></div>
+          <p class="text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] md:pt-6">{entry.year}</p>
+          <Card className="p-6">
+            <p class="text-sm font-bold text-[var(--accent)]">{entry.company}</p>
+            <h3 class="mt-2 text-[length:var(--font-h3)] font-bold tracking-[-0.04em]">{entry.role}</h3>
+            <p class="mt-4 text-base leading-8 text-[var(--text-muted)]">{entry.desc}</p>
+          </Card>
+        </article>
+      </Reveal>
+    ))}
   </div>
 </div>
-
-<script>
-  function initTimelineDraw() {
-    const drawLine = document.getElementById("timeline-draw");
-    if (!drawLine) return;
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) {
-      drawLine.style.transform = "scaleY(1)";
-      return;
-    }
-
-    const root = document.getElementById("timeline-root");
-    if (!root) return;
-
-    const update = () => {
-      const rect = root.getBoundingClientRect();
-      const windowH = window.innerHeight;
-      const totalH = rect.height;
-      if (totalH <= 0) return;
-
-      const scrolled = Math.max(0, windowH - rect.top);
-      const progress = Math.min(1, scrolled / totalH);
-      drawLine.style.transform = `scaleY(${progress})`;
-    };
-
-    window.addEventListener("scroll", update, { passive: true });
-    update();
-  }
-
-  initTimelineDraw();
-  document.addEventListener("astro:after-swap", initTimelineDraw);
-</script>

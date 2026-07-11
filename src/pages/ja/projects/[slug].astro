@@ -3,7 +3,7 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ProjectDetailPage from "../../../components/ProjectDetailPage.astro";
-import { buildArticleJsonLd } from "../../../lib/seo.mjs";
+import Seo from "../../../components/Seo.astro";
 
 export const prerender = true;
 
@@ -37,16 +37,9 @@ const relatedProjects = (await getCollection("projects", ({ id }) =>
     )
     .slice(0, 3);
 
-const jsonLd = buildArticleJsonLd({
-    type: "Article",
-    title: project.data.title,
-    description: project.data.description,
-    path: Astro.url.pathname,
-    image: project.data.coverImage,
-    publishedTime: project.data.publishDate.toISOString(),
-    lang: "ja",
-    keywords: Array.from(new Set([...project.data.tags, ...project.data.techStack])),
-});
+const canonical = Astro.url.pathname;
+const alternateEn = canonical.replace(/^\/ja/, "/en");
+const alternateSv = canonical.replace(/^\/ja/, "/sv");
 ---
 
 <BaseLayout
@@ -58,7 +51,17 @@ const jsonLd = buildArticleJsonLd({
     lang="ja"
     enableLightbox={true}
 >
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <Seo
+        slot="head"
+        title={`${project.data.title} | プロジェクト`}
+        description={project.data.description}
+        lang="ja"
+        ogImage={project.data.coverImage}
+        canonical={canonical}
+        alternateEn={alternateEn}
+        alternateJa={canonical}
+        alternateSv={alternateSv}
+    />
     <ProjectDetailPage
         lang="ja"
         project={project}

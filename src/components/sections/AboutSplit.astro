@@ -1,0 +1,59 @@
+---
+import Reveal from "../animation/Reveal.astro";
+import ResponsivePicture from "../ResponsivePicture.astro";
+import { useTranslations, type Language } from "../../i18n/utils";
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paragraphs = {
+  en: [
+    "My work spans the path from traditional architectural production in Sweden to city-scale digital twin work in Tokyo. The core interest has stayed the same: how space is described, coordinated, and made operational.",
+    "At Tengbom, I worked on award-winning healthcare and airport projects, not as a passive file coordinator but as someone rebuilding living BIM models, coordinating complex facade systems, and resolving interdisciplinary issues under real delivery pressure.",
+  ],
+  ja: [
+    "スウェーデンでの伝統的な建築実務から、現在の東京における都市スケールのデジタルツインまで、一貫して空間をどう構成し、どう扱うかを仕事にしてきました。",
+    "Tengbomでは受賞歴のある病院建築や空港拡張に携わり、単なるファイル管理ではなく、実際に施工へつながるBIMモデルの再構築、ファサード調整、他分野との衝突解消を担いました。",
+  ],
+  sv: [
+    "Mitt arbete spänner från traditionell arkitekturproduktion i Sverige till digitala tvillingar i stadsskala i Tokyo. Kärnintresset har varit detsamma: hur rum beskrivs, samordnas och görs operativa.",
+    "På Tengbom arbetade jag med prisbelönta vård- och flygplatsprojekt — inte som passiv filhanterare, utan med att bygga levande BIM-modeller, samordna komplexa fasadsystem och lösa tvärdisciplinära frågor under verkligt leveranstryck.",
+  ],
+}[lang];
+const aboutLinkLabel = { en: "View About", ja: "プロフィールを見る", sv: "Om mig" }[lang];
+---
+
+<section class="container border-t border-[var(--line)] py-[clamp(3rem,6vw,6rem)]" aria-labelledby="about-split-title">
+  <div class="grid gap-8 lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)] lg:items-center">
+    <Reveal>
+      <div class="overflow-hidden rounded-[var(--radius-feature)] border border-[var(--line)] bg-[var(--surface-soft)]">
+        <ResponsivePicture
+          src="/images/_generated/profile-img-709w.webp"
+          alt="Daniel Malmqvist"
+          sizes="(min-width: 1024px) 34vw, 92vw"
+          class="aspect-[4/5] w-full object-cover"
+        />
+      </div>
+    </Reveal>
+
+    <Reveal delay={150}>
+      <div>
+        <h2 id="about-split-title" class="text-[length:var(--font-h2)]">
+          {t("about.title")}
+        </h2>
+        <div class="mt-6 space-y-4">
+          {paragraphs.map((paragraph) => <p class="max-w-[68ch] text-base leading-8 text-[var(--text-muted)] md:text-lg">{paragraph}</p>)}
+        </div>
+        <a
+          href={`/${lang}/about/`}
+          class="mt-8 inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] border border-[var(--line)] px-6 py-3 text-sm font-bold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+        >
+          {aboutLinkLabel}
+        </a>
+      </div>
+    </Reveal>
+  </div>
+</section>

@@ -7,6 +7,7 @@ const RATE_LIMIT_ERROR = 'Too many requests. Please try again later.';
 const DELIVERY_CONFIG_ERROR = 'Contact delivery is not configured on the server.';
 
 const SUBJECT_LABELS: Record<string, string> = {
+    consulting: 'Consulting',
     inquiry: 'Job Inquiry',
     collab: 'Collaboration',
     general: 'General',

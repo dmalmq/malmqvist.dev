@@ -1,250 +1,262 @@
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import MagneticButton from './animation/MagneticButton';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
 
-export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
-    const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-    const [focused, setFocused] = useState<Record<string, boolean>>({});
-    const [filled, setFilled] = useState<Record<string, boolean>>({});
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { CONTACT_FORM_LABELS } from "./contact-form-labels";
 
-    const labelClass = "ui-field-label";
-    const fieldClass = "ui-control";
-    const buttonClass = "inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:shadow-[0_8px_30px_-8px_var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const texts = {
-        en: {
-            name: "Name",
-            email: "Email",
-            subject: "Subject",
-            subjects: {
-                inquiry: "Job Inquiry",
-                collab: "Collaboration",
-                general: "General"
-            },
-            message: "Message",
-            send: "Send Message",
-            sending: "Sending...",
-            success: "Message sent successfully. I'll get back to you soon.",
-            error: "Something went wrong. Please try again or email me directly."
-        },
-        ja: {
-            name: "お名前",
-            email: "メールアドレス",
-            subject: "件名",
-            subjects: {
-                inquiry: "仕事のご相談",
-                collab: "コラボレーション",
-                general: "その他のお問い合わせ"
-            },
-            message: "メッセージ",
-            send: "送信する",
-            sending: "送信中...",
-            success: "メッセージを送信しました。折り返しご連絡いたします。",
-            error: "エラーが発生しました。もう一度お試しいただくか、直接メールでご連絡ください。"
-        }
-    };
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(120, "Name must be 120 characters or less"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .max(320, "Email must be 320 characters or less")
+    .refine((val) => EMAIL_PATTERN.test(val), {
+      message: "Invalid email address",
+    }),
+  subject: z.enum(["consulting", "inquiry", "collab", "general"], {
+    required_error: "Please select a subject",
+  }),
+  message: z
+    .string()
+    .min(10, "Message must be at least 10 characters")
+    .max(5000, "Message must be 5000 characters or less"),
+  bot_field: z.string().optional(),
+});
 
-    const t = texts[lang];
+type FormValues = z.infer<typeof formSchema>;
 
-    const handleFocus = (field: string) => setFocused(p => ({ ...p, [field]: true }));
-    const handleBlur = (field: string, value: string) => {
-        setFocused(p => ({ ...p, [field]: false }));
-        setFilled(p => ({ ...p, [field]: value.length > 0 }));
-    };
+export default function ContactForm({
+  lang = "en",
+}: {
+  lang?: "en" | "ja" | "sv";
+}) {
+  const labels = CONTACT_FORM_LABELS[lang];
 
-    const isFloating = (field: string) => focused[field] || filled[field];
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: undefined,
+      message: "",
+      bot_field: "",
+    },
+    mode: "onBlur",
+  });
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setStatus('submitting');
+  const { isSubmitting } = form.formState;
+  const submitForm = form.handleSubmit(onSubmit);
 
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData);
-
-        if (data.bot_field) {
-            setStatus('success');
-            return;
-        }
-
-        try {
-            const res = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-
-            if (res.ok) {
-                setStatus('success');
-            } else {
-                setStatus('error');
-            }
-        } catch (err) {
-            setStatus('error');
-        }
-    };
-
-    if (status === 'success') {
-        return (
-            <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="relative rounded-[1.5rem] border border-[var(--color-success)] bg-[var(--color-bg-secondary)] p-8 text-center shadow-[0_24px_64px_-46px_rgba(86,148,159,0.4)] overflow-hidden"
-                aria-live="polite"
-            >
-                {/* Success burst dots */}
-                {[...Array(8)].map((_, i) => {
-                    const angle = (i / 8) * Math.PI * 2;
-                    const x = Math.cos(angle) * 60;
-                    const y = Math.sin(angle) * 60;
-                    return (
-                        <motion.div
-                            key={i}
-                            className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full"
-                            style={{
-                                background: `var(--color-${['pine', 'iris', 'foam', 'love', 'gold', 'pine', 'iris', 'foam'][i]})`,
-                            }}
-                            initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
-                            animate={{ x, y, scale: 0, opacity: 0 }}
-                            transition={{ duration: 0.8, delay: i * 0.05, ease: "easeOut" }}
-                        />
-                    );
-                })}
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 lucide lucide-check-circle-2"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
-                <p className="text-lg font-medium text-[var(--color-text-heading)]">{t.success}</p>
-            </motion.div>
-        );
+  async function onSubmit(values: FormValues) {
+    // Honeypot: if bot_field has a value, silently "succeed"
+    if (values.bot_field) {
+      toast.success(labels.success);
+      form.reset();
+      return;
     }
 
-    return (
-        <form onSubmit={handleSubmit} className="space-y-6" aria-live="polite">
-            <input type="text" name="bot_field" className="hidden" aria-hidden="true" tabIndex={-1} />
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          subject: values.subject,
+          message: values.message,
+        }),
+      });
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {(['name', 'email'] as const).map((field, i) => (
-                    <motion.div
-                        key={field}
-                        className="relative space-y-2"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1, duration: 0.4 }}
-                    >
-                        <label
-                            htmlFor={field}
-                            className={`${labelClass} transition-colors duration-200 ${isFloating(field) ? 'text-[var(--color-accent)]' : ''}`}
-                        >
-                            {field === 'name' ? t.name : t.email}
-                        </label>
-                        <input
-                            type={field === 'email' ? 'email' : 'text'}
-                            id={field}
-                            name={field}
-                            required
-                            readOnly={status === 'submitting'}
-                            className={fieldClass}
-                            onFocus={() => handleFocus(field)}
-                            onBlur={(e) => handleBlur(field, e.target.value)}
-                        />
-                    </motion.div>
-                ))}
-            </div>
+      if (res.ok) {
+        const data = (await res.json()) as { success: boolean };
+        if (data.success) {
+          toast.success(labels.success);
+        }
+      } else if (res.status === 400) {
+        const data = (await res.json()) as { error?: string };
+        const errorMsg =
+          typeof data.error === "string"
+            ? data.error
+            : "Please check your input";
 
-            <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.4 }}
-            >
-                <label htmlFor="subject" className={labelClass}>{t.subject}</label>
-                <div className="relative">
-                    <select
-                        id="subject"
-                        name="subject"
-                        required
-                        disabled={status === 'submitting'}
-                        className={`${fieldClass} appearance-none pr-12`}
-                    >
-                        <option value="inquiry">{t.subjects.inquiry}</option>
-                        <option value="collab">{t.subjects.collab}</option>
-                        <option value="general">{t.subjects.general}</option>
-                    </select>
-                    <svg
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]"
-                    >
-                        <path d="m6 9 6 6 6-6" />
-                    </svg>
-                </div>
-            </motion.div>
+        if (errorMsg.toLowerCase().includes("email")) {
+          form.setError("email", { message: errorMsg });
+        } else if (errorMsg.toLowerCase().includes("name")) {
+          form.setError("name", { message: errorMsg });
+        } else if (
+          errorMsg.toLowerCase().includes("message") ||
+          errorMsg.toLowerCase().includes("short")
+        ) {
+          form.setError("message", { message: errorMsg });
+        } else {
+          form.setError("root", { message: errorMsg });
+        }
+      } else if (res.status === 429) {
+        toast.error(
+          { en: "Please wait a bit", ja: "少々お待ちください", sv: "Vänta en stund" }[lang]
+        );
+      } else {
+        // 500, 503, or other server errors
+        toast.error(labels.deliveryIssue);
+      }
+    } catch {
+      toast.error(labels.deliveryIssue);
+    }
+  }
 
-            <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-            >
-                <label
-                    htmlFor="message"
-                    className={`${labelClass} transition-colors duration-200 ${isFloating('message') ? 'text-[var(--color-accent)]' : ''}`}
-                >
-                    {t.message}
-                </label>
-                <textarea
-                    id="message"
-                    name="message"
-                    required
+  return (
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={submitForm}
+          className="space-y-5"
+          noValidate
+        >
+          {/* Honeypot — visually hidden, bots may still fill it */}
+          <div className="absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
+            <input
+              tabIndex={-1}
+              autoComplete="off"
+              {...form.register("bot_field")}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{labels.name}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder={labels.namePlaceholder}
+                      maxLength={120}
+                      aria-invalid={!!form.formState.errors.name}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{labels.email}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      type="email"
+                      placeholder={labels.emailPlaceholder}
+                      maxLength={320}
+                      aria-invalid={!!form.formState.errors.email}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="subject"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{labels.subject}</FormLabel>
+                <FormControl>
+                  <select
+                    {...field}
+                    value={field.value ?? ""}
+                    disabled={isSubmitting}
+                    aria-invalid={!!form.formState.errors.subject}
+                    className="flex h-11 w-full rounded-[var(--radius-control)] border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] shadow-sm transition-colors placeholder:text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="" disabled>
+                      {labels.subjectPlaceholder}
+                    </option>
+                    <option value="consulting">{labels.subjectConsulting}</option>
+                    <option value="inquiry">{labels.subjectInquiry}</option>
+                    <option value="collab">{labels.subjectCollab}</option>
+                    <option value="general">{labels.subjectGeneral}</option>
+                  </select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{labels.message}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    value={field.value ?? ""}
+                    placeholder={labels.messagePlaceholder}
                     rows={6}
-                    readOnly={status === 'submitting'}
-                    className={`${fieldClass} min-h-[11rem] resize-y`}
-                    onFocus={() => handleFocus('message')}
-                    onBlur={(e) => handleBlur('message', e.target.value)}
-                ></textarea>
-            </motion.div>
+                    maxLength={5000}
+                    aria-invalid={!!form.formState.errors.message}
+                    disabled={isSubmitting}
+                    className="min-h-[11rem] resize-y"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <AnimatePresence>
-                {status === 'error' && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="rounded-[1rem] border border-[var(--color-error)] bg-[var(--color-error)]/10 p-4 text-sm font-medium text-[var(--color-error)] shadow-[0_18px_52px_-42px_rgba(180,99,122,0.45)]"
-                    >
-                        {t.error}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+          {form.formState.errors.root && (
+            <p className="text-sm text-destructive">
+              {form.formState.errors.root.message}
+            </p>
+          )}
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.4 }}
-            >
-                <MagneticButton className="w-full">
-                    <button
-                        type="submit"
-                        disabled={status === 'submitting'}
-                        className={buttonClass}
-                    >
-                        {status === 'submitting' ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                {t.sending}
-                            </>
-                        ) : t.send}
-                    </button>
-                </MagneticButton>
-            </motion.div>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            onClick={(event) => {
+              event.preventDefault();
+              void submitForm();
+            }}
+            className="w-full"
+            variant="primary"
+            size="lg"
+          >
+            {isSubmitting ? labels.sending : labels.send}
+          </Button>
         </form>
-    );
+      </Form>
+      <Toaster />
+    </>
+  );
 }

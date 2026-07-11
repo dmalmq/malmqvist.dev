@@ -26,17 +26,17 @@ const hasAside = Astro.slots.has("aside");
   ]}
 >
   <div class="max-w-4xl">
-    <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+    <p class="eyebrow">
       {eyebrow}
     </p>
     <h1
-      class="mt-4 max-w-4xl text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-[var(--color-text-heading)]"
+      class="mt-4 max-w-4xl text-[clamp(2.5rem,6vw,4.5rem)]"
       style={style}
     >
       {title}
     </h1>
     <p
-      class="mt-4 max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)] [&_a]:text-[var(--color-accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[var(--color-accent-hover)] md:text-xl"
+      class="mt-4 max-w-3xl text-lg leading-8 text-[var(--text-muted)] [&_a]:text-[var(--accent)] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:brightness-110 md:text-xl"
       style={style}
       set:html={description}
     />

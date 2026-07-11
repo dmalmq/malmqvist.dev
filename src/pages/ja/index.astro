@@ -1,22 +1,26 @@
 ---
-import { getCollection } from "astro:content";
 import HomePage from "../../components/HomePage.astro";
+import Seo from "../../components/Seo.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const latestPosts = (await getCollection("blog", ({ id }) => id.startsWith("ja/")))
-  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-  .slice(0, 2);
-
-const toolSlugs = ["ja/revit-geopackage", "ja/imdf-converter"];
-const featuredTools = (await getCollection("projects", ({ id }) => toolSlugs.includes(id)))
-  .sort((a, b) => toolSlugs.indexOf(a.id) - toolSlugs.indexOf(b.id));
+const description = "東京を拠点に、スウェーデンの受賞歴ある病院・空港プロジェクトから日本のデジタルツインナビゲーションまでをつなぐBIM Manager & Agentic Programmer。";
 ---
 
 <BaseLayout
   title="Daniel Malmqvist | 建築エンジニア / BIMツール開発"
-  description="東京を拠点に、Revitプラグイン、地理空間データのコンバータ、BIMデータパイプラインを開発する建築エンジニアのポートフォリオ。"
-  image="/images/projects/shinjuku-nav-1-optimized.jpg"
+  description={description}
+  image="/og/home.png"
   lang="ja"
 >
-  <HomePage lang="ja" latestPosts={latestPosts} featuredTools={featuredTools} />
+  <Seo
+    slot="head"
+    title="Daniel Malmqvist | 建築エンジニア / BIMツール開発"
+    description={description}
+    lang="ja"
+    canonical="/ja/"
+    alternateEn="/en/"
+    alternateJa="/ja/"
+    alternateSv="/sv/"
+  />
+  <HomePage lang="ja" />
 </BaseLayout>

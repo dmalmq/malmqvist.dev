@@ -1,0 +1,342 @@
+---
+import Reveal from "./animation/Reveal.astro";
+import type { Language } from "../i18n/utils";
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  en: {
+    eyebrow: "CONSULTING",
+    h1: "Consulting for BIM-driven practices.",
+    intro:
+      "I take on consulting engagements for architecture practices, contractors, and property owners in Sweden and beyond — delivered remotely from Tokyo. Seven years at Tengbom in Stockholm, from award-winning hospitals to Arlanda's Terminal 5, and current digital twin work in Japan.",
+    ctaPrimary: "Get in touch",
+    ctaSecondary: "View projects",
+    servicesHeading: "Services",
+    experienceHeading: "Selected project experience",
+    experienceNote:
+      "These are employment projects that shaped the consulting practice — not a client list.",
+    practicalHeading: "Practical details",
+    practical: [
+      "Based in Tokyo, remote-first.",
+      "Working-hours overlap with Swedish mornings (JST / CET).",
+      "Working languages: Swedish, English, Japanese.",
+    ],
+    ctaBandTitle: "Let's discuss a fit.",
+    ctaBandButton: "Contact me",
+    experience: [
+      { label: "Arlanda T5", href: null as string | null },
+      { label: "Ersta Sjukhus", href: `/${lang}/projects/ersta-sjukhus/` },
+      { label: "Sta.navi / PLATEAU", href: `/${lang}/projects/shinjuku-nav/` },
+    ],
+    services: [
+      {
+        tag: "BIM",
+        title: "BIM management & coordination",
+        description:
+          "Project BIM setup, execution plans, and model coordination that holds up in production — the same discipline I ran on Ersta Sjukhus and Arlanda Terminal 5.",
+        deliverables: [
+          "BIM execution plans (BEP)",
+          "Model QA, exports, and delivery routines",
+          "Cross-discipline coordination and clash detection",
+          "Revit standards and templates",
+        ],
+      },
+      {
+        tag: "DEV",
+        title: "Revit automation & custom tooling",
+        description:
+          "Plugins and pipelines that remove the manual steps from your delivery: C# add-ins on the Revit API, Python converters, batch automation. Example: a one-step Revit-to-GeoPackage exporter that replaced a DWG-to-Shapefile chain.",
+        deliverables: [
+          "Custom Revit add-ins (C#)",
+          "Format converters and export pipelines",
+          "Workflow audits and automation roadmaps",
+        ],
+      },
+      {
+        tag: "GIS",
+        title: "BIM–GIS & digital twin integration",
+        description:
+          "Getting building data into the systems that need it: IFC, CityGML, IMDF, GeoPackage, 3D Tiles. I build the pipelines behind JR East's Sta.navi indoor navigation and Japan's PLATEAU city model.",
+        deliverables: [
+          "BIM-to-GIS conversion pipelines",
+          "Indoor mapping datasets (IMDF)",
+          "Digital twin data strategy",
+        ],
+      },
+      {
+        tag: "ARK",
+        title: "Architectural design support",
+        description:
+          "Hands-on Revit production when your team needs capacity: modeling, documentation, and facade or detail coordination, delivered to your office standards.",
+        deliverables: [
+          "Production modeling and documentation",
+          "IFC-to-Revit model rebuilds",
+          "Facade systems and fabrication coordination",
+        ],
+      },
+    ],
+  },
+  ja: {
+    eyebrow: "コンサルティング",
+    h1: "BIMを軸にした実務向けコンサルティング。",
+    intro:
+      "建築事務所、施工者、不動産オーナー向けのコンサルティングを、東京からリモートで引き受けています。ストックホルムのTengbomで7年、受賞歴のある病院からアーランダ第5ターミナルまで、現在は日本でのデジタルツイン実装に従事しています。",
+    ctaPrimary: "お問い合わせ",
+    ctaSecondary: "プロジェクトを見る",
+    servicesHeading: "サービス",
+    experienceHeading: "関連プロジェクト経験",
+    experienceNote:
+      "これらは雇用先でのプロジェクト経験であり、コンサルティング顧客リストではありません。",
+    practicalHeading: "実務の前提",
+    practical: [
+      "東京拠点、リモートファースト。",
+      "スウェーデン朝時間帯との勤務時間オーバーラップ（JST / CET）。",
+      "対応言語：スウェーデン語、英語、日本語。",
+    ],
+    ctaBandTitle: "まずは相談から。",
+    ctaBandButton: "お問い合わせ",
+    experience: [
+      { label: "Arlanda T5", href: null as string | null },
+      { label: "Ersta Sjukhus", href: `/${lang}/projects/ersta-sjukhus/` },
+      { label: "Sta.navi / PLATEAU", href: `/${lang}/projects/shinjuku-nav/` },
+    ],
+    services: [
+      {
+        tag: "BIM",
+        title: "BIMマネジメントと調整",
+        description:
+          "本番に耐えるプロジェクトBIMの立ち上げ、実行計画、モデル調整。Ersta Sjukhusとアーランダ第5ターミナルで運用してきた同じ規律です。",
+        deliverables: [
+          "BIM実行計画（BEP）",
+          "モデルQA、エクスポート、納品ルーチン",
+          "分野横断の調整とクラッシング検出",
+          "Revit標準とテンプレート",
+        ],
+      },
+      {
+        tag: "DEV",
+        title: "Revit自動化とカスタムツール",
+        description:
+          "納品から手作業を取り除くプラグインとパイプライン：Revit API上のC#アドイン、Pythonコンバータ、バッチ自動化。例：DWG→Shapefile連鎖を置き換えた一段のRevit→GeoPackageエクスポータ。",
+        deliverables: [
+          "カスタムRevitアドイン（C#）",
+          "フォーマット変換とエクスポートパイプライン",
+          "ワークフロー監査と自動化ロードマップ",
+        ],
+      },
+      {
+        tag: "GIS",
+        title: "BIM–GISとデジタルツイン統合",
+        description:
+          "建物データを必要とするシステムへ届ける：IFC、CityGML、IMDF、GeoPackage、3D Tiles。JR東日本Sta.navi屋内ナビとPLATEAU都市モデルを支えるパイプラインを構築しています。",
+        deliverables: [
+          "BIM→GIS変換パイプライン",
+          "屋内マッピングデータセット（IMDF）",
+          "デジタルツインデータ戦略",
+        ],
+      },
+      {
+        tag: "ARK",
+        title: "建築設計サポート",
+        description:
+          "チームにキャパシティが必要なときの実務Revit：モデリング、図面化、ファサードやディテール調整を、貴社の事務所標準に合わせて提供します。",
+        deliverables: [
+          "本番モデリングと図面化",
+          "IFC→Revitモデル再構築",
+          "ファサードシステムと製作調整",
+        ],
+      },
+    ],
+  },
+  sv: {
+    eyebrow: "KONSULTTJÄNSTER",
+    h1: "Konsulttjänster för BIM-drivna verksamheter.",
+    intro:
+      "Jag tar konsultuppdrag för arkitektkontor, entreprenörer och fastighetsägare i Sverige och vidare — levererat remote från Tokyo. Sju år på Tengbom i Stockholm, från prisbelönta sjukhus till Arlanda Terminal 5, och nu digitala tvillingar i Japan.",
+    ctaPrimary: "Kontakta mig",
+    ctaSecondary: "Se projekt",
+    servicesHeading: "Tjänster",
+    experienceHeading: "Utvald projekterfarenhet",
+    experienceNote:
+      "Det här är anställningsprojekt som format konsultpraktiken — inte en kundlista.",
+    practicalHeading: "Praktiska detaljer",
+    practical: [
+      "Baserad i Tokyo, remote-first.",
+      "Överlapp i arbetstid med svenska morgnar (JST / CET).",
+      "Arbetsspråk: svenska, engelska, japanska.",
+    ],
+    ctaBandTitle: "Låt oss se om det passar.",
+    ctaBandButton: "Kontakta mig",
+    experience: [
+      { label: "Arlanda T5", href: null as string | null },
+      { label: "Ersta Sjukhus", href: `/${lang}/projects/ersta-sjukhus/` },
+      { label: "Sta.navi / PLATEAU", href: `/${lang}/projects/shinjuku-nav/` },
+    ],
+    services: [
+      {
+        tag: "BIM",
+        title: "BIM-ledning & samordning",
+        description:
+          "Projekt-BIM, genomförandeplaner och modellsamordning som håller i produktion — samma disciplin som på Ersta Sjukhus och Arlanda Terminal 5.",
+        deliverables: [
+          "BIM-genomförandeplaner (BEP)",
+          "Modell-QA, export och leveransrutiner",
+          "Tvärdisciplinär samordning och krockkontroll",
+          "Revit-standarder och mallar",
+        ],
+      },
+      {
+        tag: "DEV",
+        title: "Revit-automation & egna verktyg",
+        description:
+          "Plugins och pipelines som tar bort manuella steg i leveransen: C#-add-ins mot Revit API, Python-konverterare, batchautomation. Exempel: en enstegs Revit-till-GeoPackage-export som ersatte en DWG-till-Shapefile-kedja.",
+        deliverables: [
+          "Egna Revit-add-ins (C#)",
+          "Formatkonverterare och exportpipelines",
+          "Arbetsflödesaudits och automationsplaner",
+        ],
+      },
+      {
+        tag: "GIS",
+        title: "BIM–GIS & digitala tvillingar",
+        description:
+          "Få byggnadsdata in i systemen som behöver den: IFC, CityGML, IMDF, GeoPackage, 3D Tiles. Jag bygger pipelines bakom JR Easts Sta.navi inomhusnavigering och Japans PLATEAU-stadsmodell.",
+        deliverables: [
+          "BIM-till-GIS-konverteringspipelines",
+          "Inomhuskartläggning (IMDF)",
+          "Datastrategi för digitala tvillingar",
+        ],
+      },
+      {
+        tag: "ARK",
+        title: "Arkitektoniskt designstöd",
+        description:
+          "Praktisk Revit-produktion när teamet behöver kapacitet: modellering, dokumentation och fasad- eller detaljsamordning, levererat enligt er kontorsstandard.",
+        deliverables: [
+          "Produktionsmodellering och dokumentation",
+          "IFC-till-Revit-modellombyggnad",
+          "Fasadsystem och tillverkningssamordning",
+        ],
+      },
+    ],
+  },
+} as const;
+
+const t = copy[lang];
+---
+
+<div class="bg-[var(--bg)] text-[var(--text)]">
+  <section class="container py-[clamp(4rem,8vw,8rem)]">
+    <Reveal>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h1 class="mt-4 max-w-4xl text-[length:var(--font-hero)]">{t.h1}</h1>
+      <p class="mt-6 max-w-3xl text-base leading-8 text-[var(--text-muted)] md:text-lg">{t.intro}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href={`/${lang}/contact/`}
+          class="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] bg-[var(--accent)] px-6 py-3 text-sm font-bold text-[var(--accent-ink)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+        >
+          {t.ctaPrimary}
+        </a>
+        <a
+          href={`/${lang}/projects/`}
+          class="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] border border-[var(--line)] px-6 py-3 text-sm font-bold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+        >
+          {t.ctaSecondary}
+        </a>
+      </div>
+    </Reveal>
+  </section>
+
+  <section class="container border-t border-[var(--line)] py-[clamp(4rem,8vw,8rem)]" aria-labelledby="services-title">
+    <Reveal>
+      <p class="eyebrow">{t.servicesHeading}</p>
+      <h2 id="services-title" class="mt-3 text-[length:var(--font-h2)]">{t.servicesHeading}</h2>
+    </Reveal>
+
+    <div class="mt-10">
+      {t.services.map((service, index) => (
+        <Reveal delay={index * 80}>
+          <article class="border-t border-[var(--line)] py-10 md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-10">
+            <div>
+              <p class="font-mono text-xs font-medium uppercase tracking-[0.22em] text-[var(--accent)]">{service.tag}</p>
+              <h3 class="mt-3 text-[length:var(--font-h3)]">{service.title}</h3>
+            </div>
+            <div>
+              <p class="text-base leading-8 text-[var(--text-muted)]">{service.description}</p>
+              <ul class="mt-5 space-y-2">
+                {service.deliverables.map((item) => (
+                  <li class="flex gap-3 text-sm leading-7 text-[var(--text)]">
+                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        </Reveal>
+      ))}
+    </div>
+  </section>
+
+  <section class="container border-t border-[var(--line)] py-[clamp(4rem,8vw,8rem)]" aria-labelledby="experience-title">
+    <Reveal>
+      <p class="eyebrow">{t.experienceHeading}</p>
+      <h2 id="experience-title" class="mt-3 text-[length:var(--font-h2)]">{t.experienceHeading}</h2>
+      <p class="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">{t.experienceNote}</p>
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        {t.experience.map((item) => (
+          item.href ? (
+            <a
+              href={item.href}
+              class="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface)] p-5 text-sm font-bold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              {item.label}
+            </a>
+          ) : (
+            <div class="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface)] p-5 text-sm font-bold text-[var(--text)]">
+              {item.label}
+            </div>
+          )
+        ))}
+      </div>
+    </Reveal>
+  </section>
+
+  <section class="container border-t border-[var(--line)] py-[clamp(4rem,8vw,8rem)]" aria-labelledby="practical-title">
+    <Reveal>
+      <p class="eyebrow">{t.practicalHeading}</p>
+      <h2 id="practical-title" class="mt-3 text-[length:var(--font-h2)]">{t.practicalHeading}</h2>
+      <ul class="mt-6 max-w-2xl space-y-3">
+        {t.practical.map((item) => (
+          <li class="flex gap-3 text-base leading-8 text-[var(--text-muted)]">
+            <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </Reveal>
+  </section>
+
+  <section class="border-t border-[var(--line)] bg-[var(--surface-soft)] py-[clamp(4rem,8vw,8rem)]" aria-labelledby="consulting-cta-title">
+    <div class="container text-center">
+      <Reveal>
+        <p class="eyebrow">Contact</p>
+        <h2 id="consulting-cta-title" class="mx-auto mt-3 max-w-3xl text-[length:var(--font-h2)]">{t.ctaBandTitle}</h2>
+        <div class="mt-8 flex justify-center">
+          <a
+            href={`/${lang}/contact/`}
+            class="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] bg-[var(--accent)] px-7 py-3 text-sm font-bold text-[var(--accent-ink)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+          >
+            {t.ctaBandButton}
+          </a>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+</div>

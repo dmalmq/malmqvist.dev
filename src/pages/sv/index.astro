@@ -1,0 +1,26 @@
+---
+import HomePage from "../../components/HomePage.astro";
+import Seo from "../../components/Seo.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const description = "Daniel Malmqvist — BIM Manager & Agentic Programmer i Tokyo. Från prisbelönta sjukhus och flygplatser i Sverige till digitala tvillingnavigationssystem i Japan.";
+---
+
+<BaseLayout
+  title="Daniel Malmqvist | Arkitekt, BIM-utvecklare & konsult"
+  description={description}
+  image="/og/home.png"
+  lang="sv"
+>
+  <Seo
+    slot="head"
+    title="Daniel Malmqvist | Arkitekt, BIM-utvecklare & konsult"
+    description={description}
+    lang="sv"
+    canonical="/sv/"
+    alternateEn="/en/"
+    alternateJa="/ja/"
+    alternateSv="/sv/"
+  />
+  <HomePage lang="sv" />
+</BaseLayout>
