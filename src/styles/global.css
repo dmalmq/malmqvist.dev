@@ -173,11 +173,6 @@
   color: var(--accent);
 }
 
-.eyebrow-vertical {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
 .seal {
   display: grid;
   place-items: center;

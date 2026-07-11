@@ -97,4 +97,10 @@ test.describe("home structure (evidence-first layout)", () => {
     await expect(focused).toBeVisible();
     await expect(page.locator("main#main-content")).toBeAttached();
   });
+
+  test("route kicker is visible on phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/en/");
+    await expect(page.locator("main .eyebrow")).toBeVisible();
+  });
 });
