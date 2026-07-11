@@ -40,6 +40,29 @@ test.describe("home structure (evidence-first layout)", () => {
   });
 
   test("belief ladder: practice leads, covers are unique", async ({ page }) => {
+    // Normalize cover stems across generated vs source paths so uniqueness is real.
+    // e.g. projects__shinjuku-nav-1-optimized-1600w.webp and shinjuku-nav-1-optimized.jpg
+    // both become shinjuku-nav-1-optimized.
+    const normalizeCoverStem = (url: string) => {
+      const basename = url.split("/").pop() ?? url;
+      return basename
+        .replace(/^(?:[a-z0-9-]+__)+/i, "")
+        .replace(/-\d+w(?=\.|$)/, "")
+        .replace(/\.[^.]+$/, "");
+    };
+    expect(
+      normalizeCoverStem(
+        "/_generated/projects__shinjuku-nav-1-optimized-1600w.webp",
+      ),
+    ).toBe(
+      normalizeCoverStem("/images/projects/shinjuku-nav-1-optimized.jpg"),
+    );
+    expect(
+      normalizeCoverStem(
+        "/_generated/projects__shinjuku-nav-1-optimized-1600w.webp",
+      ),
+    ).toBe("shinjuku-nav-1-optimized");
+
     await page.goto("/en/");
     // Ladder order: Ersta (practice) → Shinjuku (systems bridge) → GeoPackage (tooling).
     const hrefs = await page.$$eval(".project-card a[href]", (links) =>
@@ -49,15 +72,11 @@ test.describe("home structure (evidence-first layout)", () => {
     expect(hrefs[1]).toContain("/projects/shinjuku-nav/");
     expect(hrefs[2]).toContain("/projects/revit-geopackage/");
     // Evidence integrity: no image file may appear twice on the homepage.
-    const sources = await page.$$eval("main img", (imgs) =>
-      imgs.map((img) =>
-        (img.currentSrc || img.src)
-          .split("/")
-          .pop()!
-          // Responsive variants of one asset share a stem: strip -800w/-1600w etc.
-          .replace(/-\d+w\./, "."),
-      ),
-    );
+    const sources = (
+      await page.$$eval("main img", (imgs) =>
+        imgs.map((img) => img.currentSrc || img.src),
+      )
+    ).map(normalizeCoverStem);
     expect(new Set(sources).size).toBe(sources.length);
   });
 });
