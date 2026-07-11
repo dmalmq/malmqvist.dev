@@ -14,7 +14,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<main class="home-page bg-[var(--bg)] text-[var(--text)]">
+<div class="home-page bg-[var(--bg)] text-[var(--text)]">
   <section class="hero-section relative isolate overflow-hidden bg-[var(--bg)]">
     <div class="container relative grid min-h-[100svh] gap-12 py-[clamp(6rem,10vw,8rem)] lg:grid-cols-[minmax(0,1fr)_minmax(22rem,34rem)] lg:items-center">
       <Reveal>
@@ -64,4 +64,4 @@ const t = useTranslations(lang);
   <SelectedWork lang={lang} />
   <AboutSplit lang={lang} />
   <CtaBand lang={lang} />
-</main>
+</div>

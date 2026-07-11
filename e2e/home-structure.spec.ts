@@ -74,7 +74,10 @@ test.describe("home structure (evidence-first layout)", () => {
     // Evidence integrity: no image file may appear twice on the homepage.
     const sources = (
       await page.$$eval("main img", (imgs) =>
-        imgs.map((img) => img.currentSrc || img.src),
+        imgs.map((img) => {
+          const el = img as HTMLImageElement;
+          return el.currentSrc || el.src;
+        }),
       )
     ).map(normalizeCoverStem);
     expect(new Set(sources).size).toBe(sources.length);
@@ -96,6 +99,7 @@ test.describe("home structure (evidence-first layout)", () => {
     await expect(focused).toHaveAttribute("href", "#main-content");
     await expect(focused).toBeVisible();
     await expect(page.locator("main#main-content")).toBeAttached();
+    await expect(page.locator("main")).toHaveCount(1);
   });
 
   test("route kicker is visible on phone", async ({ page }) => {
