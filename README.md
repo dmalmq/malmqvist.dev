@@ -41,6 +41,14 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+### Cesium project demo
+
+1. Build the allowlisted viewer: `npm run build:demo-viewer` (sources [dmalmq/3D-Tiles-Viewer](https://github.com/dmalmq/3D-Tiles-Viewer)).
+2. Optional local tiles: set `PUBLIC_CESIUM_DEMO_MANIFEST_URL` to a CORS-enabled venue manifest (`?manifest=` is passed to the viewer).
+3. Open `/en/projects/3d-cesium-viewer/` → **Load interactive demo**.
+
+Cesium stays unloaded until that click; without a manifest URL the page stays in a pending state.
+
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
