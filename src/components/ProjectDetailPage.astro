@@ -7,6 +7,8 @@ import FadeIn from "./ui/FadeIn.astro";
 import ProjectCard from "./ProjectCard.astro";
 import ResponsivePicture from "./ResponsivePicture.astro";
 import Tag from "./ui/Tag.astro";
+import CesiumViewerGate from "./demos/CesiumViewerGate";
+import { resolveCesiumDemoManifestUrl } from "../lib/cesium-demo";
 
 interface Props {
   lang: Language;
@@ -21,9 +23,19 @@ const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
 const mediaScopeId = `project-media-${project.id.replaceAll("/", "-")}`;
 const galleryImages = Array.from(
   new Set([project.data.coverImage, ...project.data.galleryImages].filter(Boolean)),
-);
+).filter((s): s is string => typeof s === "string");
 const featuredImage = galleryImages[0];
 const secondaryGallery = galleryImages.slice(1);
+
+const demo = project.data.demo;
+const isCesiumDemo = demo?.type === "cesium-viewer";
+const demoManifestUrl = isCesiumDemo
+  ? resolveCesiumDemoManifestUrl(demo.manifestUrl)
+  : null;
+const demoPoster =
+  (isCesiumDemo && demo.poster) ||
+  project.data.coverImage ||
+  "/images/projects/shinjuku-nav-1-optimized.jpg";
 const formattedDate = new Intl.DateTimeFormat(isJa ? "ja-JP" : "en-US", {
   year: "numeric",
   month: "long",
@@ -43,7 +55,7 @@ const overviewCards = [
     label: isJa ? "成果" : "Outcome",
     value: project.data.impact,
   },
-].filter(Boolean);
+].filter((item): item is { label: string; value: string } => Boolean(item));
 
 const copy = isJa
   ? {
@@ -387,6 +399,18 @@ const copy = isJa
     </div>
   </div>
 </section>
+
+{isCesiumDemo && (
+  <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-8 md:py-10">
+    <CesiumViewerGate
+      client:visible
+      lang={lang}
+      posterSrc={demoPoster}
+      posterAlt={project.data.title}
+      manifestUrl={demoManifestUrl}
+    />
+  </section>
+)}
 
 {
   relatedProjects.length > 0 && (
