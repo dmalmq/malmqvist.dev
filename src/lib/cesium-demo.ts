@@ -4,6 +4,9 @@ export type CesiumDemoConfig = {
   poster?: string;
 };
 
+/** Public path to the built viewer entry (under public/). */
+export const VIEWER_ASSET_INDEX = "/demos/cesium-viewer/viewer.html";
+
 /** Frontmatter wins over env; empty string treated as unset. */
 export function resolveCesiumDemoManifestUrl(
   frontmatterUrl?: string,
@@ -17,8 +20,6 @@ export function resolveCesiumDemoManifestUrl(
 }
 
 export function buildViewerIframeSrc(manifestUrl: string): string {
-  const base = "/demos/cesium-viewer/viewer.html";
+  const base = VIEWER_ASSET_INDEX;
   return `${base}?manifest=${encodeURIComponent(manifestUrl)}`;
 }
-
-export const VIEWER_ASSET_INDEX = "/demos/cesium-viewer/viewer.html";

@@ -6,6 +6,8 @@ type Props = {
   posterSrc: string;
   posterAlt: string;
   manifestUrl: string | null;
+  /** Server/build-time: viewer.html present under public/demos/cesium-viewer/. */
+  viewerAvailable: boolean;
 };
 
 const copy = {
@@ -14,6 +16,8 @@ const copy = {
     title: "Published-session 3D Tiles viewer",
     pending:
       "Demo tiles are not published on this site yet. When a manifest URL is configured, you can load the viewer here.",
+    missingAssets:
+      "The interactive viewer build is not available on this deployment. Run the demo viewer build and redeploy, or open the project without the live demo.",
     load: "Load interactive demo",
     close: "Close demo",
     openTab: "Open in new tab",
@@ -24,6 +28,8 @@ const copy = {
     title: "公開セッション用 3D Tiles ビューア",
     pending:
       "デモ用タイルはこのサイトにはまだ公開されていません。マニフェストURLが設定されると、ここでビューアを読み込めます。",
+    missingAssets:
+      "このデプロイにはインタラクティブビューアのビルドがありません。デモ用ビューアをビルドして再デプロイしてください。",
     load: "インタラクティブデモを読み込む",
     close: "デモを閉じる",
     openTab: "新しいタブで開く",
@@ -34,6 +40,8 @@ const copy = {
     title: "Publicerad 3D Tiles-visare",
     pending:
       "Demodata är inte publicerad på den här sajten ännu. När en manifest-URL är konfigurerad kan du ladda visaren här.",
+    missingAssets:
+      "Den interaktiva visaren saknas i den här distributionen. Bygg demo-visaren och publicera igen.",
     load: "Ladda interaktiv demo",
     close: "Stäng demo",
     openTab: "Öppna i ny flik",
@@ -46,6 +54,7 @@ export default function CesiumViewerGate({
   posterSrc,
   posterAlt,
   manifestUrl,
+  viewerAvailable,
 }: Props) {
   const t = copy[lang];
   const [open, setOpen] = useState(false);
@@ -58,8 +67,15 @@ export default function CesiumViewerGate({
     };
   }, []);
 
-  const canLoad = Boolean(manifestUrl);
-  const iframeSrc = manifestUrl ? buildViewerIframeSrc(manifestUrl) : null;
+  const canLoad = Boolean(manifestUrl) && viewerAvailable;
+  const iframeSrc = canLoad && manifestUrl ? buildViewerIframeSrc(manifestUrl) : null;
+
+  let statusMessage: string | null = null;
+  if (!viewerAvailable) {
+    statusMessage = t.missingAssets;
+  } else if (!manifestUrl) {
+    statusMessage = t.pending;
+  }
 
   return (
     <div className="border-t border-[var(--line)] pt-8">
@@ -75,8 +91,10 @@ export default function CesiumViewerGate({
             loading="lazy"
           />
           <div className="space-y-4 p-5 md:p-6">
-            {!canLoad && (
-              <p className="text-sm leading-7 text-[var(--text-muted)]">{t.pending}</p>
+            {statusMessage && (
+              <p className="text-sm leading-7 text-[var(--text-muted)]">
+                {statusMessage}
+              </p>
             )}
             <div className="flex flex-wrap gap-3">
               <button

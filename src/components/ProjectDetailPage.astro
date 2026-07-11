@@ -9,6 +9,7 @@ import ResponsivePicture from "./ResponsivePicture.astro";
 import Tag from "./ui/Tag.astro";
 import CesiumViewerGate from "./demos/CesiumViewerGate";
 import { resolveCesiumDemoManifestUrl } from "../lib/cesium-demo";
+import { isCesiumViewerAssetAvailable } from "../lib/cesium-demo-assets";
 
 interface Props {
   lang: Language;
@@ -32,6 +33,7 @@ const isCesiumDemo = demo?.type === "cesium-viewer";
 const demoManifestUrl = isCesiumDemo
   ? resolveCesiumDemoManifestUrl(demo.manifestUrl)
   : null;
+const demoViewerAvailable = isCesiumDemo ? isCesiumViewerAssetAvailable() : false;
 const demoPoster =
   (isCesiumDemo && demo.poster) ||
   project.data.coverImage ||
@@ -408,6 +410,7 @@ const copy = isJa
       posterSrc={demoPoster}
       posterAlt={project.data.title}
       manifestUrl={demoManifestUrl}
+      viewerAvailable={demoViewerAvailable}
     />
   </section>
 )}
