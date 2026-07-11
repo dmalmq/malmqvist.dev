@@ -1,0 +1,79 @@
+---
+// Reveal.astro — props: as (tag name, default 'div'), delay (ms, default 0), className
+// Server HTML is fully visible. The entrance is a progressive enhancement:
+// the script hides only below-viewport elements (adds .is-pending) and only
+// when motion is allowed, so no-JS, reduced-motion, automation, and slow
+// devices always see complete content.
+interface Props {
+  as?: keyof HTMLElementTagNameMap;
+  delay?: number;
+  class?: string;
+}
+
+const { as = 'div', delay = 0, class: className = '' } = Astro.props;
+const Tag = as;
+---
+
+<Tag class={`reveal ${className}`} style={delay ? `transition-delay: ${delay}ms` : undefined}>
+  <slot />
+</Tag>
+
+<script>
+  const setup = () => {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (navigator.webdriver) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('is-pending');
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+
+    // Hide and observe only elements below the viewport; above-fold content
+    // stays visible from the first paint (no entrance flash).
+    for (const el of document.querySelectorAll('.reveal:not(.is-pending)')) {
+      if (el.getBoundingClientRect().top > window.innerHeight * 0.9) {
+        el.classList.add('is-pending');
+        observer.observe(el);
+      }
+    }
+
+    // Failsafe: motion is enhancement, never a correctness dependency.
+    // If IO never fires (broken polyfill, exotic client), unhide everything.
+    setTimeout(() => {
+      for (const el of document.querySelectorAll('.reveal.is-pending')) {
+        el.classList.remove('is-pending');
+        observer.unobserve(el);
+      }
+    }, 4000);
+  };
+
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>
+
+<style>
+  .reveal {
+    transition: opacity 600ms ease-out, transform 600ms ease-out;
+  }
+
+  .reveal.is-pending {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      transition: none !important;
+    }
+
+    .reveal.is-pending {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
