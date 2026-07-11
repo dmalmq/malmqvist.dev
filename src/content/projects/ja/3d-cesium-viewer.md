@@ -7,6 +7,7 @@ tags: ["CesiumJS", "3D Tiles", "Digital Twin", "PLATEAU"]
 coverImage: "/images/projects/shinjuku-nav-1-optimized.jpg"
 galleryImages: []
 featured: true
+role: "単独開発 — CesiumJS 3D Tiles Webビューア"
 problem: "屋内や都市スケールの3D Tilesを関係者と共有するには、通常デスクトップツール、重いインストール、あるいは構造を失う単発エクスポートが必要になる。"
 solution: "CesiumJS上に構築した公開セッションWebビューア。会場マニフェストを読み込み、建物の切り替え、レイヤーのフィルタ、ブラウザ上での3D Tilesナビゲーションを提供する。"
 techStack: ["CesiumJS", "3D Tiles", "Vite", "JavaScript"]

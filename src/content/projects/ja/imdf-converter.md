@@ -7,7 +7,8 @@ tags: ["Python", "FastAPI", "React", "TypeScript", "MapLibre", "Geospatial", "IM
 coverImage: "/images/projects/imdf-placeholder.svg"
 galleryImages:
   - "/images/projects/imdf-placeholder.svg"
-featured: false
+featured: true
+role: "ツール設計・開発担当 — Shapefile → IMDF"
 problem: "CADやGISツールから出力されたフロアごとのShapefileを扱うチームにとって、PythonやGISの専門知識なしに有効なIMDFアーカイブを作成する手段がありませんでした。"
 solution: "フロアレイヤーを自動検出し、インタラクティブなUIでマッピングを設定し、エクスポート前にバリデーションを行うウィザード型Webアプリケーション。"
 techStack: ["Python", "FastAPI", "GeoPandas", "Shapely", "React", "TypeScript", "MapLibre GL JS", "Vite"]

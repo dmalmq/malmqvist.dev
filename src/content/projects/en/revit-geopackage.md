@@ -8,7 +8,9 @@ coverImage: "/images/projects/revitgeoconverter/revitaddin-1.webp"
 galleryImages:
   - "/images/projects/revitgeoconverter/revitaddin-1.webp"
   - "/images/projects/revitgeoconverter/revitaddin-2.webp"
-featured: false
+featured: true
+featuredRank: 3
+role: "Plugin author — C# / Revit API → GeoPackage"
 problem: "The legacy workflow required converting Revit via DWG and then into Shapefile formats. It was a three-step process that lost metadata at each stage."
 solution: "Developed a native Revit plugin using C# and the Revit API for direct exports targeting the modern GeoPackage standard."
 techStack: ["Revit API", "C#", "SQLite", "Ogr2Ogr"]

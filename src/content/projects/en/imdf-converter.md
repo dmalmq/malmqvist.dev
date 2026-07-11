@@ -7,7 +7,8 @@ tags: ["Python", "FastAPI", "React", "TypeScript", "MapLibre", "Geospatial", "IM
 coverImage: "/images/projects/imdf-placeholder.svg"
 galleryImages:
   - "/images/projects/imdf-placeholder.svg"
-featured: false
+featured: true
+role: "Tool design & development — Shapefile → IMDF"
 problem: "Teams working with per-floor shapefiles exported from CAD and GIS tools had no practical way to produce valid IMDF archives without deep Python and geospatial knowledge."
 solution: "A wizard-driven web app that auto-detects floor layers, lets users configure mappings through an interactive UI, and validates the output before export."
 techStack: ["Python", "FastAPI", "GeoPandas", "Shapely", "React", "TypeScript", "MapLibre GL JS", "Vite"]

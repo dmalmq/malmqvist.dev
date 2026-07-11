@@ -12,6 +12,8 @@ const projects = defineCollection({
         coverImage: z.string().optional(),
         galleryImages: z.array(z.string()).default([]),
         featured: z.boolean().default(false),
+        role: z.string().optional(),
+        featuredRank: z.number().optional(),
         problem: z.string().optional(),
         solution: z.string().optional(),
         techStack: z.array(z.string()).default([]),
