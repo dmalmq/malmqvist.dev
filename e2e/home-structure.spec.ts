@@ -88,4 +88,13 @@ test.describe("home structure (evidence-first layout)", () => {
     // Social links live in header and footer only — not a third cluster here.
     await expect(band.locator('a[href*="github.com"]')).toHaveCount(0);
   });
+
+  test("first tab stop is a skip link that targets main content", async ({ page }) => {
+    await page.goto("/en/");
+    await page.keyboard.press("Tab");
+    const focused = page.locator(":focus");
+    await expect(focused).toHaveAttribute("href", "#main-content");
+    await expect(focused).toBeVisible();
+    await expect(page.locator("main#main-content")).toBeAttached();
+  });
 });
