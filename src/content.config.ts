@@ -7,7 +7,7 @@ const projects = defineCollection({
         title: z.string(),
         description: z.string(),
         publishDate: z.string().transform((str) => new Date(str)),
-        lang: z.enum(['en', 'ja']),
+        lang: z.enum(['en', 'ja', 'sv']),
         tags: z.array(z.string()).default([]),
         coverImage: z.string().optional(),
         galleryImages: z.array(z.string()).default([]),
@@ -16,6 +16,13 @@ const projects = defineCollection({
         solution: z.string().optional(),
         techStack: z.array(z.string()).default([]),
         impact: z.string().optional(),
+        demo: z
+            .object({
+                type: z.literal("cesium-viewer"),
+                manifestUrl: z.string().url().optional(),
+                poster: z.string().optional(),
+            })
+            .optional(),
     })
 });
 
@@ -25,7 +32,7 @@ const blog = defineCollection({
         title: z.string(),
         description: z.string(),
         publishDate: z.string().transform((str) => new Date(str)),
-        lang: z.enum(['en', 'ja']),
+        lang: z.enum(['en', 'ja', 'sv']),
         tags: z.array(z.string()).default([]),
         coverImage: z.string().optional(),
         readingTime: z.string().optional(),
