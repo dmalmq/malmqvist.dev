@@ -1,0 +1,31 @@
+---
+import { useTranslations, type Language } from "../../i18n/utils";
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="cta-band border-t border-[var(--line)] bg-[var(--surface-soft)] py-[clamp(3rem,6vw,6rem)]" aria-labelledby="cta-title">
+  <div class="container text-center">
+    <h2 id="cta-title" class="mx-auto max-w-4xl text-[length:var(--font-h2)]">
+      {t("home.cta.title")}
+    </h2>
+    <div class="mt-8 flex justify-center">
+      <a
+        href={`/${lang}/contact/`}
+        class="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-input)] bg-[var(--accent)] px-7 py-3 text-sm font-bold text-[var(--accent-ink)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+      >
+        {t("home.cta.button")}
+      </a>
+    </div>
+    <p class="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-[var(--text-muted)]">
+      <span>{t("about.resume")}</span>
+      <a class="font-bold text-[var(--text)] underline decoration-[var(--line)] underline-offset-4 transition-colors hover:text-[var(--accent)]" href="/cv/resume-en.pdf" download>{t("about.resume.en")}</a>
+      <a class="font-bold text-[var(--text)] underline decoration-[var(--line)] underline-offset-4 transition-colors hover:text-[var(--accent)]" href="/cv/resume-jp.pdf" download>{t("about.resume.ja")}</a>
+    </p>
+  </div>
+</section>

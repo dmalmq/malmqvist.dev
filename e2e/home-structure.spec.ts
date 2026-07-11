@@ -79,4 +79,13 @@ test.describe("home structure (evidence-first layout)", () => {
     ).map(normalizeCoverStem);
     expect(new Set(sources).size).toBe(sources.length);
   });
+
+  test("CTA band offers the resume as a secondary path", async ({ page }) => {
+    await page.goto("/en/");
+    const band = page.locator(".cta-band");
+    await expect(band.getByRole("link", { name: "Discuss a role" })).toBeVisible();
+    await expect(band.locator('a[href="/cv/resume-en.pdf"]')).toBeAttached();
+    // Social links live in header and footer only — not a third cluster here.
+    await expect(band.locator('a[href*="github.com"]')).toHaveCount(0);
+  });
 });

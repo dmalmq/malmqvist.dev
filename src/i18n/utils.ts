@@ -1,9 +1,11 @@
 import en from './en.json';
 import ja from './ja.json';
+import sv from './sv.json';
 
 export const languages = {
     en: 'English',
     ja: '日本語',
+    sv: 'Svenska',
 };
 
 export const defaultLang = 'en';
@@ -11,6 +13,7 @@ export const defaultLang = 'en';
 export const ui = {
     en,
     ja,
+    sv,
 } as const;
 
 export type Language = keyof typeof ui;
