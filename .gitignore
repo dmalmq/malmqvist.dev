@@ -30,3 +30,6 @@ pnpm-debug.log*
 collab/obsidian-vault/.obsidian/
 collab/obsidian-vault/.trash/
 docs/.obsidian/
+
+# local clones / demo build staging
+.cache/

@@ -7,6 +7,7 @@
     "build": "astro build",
     "images:optimize": "node scripts/optimize-images.mjs",
     "preview": "astro preview",
+    "build:demo-viewer": "node scripts/build-cesium-viewer-demo.mjs",
     "astro": "astro",
     "design:paper:system": "./scripts/create-paper-design-system.sh",
     "generate:resumes": "node scripts/generate-resume-pdfs.mjs",
