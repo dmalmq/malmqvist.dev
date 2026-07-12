@@ -25,6 +25,9 @@ const projects = (await getCollection("projects", (entry) => entry.id.startsWith
       {t("home.selected.title")}
     </h2>
   </Reveal>
+  <p data-selected-work-bridge class="mt-4 max-w-2xl text-base leading-8 text-[var(--text-muted)] md:text-lg">
+    {t("home.selected.bridge")}
+  </p>
 
   <div class="mt-12 space-y-12">
     {projects.map((project, index) => {

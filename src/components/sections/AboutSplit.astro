@@ -44,7 +44,10 @@ const aboutLinkLabel = { en: "View About", ja: "プロフィールを見る", sv
         <h2 id="about-split-title" class="text-[length:var(--font-h2)]">
           {t("about.title")}
         </h2>
-        <div class="mt-6 space-y-4">
+        <p data-current-mandate class="mt-6 max-w-[68ch] text-base font-semibold leading-8 text-[var(--text)] md:text-lg">
+          {t("home.about.current")}
+        </p>
+        <div class="mt-4 space-y-4">
           {paragraphs.map((paragraph) => <p class="max-w-[68ch] text-base leading-8 text-[var(--text-muted)] md:text-lg">{paragraph}</p>)}
         </div>
         <a

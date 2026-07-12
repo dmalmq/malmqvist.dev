@@ -2,6 +2,57 @@ import { test, expect } from "@playwright/test";
 
 test.describe("home structure (evidence-first layout)", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
+  const localeCopy = {
+    en: {
+      bridge: "From delivery models to deployable city data.",
+      heroAlt: "Shinjuku indoor navigation Revit model",
+      mandate:
+        "In Tokyo, I work across BIM delivery, geospatial pipelines, and the tooling that connects authored models to operational systems.",
+    },
+    ja: {
+      bridge: "実施設計モデルから、運用できる都市データへ。",
+      heroAlt: "新宿屋内ナビゲーションのRevitモデル",
+      mandate:
+        "東京では、BIMの実務、地理空間データのパイプライン、そして設計モデルを運用システムへつなぐツール開発に取り組んでいます。",
+    },
+    sv: {
+      bridge: "Från leveransmodeller till användbar stadsdata.",
+      heroAlt: "Revit-modell för inomhusnavigering i Shinjuku",
+      mandate:
+        "I Tokyo arbetar jag med BIM-leveranser, geospatiala dataflöden och verktyg som kopplar projekterade modeller till operativa system.",
+    },
+  } as const;
+
+  for (const [lang, copy] of Object.entries(localeCopy)) {
+    test(`${lang} localizes the bridge, hero image, and current mandate`, async ({
+      page,
+    }) => {
+      await page.goto(`/${lang}/`);
+      await expect(page.locator("[data-selected-work-bridge]")).toHaveText(
+        copy.bridge,
+      );
+      await expect(page.locator(".hero-section img")).toHaveAttribute(
+        "alt",
+        copy.heroAlt,
+      );
+      await expect(page.locator("[data-current-mandate]")).toHaveText(
+        copy.mandate,
+      );
+    });
+  }
+
+  test("homepage desktop header removes socials without removing other paths", async ({
+    page,
+  }) => {
+    await page.goto("/en/");
+    await expect(page.locator('header a[href*="github.com"]')).toHaveCount(0);
+    await expect(page.locator('header a[href*="linkedin.com"]')).toHaveCount(0);
+    await expect(page.locator('footer a[href*="github.com"]')).toHaveCount(1);
+
+    await page.goto("/en/about/");
+    await expect(page.locator('header a[href*="github.com"]')).toHaveCount(1);
+    await expect(page.locator('header a[href*="linkedin.com"]')).toHaveCount(1);
+  });
 
   test("selected work leads; claims grid is gone", async ({ page }) => {
     await page.goto("/en/");
