@@ -306,7 +306,7 @@ const copy = isJa
   overviewCards.length > 0 && (
     <div class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 section-divider"></div>
     <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 py-[var(--space-section-lg)]">
-      <div class="grid gap-5 lg:grid-cols-3">
+      <div data-project-overview-grid class="grid gap-8 lg:grid-cols-3">
         {(() => {
           const overviewColors = ["var(--color-pine)", "var(--color-iris)", "var(--color-gold)"];
           return overviewCards.map((item, index) => (
@@ -357,7 +357,7 @@ const copy = isJa
       </FadeIn>
     </div>
 
-    <div class="space-y-6 xl:sticky xl:top-28 self-start">
+    <div data-project-sidebar class="grid gap-8 xl:sticky xl:top-28 self-start">
       <FadeIn delay={130}>
         <div class="rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_22px_62px_-46px_rgba(87,82,121,0.36)] dark:shadow-[0_22px_62px_-46px_rgba(25,23,36,0.95)] md:p-7">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
@@ -436,7 +436,7 @@ const copy = isJa
         </div>
       </FadeIn>
 
-      <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div data-related-project-grid class="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
         {relatedProjects.map((relatedProject, index) => (
           <FadeIn delay={index * 110}>
             <ProjectCard project={relatedProject} lang={lang} />
