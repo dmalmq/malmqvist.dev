@@ -7,7 +7,7 @@ tags: [Revit, Facade, Healthcare]
 coverImage: /images/projects/ersta/01-revit-model-front.jpg
 featured: true
 featuredRank: 1
-role: "Architect & BIM modeler — IFC rebuild → production Revit, facade lead"
+role: "Architect & BIM modeler"
 problem: "Ersta Nya Sjukhus is a ~23,000 m² award-winning hospital built on a steep hillside in central Stockholm. Tengbom took over the project mid-stream. We inherited an IFC export from the previous architecture firm—which meant a frozen, dead representation of the geometry lacking native parametric intelligence. We needed a living, constructible, and fully coordinated BIM source-of-truth."
 solution: "I rebuilt the entire Revit model from scratch based on the referenced IFC model — effectively reverse-engineering the design intent into a production-ready system. I served as the primary modeler for the complex anodized aluminum facade system."
 techStack: [Revit Architecture, IFC, Navisworks, Solibri]

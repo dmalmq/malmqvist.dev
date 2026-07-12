@@ -7,7 +7,7 @@ tags: ["Revit", "PLATEAU", "Digital Twin", "CityGML"]
 coverImage: "/images/projects/shinjuku-nav-2-optimized.jpg"
 featured: true
 featuredRank: 2
-role: "BIM-modellering & datapipeline — Revit → FBX / CityGML / 3D Tiles"
+role: "Ansvarig för BIM-dataflöden"
 problem: "Tokyos komplexa underjordiska stationsnät är nästan omöjliga att navigera med traditionella 2D-kartor. PLATEAU ger stadsövergripande 3D-data men stannar vid byggnadernas fasader."
 solution: "Modellera byggnaderna runt Shinjuku Station — Lumine 1, Lumine EST, NEWoMan, Busta och Yodobashi öst och väst — plus stationens anslutningspunkter i Revit. Exportera FBX till den externa Unity-studion som bygger navigationsappen, och CityGML / 3D Tiles för offentlig release via PLATEAU."
 techStack: ["Revit", "FBX", "CityGML", "3D Tiles", "Blender", "Bonsai"]

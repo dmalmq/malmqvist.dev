@@ -10,7 +10,7 @@ galleryImages:
   - "/images/projects/revitgeoconverter/revitaddin-2.webp"
 featured: true
 featuredRank: 3
-role: "プラグイン開発者 — C# / Revit API → GeoPackage"
+role: "プラグイン開発"
 problem: "従来のワークフローでは、RevitからDWG、さらにShapefileへと変換する必要があり、各段階でメタデータが欠落する3段階のプロセスでした。"
 solution: "近代的標準のGeoPackageへの直接出力をターゲットとして、C#とRevit APIを利用したネイティブのRevitプラグインを開発。"
 techStack: ["Revit API", "C#", "SQLite", "Ogr2Ogr"]

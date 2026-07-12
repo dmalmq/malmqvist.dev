@@ -7,7 +7,7 @@ tags: [Revit, ファサード, 医療施設]
 coverImage: /images/projects/ersta/01-revit-model-front.jpg
 featured: true
 featuredRank: 1
-role: "建築・BIMモデラー — IFC再構築 → 実施Revitモデル、ファサード担当"
+role: "建築設計・BIMモデラー"
 problem: "Ersta Nya Sjukhus（新エルスタ病院）は、ストックホルムの急斜面に建設された約23,000㎡の医療施設です。前担当の設計事務所からIFCデータとしてプロジェクトを引き継ぎましたが、IFCはパラメータを持たない「死んだデータ」でした。建設に必要な、完全に統合された「生きたBIMモデル」が必要でした。"
 solution: "提供されたIFCモデルをベースに、Revitモデルをゼロから完全に再構築しました。設計意図をリバースエンジニアリングし、生産可能なシステムへと昇華させ、特徴的なブラウンのアルミファサードシステムのメインモデラーを担当しました。"
 techStack: [Revit Architecture, IFC, Navisworks, Solibri]

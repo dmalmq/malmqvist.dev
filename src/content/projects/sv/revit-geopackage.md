@@ -10,7 +10,7 @@ galleryImages:
   - "/images/projects/revitgeoconverter/revitaddin-2.webp"
 featured: true
 featuredRank: 3
-role: "Pluginutvecklare — C# / Revit API → GeoPackage"
+role: "Pluginutvecklare"
 problem: "Det äldre flödet krävde att Revit konverterades via DWG och vidare till Shapefile. Det var en trestegsprocess där metadata tappades i varje steg."
 solution: "Utvecklade en nativ Revit-plugin i C# med Revit API för direktexport mot den moderna GeoPackage-standarden."
 techStack: ["Revit API", "C#", "SQLite", "Ogr2Ogr"]

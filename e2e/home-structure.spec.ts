@@ -76,11 +76,28 @@ test.describe("home structure (evidence-first layout)", () => {
     expect(size).toBeGreaterThanOrEqual(32);
   });
 
-  test("each featured project carries a role annotation", async ({ page }) => {
-    await page.goto("/en/");
-    const roles = page.locator(".project-card .font-mono");
-    await expect(roles).toHaveCount(3);
-    await expect(roles.first()).toContainText("—");
+  test("featured role annotations stay concise on phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+
+    for (const lang of ["en", "ja", "sv"]) {
+      await page.goto(`/${lang}/`);
+      const roles = page.locator(".project-card .font-mono");
+      await expect(roles).toHaveCount(3);
+
+      for (const role of await roles.all()) {
+        const text = (await role.textContent())?.trim() ?? "";
+        expect(text).not.toMatch(/[—→]/);
+        expect(text.length).toBeLessThanOrEqual(50);
+        const lines = await role.evaluate((element) => {
+          const style = getComputedStyle(element);
+          return Math.round(
+            element.getBoundingClientRect().height /
+              parseFloat(style.lineHeight),
+          );
+        });
+        expect(lines).toBeLessThanOrEqual(2);
+      }
+    }
   });
 
   test("exactly one deliberate kicker survives (Stockholm → Tokyo)", async ({ page }) => {

@@ -7,7 +7,7 @@ tags: [Revit, Facade, Healthcare]
 coverImage: /images/projects/ersta/01-revit-model-front.jpg
 featured: true
 featuredRank: 1
-role: "Arkitekt & BIM-modellör — IFC-ombyggnad → produktions-Revit, fasadansvarig"
+role: "Arkitekt och BIM-modellerare"
 problem: "Ersta Nya Sjukhus är ett prisbelönt sjukhus på ca 23 000 m², byggt i brant terräng i centrala Stockholm. Tengbom tog över projektet mitt i flödet. Vi ärvde en IFC-export från den tidigare arkitektfirman — en fryst, död representation av geometrin utan nativ parametrisk intelligens. Vi behövde en levande, byggbar och fullt samordnad BIM-sanning."
 solution: "Jag byggde om hela Revit-modellen från grunden utifrån den refererade IFC-modellen — i praktiken reverse-engineering av designintentionen till ett produktionsklart system. Jag var huvudmodellerare för det komplexa anodiserade aluminiumfasadsystemet."
 techStack: [Revit Architecture, IFC, Navisworks, Solibri]

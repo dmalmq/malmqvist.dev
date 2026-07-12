@@ -7,7 +7,7 @@ tags: ["Revit", "PLATEAU", "Digital Twin", "CityGML"]
 coverImage: "/images/projects/shinjuku-nav-2-optimized.jpg"
 featured: true
 featuredRank: 2
-role: "BIMモデリングとデータパイプライン担当 — Revit → FBX / CityGML / 3D Tiles"
+role: "BIMデータパイプライン担当"
 problem: "従来の2Dマップではナビゲーションが困難な東京の複雑な地下駅ネットワーク。PLATEAUは都市規模の3Dデータを提供しますが、建物の外部で途切れてしまいます。"
 solution: "新宿駅周辺の建物（ルミネ1、ルミネエスト、ニュウマン、バスタ、ヨドバシ東館・西館）と駅の接続部をRevitでモデル化。Unityベースのナビアプリを開発する外部スタジオ向けにFBXを書き出し、同時にPLATEAUとして一般公開するためのCityGML / 3D Tilesも生成しました。"
 techStack: ["Revit", "FBX", "CityGML", "3D Tiles", "Blender", "Bonsai"]
