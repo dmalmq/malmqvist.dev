@@ -33,3 +33,6 @@ docs/.obsidian/
 
 # local clones / demo build staging
 .cache/
+
+# isolated development worktrees
+.worktrees/
