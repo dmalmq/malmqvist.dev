@@ -1,5 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/noto-sans-jp/400.css";
+@import "@fontsource/noto-sans-jp/500.css";
+@import "@fontsource/noto-sans-jp/600.css";
+@import "@fontsource/noto-sans-jp/700.css";
 
 @theme inline {
   --color-background: var(--background);
@@ -38,6 +45,27 @@
   --color-accent-glow: var(--accent-glow);
   --color-border-hover: var(--border-hover);
 
+  /* Sumi & Shu semantic extras */
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-accent-shu: var(--accent-shu);
+  --color-accent-ai: var(--accent-ai);
+  --color-accent-matcha: var(--accent-matcha);
+  --color-accent-kin: var(--accent-kin);
+  --color-ai-muted: var(--ai-muted);
+  --color-matcha-muted: var(--matcha-muted);
+  --color-kin-muted: var(--kin-muted);
+  --color-code-bg: var(--code-bg);
+  --color-code-text: var(--code-text);
+
+  /* Typography */
+  --font-sans: "Inter Variable", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", "Noto Serif JP", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
   /* Density spacing tokens */
   --space-section-lg: clamp(3.5rem, 6vw, 5rem);
   --space-section-md: clamp(2.5rem, 4vw, 3.5rem);
@@ -47,28 +75,28 @@
 /* Base definitions for themes */
 @layer base {
   :root {
-    /* Rose Pine Dawn */
-    --radius: 0.875rem;
+    /* Sumi & Shu — Light "Washi" */
+    --radius: 0.625rem;
     color-scheme: light;
-    --background: #faf4ed;
-    --foreground: #575279;
-    --card: #fffaf3;
-    --card-foreground: #575279;
-    --popover: #fffaf3;
-    --popover-foreground: #575279;
-    --primary: #575279;
-    --primary-foreground: #faf4ed;
-    --secondary: #f2e9e1;
-    --secondary-foreground: #575279;
-    --muted: #f4ede8;
-    --muted-foreground: #797593;
-    --accent: #286983;
-    --accent-foreground: #fffaf3;
-    --destructive: #b4637a;
-    --destructive-foreground: #fffaf3;
-    --border: #cecacd;
-    --input: #dfdad9;
-    --ring: #907aa9;
+    --background: #f6f3ec;
+    --foreground: #211f1c;
+    --card: #fcfaf3;
+    --card-foreground: #211f1c;
+    --popover: #fcfaf3;
+    --popover-foreground: #211f1c;
+    --primary: #211f1c;
+    --primary-foreground: #f6f3ec;
+    --secondary: #efeae0;
+    --secondary-foreground: #211f1c;
+    --muted: #efeae0;
+    --muted-foreground: #6b675f;
+    --accent: #c93a22;
+    --accent-foreground: #fcfaf3;
+    --destructive: #a62639;
+    --destructive-foreground: #fcfaf3;
+    --border: #e2dcd0;
+    --input: #cfc8b8;
+    --ring: #c93a22;
 
     /* Legacy aliases kept for the current Astro components. */
     --bg-primary: var(--background);
@@ -76,90 +104,80 @@
     --bg-elevated: var(--card);
     --bg-surface: var(--muted);
     --text-primary: var(--foreground);
-    --text-secondary: #55526b;
+    --text-secondary: var(--muted-foreground);
     --text-heading: var(--foreground);
-    --accent-hover: #56949f;
-    --accent-muted: #f2e9e1;
+    --accent-hover: #d94830;
+    --accent-muted: #fbd9cd;
     --accent-glow: none;
     --border-hover: var(--accent);
-    --code-bg: #f2e9e1;
-    --code-text: #575279;
-    --success: #56949f;
-    --error: #b4637a;
-    --page-glow-primary: rgba(144, 122, 169, 0.12);
-    --page-glow-secondary: rgba(40, 105, 131, 0.1);
+    --code-bg: #efeae0;
+    --code-text: #211f1c;
+    --success: #4a7a52;
+    --warning: #b08d3e;
+    --warning-foreground: #211f1c;
+    --info: #35608c;
+    --error: #a62639;
 
-    /* Gradient background blobs */
-    --bg-blob-1: rgba(144, 122, 169, 0.18);  /* iris */
-    --bg-blob-2: rgba(180, 99, 122, 0.14);   /* love */
-    --bg-blob-3: rgba(86, 148, 159, 0.12);   /* foam */
-    --bg-blob-4: rgba(234, 157, 52, 0.08);   /* gold */
-    --bg-blob-5: rgba(40, 105, 131, 0.10);   /* pine */
-    --bg-grid-color: rgba(87, 82, 121, 0.06);
-
-    /* Rose Pine palette accents */
-    --color-gold: #9b640f;
-    --color-foam: #56949f;
-    --color-pine: #286983;
-    --color-love: #b4637a;
-    --color-iris: #907aa9;
+    /* Sumi & Shu accent family */
+    --accent-shu: #c93a22;
+    --accent-ai: #2b4c6f;
+    --accent-matcha: #4a7a52;
+    --accent-kin: #b08d3e;
+    --ai-muted: #dce6f2;
+    --matcha-muted: #e0ebdf;
+    --kin-muted: #f3e9cf;
   }
-  
+
   .dark {
-    /* Rose Pine */
+    /* Sumi & Shu — Dark "Sumi Ink" */
     color-scheme: dark;
-    --background: #191724;
-    --foreground: #e0def4;
-    --card: #1f1d2e;
-    --card-foreground: #e0def4;
-    --popover: #1f1d2e;
-    --popover-foreground: #e0def4;
-    --primary: #e0def4;
-    --primary-foreground: #191724;
-    --secondary: #26233a;
-    --secondary-foreground: #e0def4;
-    --muted: #21202e;
-    --muted-foreground: #908caa;
-    --accent: #31748f;
-    --accent-foreground: #e0def4;
-    --destructive: #eb6f92;
-    --destructive-foreground: #191724;
-    --border: #524f67;
-    --input: #403d52;
-    --ring: #c4a7e7;
+    --background: #171512;
+    --foreground: #efebe0;
+    --card: #211e1a;
+    --card-foreground: #efebe0;
+    --popover: #211e1a;
+    --popover-foreground: #efebe0;
+    --primary: #efebe0;
+    --primary-foreground: #171512;
+    --secondary: #1d1b17;
+    --secondary-foreground: #efebe0;
+    --muted: #1d1b17;
+    --muted-foreground: #a39e91;
+    --accent: #f96a48;
+    --accent-foreground: #171512;
+    --destructive: #de6c7a;
+    --destructive-foreground: #171512;
+    --border: #2e2a23;
+    --input: #262320;
+    --ring: #f96a48;
 
     --bg-primary: var(--background);
     --bg-secondary: var(--secondary);
     --bg-elevated: var(--card);
     --bg-surface: var(--muted);
     --text-primary: var(--foreground);
-    --text-secondary: #a09dbb;
+    --text-secondary: var(--muted-foreground);
     --text-heading: var(--foreground);
-    --accent-hover: #9ccfd8;
-    --accent-muted: #26233a;
-    --accent-glow: rgba(196, 167, 231, 0.18);
+    --accent-hover: #ff8f6e;
+    --accent-muted: #1d1b17;
+    --accent-glow: rgba(249, 106, 72, 0.16);
     --border-hover: var(--accent);
-    --code-bg: #26233a;
-    --code-text: #e0def4;
-    --success: #9ccfd8;
-    --error: #eb6f92;
-    --page-glow-primary: rgba(196, 167, 231, 0.16);
-    --page-glow-secondary: rgba(49, 116, 143, 0.16);
+    --code-bg: #1d1b17;
+    --code-text: #efebe0;
+    --success: #8fbf9a;
+    --warning: #d9b86c;
+    --warning-foreground: #171512;
+    --info: #7c9cc6;
+    --error: #de6c7a;
 
-    /* Gradient background blobs */
-    --bg-blob-1: rgba(196, 167, 231, 0.14);  /* iris */
-    --bg-blob-2: rgba(235, 111, 146, 0.10);  /* love */
-    --bg-blob-3: rgba(156, 207, 216, 0.08);  /* foam */
-    --bg-blob-4: rgba(246, 193, 119, 0.06);  /* gold */
-    --bg-blob-5: rgba(49, 116, 143, 0.10);   /* pine */
-    --bg-grid-color: rgba(224, 222, 244, 0.04);
-
-    /* Rose Pine palette accents */
-    --color-gold: #f6c177;
-    --color-foam: #9ccfd8;
-    --color-pine: #31748f;
-    --color-love: #eb6f92;
-    --color-iris: #c4a7e7;
+    /* Sumi & Shu accent family */
+    --accent-shu: #f96a48;
+    --accent-ai: #7c9cc6;
+    --accent-matcha: #8fbf9a;
+    --accent-kin: #d9b86c;
+    --ai-muted: #1d1b17;
+    --matcha-muted: #1d1b17;
+    --kin-muted: #1d1b17;
   }
 }
 
@@ -174,25 +192,6 @@
 body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
-  background-image:
-    /* Fine grid / glass texture overlay */
-    linear-gradient(var(--bg-grid-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bg-grid-color) 1px, transparent 1px),
-    /* Soft color blobs scattered across the viewport */
-    radial-gradient(ellipse 80% 60% at 10% 10%, var(--bg-blob-1), transparent),
-    radial-gradient(ellipse 60% 80% at 90% 15%, var(--bg-blob-2), transparent),
-    radial-gradient(ellipse 70% 50% at 70% 60%, var(--bg-blob-3), transparent),
-    radial-gradient(ellipse 50% 70% at 20% 80%, var(--bg-blob-4), transparent),
-    radial-gradient(ellipse 60% 60% at 50% 40%, var(--bg-blob-5), transparent);
-  background-size:
-    40px 40px,
-    40px 40px,
-    100% 100%,
-    100% 100%,
-    100% 100%,
-    100% 100%,
-    100% 100%;
-  background-attachment: fixed;
   @apply font-sans;
 }
 
@@ -229,15 +228,15 @@ body {
     border: 1px solid var(--color-border);
     background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
     color: var(--color-text-primary);
-    border-radius: 1.1rem;
-    padding: 0.9rem 1rem;
+    border-radius: 1.25rem;
+    padding: 0.9rem 1.25rem;
     transition:
       border-color 200ms ease,
       background-color 200ms ease,
       color 200ms ease,
       box-shadow 200ms ease,
       transform 200ms ease;
-    box-shadow: 0 18px 42px -38px rgba(87, 82, 121, 0.28);
+    box-shadow: 0 18px 42px -38px rgba(33, 31, 28, 0.28);
   }
 
   .blog-post--compact .blog-post--compact-intro {
@@ -262,7 +261,7 @@ body {
     border-color: var(--color-accent);
     box-shadow:
       0 0 0 6px color-mix(in srgb, var(--color-ring) 20%, transparent),
-      0 22px 46px -40px rgba(87, 82, 121, 0.38);
+      0 22px 46px -40px rgba(33, 31, 28, 0.38);
     transform: translateY(-1px);
   }
 
@@ -292,7 +291,7 @@ body {
       color 200ms ease,
       box-shadow 200ms ease,
       transform 200ms ease;
-    box-shadow: 0 18px 40px -34px rgba(87, 82, 121, 0.28);
+    box-shadow: 0 18px 40px -34px rgba(33, 31, 28, 0.28);
   }
 
   .ui-pill-button:hover {
@@ -307,12 +306,24 @@ body {
     border-color: var(--color-border-hover);
     box-shadow:
       0 0 0 4px color-mix(in srgb, var(--color-ring) 18%, transparent),
-      0 18px 42px -34px rgba(87, 82, 121, 0.32);
+      0 18px 42px -34px rgba(33, 31, 28, 0.32);
   }
 
   .ui-pill-button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+  }
+
+  .ui-pill-button.is-active {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+
+  .ui-pill-button.is-active:hover {
+    color: var(--color-accent-foreground);
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
   }
 
   .ui-icon-button {
@@ -331,7 +342,7 @@ body {
       color 200ms ease,
       box-shadow 200ms ease,
       transform 200ms ease;
-    box-shadow: 0 18px 40px -34px rgba(87, 82, 121, 0.28);
+    box-shadow: 0 18px 40px -34px rgba(33, 31, 28, 0.28);
   }
 
   .ui-icon-button:hover {
@@ -346,7 +357,7 @@ body {
     border-color: var(--color-border-hover);
     box-shadow:
       0 0 0 4px color-mix(in srgb, var(--color-ring) 18%, transparent),
-      0 18px 42px -34px rgba(87, 82, 121, 0.32);
+      0 18px 42px -34px rgba(33, 31, 28, 0.32);
   }
 
   .editorial-prose {
@@ -462,13 +473,40 @@ body {
     border-radius: 0;
   }
 
+  /* "Ink on washi" Shiki theme — maps the css-variables Shiki theme
+     onto our own Sumi & Shu tokens instead of a foreign syntax palette. */
+  .editorial-prose pre.astro-code,
+  .editorial-prose pre.astro-code span {
+    --shiki-color-text: var(--color-code-text);
+    --shiki-color-background: var(--color-code-bg);
+    --shiki-token-constant: var(--color-accent-ai);
+    --shiki-token-string: var(--color-accent-matcha);
+    --shiki-token-comment: var(--color-text-secondary);
+    --shiki-token-keyword: var(--color-accent);
+    --shiki-token-parameter: var(--color-text-primary);
+    --shiki-token-function: var(--color-accent-kin);
+    --shiki-token-string-expression: var(--color-accent-matcha);
+    --shiki-token-punctuation: var(--color-text-secondary);
+    --shiki-token-link: var(--color-accent);
+  }
+
   .editorial-prose img {
     width: 100%;
     margin-top: 1.75rem;
     border: 1px solid var(--color-border);
     border-radius: 1.4rem;
     overflow: hidden;
-    box-shadow: 0 24px 72px -52px rgba(87, 82, 121, 0.5);
+    box-shadow: 0 24px 72px -52px rgba(33, 31, 28, 0.5);
+  }
+
+  /* MDX gallery components manage their own image chrome — undo the
+     blanket .editorial-prose img styling inside their scope. */
+  .editorial-prose .mdx-media img {
+    width: 100%;
+    margin-top: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 }
 
@@ -484,11 +522,6 @@ body {
 }
 
 /* Hero animations */
-@keyframes hero-glow {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
 @keyframes hero-name-reveal {
   from { clip-path: inset(0 100% 0 0); }
   to { clip-path: inset(0 0% 0 0); }
@@ -502,11 +535,6 @@ body {
 @keyframes arrow-bounce {
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(4px); }
-}
-
-.hero-gradient-bg {
-  animation: hero-glow 15s ease infinite;
-  background-size: 200% 200%;
 }
 
 .hero-name-word {
@@ -630,19 +658,9 @@ body {
   50% { transform: translateY(8px); opacity: 0.5; }
 }
 
-/* Gradient text utility */
+/* Accent text utility (flat shu-red, matches the Figma hero treatment) */
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-pine), var(--color-iris));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.dark .gradient-text {
-  background: linear-gradient(135deg, var(--color-foam), var(--color-iris));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--color-accent);
 }
 
 /* Card hover utilities */
@@ -651,14 +669,14 @@ body {
 }
 .card-hover-lift:hover {
   transform: translateY(-8px);
-  box-shadow: 0 32px 64px -24px rgba(87, 82, 121, 0.35);
+  box-shadow: 0 32px 64px -24px rgba(33, 31, 28, 0.35);
 }
 
 .card-hover-glow {
   transition: box-shadow 400ms ease;
 }
 .card-hover-glow:hover {
-  box-shadow: 0 0 0 1px var(--color-accent), 0 24px 48px -24px rgba(87, 82, 121, 0.3);
+  box-shadow: 0 0 0 1px var(--color-accent), 0 24px 48px -24px rgba(33, 31, 28, 0.3);
 }
 
 /* Scroll progress bar */
@@ -668,18 +686,12 @@ body {
   left: 0;
   height: 3px;
   width: 0%;
-  background: linear-gradient(90deg, var(--color-pine), var(--color-iris));
+  background: var(--color-accent);
   z-index: 100;
   pointer-events: none;
   transition: width 50ms linear;
 }
 
-/* Outline text for marquee */
-.text-outline {
-  -webkit-text-stroke: 1.5px var(--color-text-secondary);
-  -webkit-text-fill-color: transparent;
-  opacity: 0.4;
-}
 
 /* Blob clip-path for profile photo */
 .blob-clip {
@@ -718,15 +730,9 @@ body {
   width: 100%;
 }
 
-/* CTA gradient background */
+/* CTA background — flat shu-tinted surface, matches the Figma "Let's talk" panel */
 .cta-gradient-bg {
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--color-pine) 15%, var(--color-bg-primary)),
-    color-mix(in srgb, var(--color-iris) 12%, var(--color-bg-primary)),
-    color-mix(in srgb, var(--color-pine) 10%, var(--color-bg-primary))
-  );
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
+  background: var(--color-accent-muted);
 }
 
 /* Timeline scroll-draw line */
@@ -766,9 +772,6 @@ body {
   }
   .hero-accent-line {
     width: 5rem;
-    animation: none;
-  }
-  .hero-gradient-bg {
     animation: none;
   }
   .animated-arrow {

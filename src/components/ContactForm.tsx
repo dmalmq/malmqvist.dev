@@ -9,7 +9,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
 
     const labelClass = "ui-field-label";
     const fieldClass = "ui-control";
-    const buttonClass = "inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:shadow-[0_8px_30px_-8px_var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
+    const buttonClass = "inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:shadow-[0_8px_30px_-8px_var(--color-accent)] disabled:opacity-70 disabled:hover:translate-y-0";
 
     const texts = {
         en: {
@@ -88,7 +88,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="relative rounded-[1.5rem] border border-[var(--color-success)] bg-[var(--color-bg-secondary)] p-8 text-center shadow-[0_24px_64px_-46px_rgba(86,148,159,0.4)] overflow-hidden"
+                className="relative rounded-[var(--radius-lg)] border border-[var(--color-success)] bg-[var(--color-bg-secondary)] p-8 text-center shadow-[0_24px_64px_-46px_rgba(74,122,82,0.35)] overflow-hidden"
                 aria-live="polite"
             >
                 {/* Success burst dots */}
@@ -101,7 +101,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                             key={i}
                             className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full"
                             style={{
-                                background: `var(--color-${['pine', 'iris', 'foam', 'love', 'gold', 'pine', 'iris', 'foam'][i]})`,
+                                background: `var(--color-${['accent-shu', 'accent-ai', 'accent-matcha', 'accent-kin', 'accent-shu', 'accent-ai', 'accent-matcha', 'accent-kin'][i]})`,
                             }}
                             initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
                             animate={{ x, y, scale: 0, opacity: 0 }}
@@ -140,7 +140,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                             name={field}
                             required
                             readOnly={status === 'submitting'}
-                            className={fieldClass}
+                            className={`${fieldClass} rounded-full`}
                             onFocus={() => handleFocus(field)}
                             onBlur={(e) => handleBlur(field, e.target.value)}
                         />
@@ -161,7 +161,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                         name="subject"
                         required
                         disabled={status === 'submitting'}
-                        className={`${fieldClass} appearance-none pr-12`}
+                        className={`${fieldClass} rounded-full appearance-none pr-12`}
                     >
                         <option value="inquiry">{t.subjects.inquiry}</option>
                         <option value="collab">{t.subjects.collab}</option>
@@ -201,9 +201,9 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                     id="message"
                     name="message"
                     required
-                    rows={6}
+                    rows={1}
                     readOnly={status === 'submitting'}
-                    className={`${fieldClass} min-h-[11rem] resize-y`}
+                    className={`${fieldClass} resize-y`}
                     onFocus={() => handleFocus('message')}
                     onBlur={(e) => handleBlur('message', e.target.value)}
                 ></textarea>
@@ -215,7 +215,7 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="rounded-[1rem] border border-[var(--color-error)] bg-[var(--color-error)]/10 p-4 text-sm font-medium text-[var(--color-error)] shadow-[0_18px_52px_-42px_rgba(180,99,122,0.45)]"
+                        className="rounded-[var(--radius-md)] border border-[var(--color-error)] bg-[var(--color-error)]/10 p-4 text-sm font-medium text-[var(--color-error)] shadow-[0_18px_52px_-42px_rgba(166,38,57,0.35)]"
                     >
                         {t.error}
                     </motion.div>
@@ -241,7 +241,15 @@ export default function ContactForm({ lang = 'en' }: { lang?: 'en' | 'ja' }) {
                                 </svg>
                                 {t.sending}
                             </>
-                        ) : t.send}
+                        ) : (
+                            <>
+                                {t.send}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </>
+                        )}
                     </button>
                 </MagneticButton>
             </motion.div>

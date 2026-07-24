@@ -1,0 +1,101 @@
+---
+title: "Sta.navi Indoor Navigation"
+description: "Revit models of station interiors and surrounding buildings across five JR East stations — delivered as 3D assets for Sta.navi's indoor navigation app, and as CityGML / 3D Tiles for PLATEAU, Japan's national 3D city model."
+publishDate: "2026-03-01"
+lang: "en"
+tags: ["Revit", "PLATEAU", "Digital Twin", "CityGML"]
+coverImage: "/images/projects/sta-navi/shinjuku-revit.png"
+featured: true
+category: Digital Twin
+role: "BIM Modeling & Data Pipeline"
+context: "JRE Consultants · Tokyo"
+timelineLabel: "2024 — Present"
+stations: ["Shinjuku", "Shibuya", "Takamatsu", "Ikebukuro", "Sapporo"]
+problem: "Tokyo's complex underground station networks are nearly impossible to navigate with traditional 2D maps. PLATEAU, Japan's national 3D city model, provides city-scale digital twin data — but it stops at building exteriors, leaving the labyrinth of underground walkways and station interiors invisible, at some of the busiest transit hubs in the country."
+solution: "I create detailed Revit models of station interiors, underground walkways, and surrounding buildings across five JR East stations — Shinjuku, Shibuya, Takamatsu, Ikebukuro, and Sapporo — then convert them to FBX for use as 3D assets in Sta.navi, JR East's indoor navigation app. In parallel, I pipe the same models into CityGML through Blender and Bonsai, integrating them with PLATEAU's digital twin for seamless indoor-outdoor continuity."
+techStack: ["Revit", "FBX", "CityGML", "3D Tiles", "Blender", "Bonsai", "RevitGeoSuite"]
+impact: "The models now power Sta.navi, JR East's indoor navigation app, across five stations — giving commuters continuous guidance from street level down into the station and back out again at some of Tokyo's busiest transit hubs. The same data feeds PLATEAU's public release, extending Japan's national digital twin below ground, station by station."
+---
+
+import FullBleedImage from "../../../components/mdx/FullBleedImage.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+import PairedImageRow from "../../../components/mdx/PairedImageRow.astro";
+
+<FullBleedImage src="/images/projects/sta-navi/shinjuku-revit.png" alt="Shinjuku Station area Revit model" />
+
+<Section label="PROBLEM">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="SOLUTION">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<PairedImageRow
+  title="Shinjuku in Sta.Navi"
+  leftSrc="/images/projects/sta-navi/shinjuku-app.jpg"
+  leftAlt="Shinjuku Station 3D view in Sta.Navi"
+  leftLabel="3D station view"
+  rightSrc="/images/projects/sta-navi/shinjuku-indoor-routing.jpg"
+  rightAlt="Indoor turn-by-turn routing at Shinjuku Station"
+  rightLabel="Indoor routing"
+/>
+
+<TechStack label="TECH STACK" items={frontmatter.techStack} />
+
+<Section label="IMPACT">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+<div class="mdx-media not-prose mt-10 max-w-[47.5rem]">
+  <p class="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.11em] text-[var(--color-text-secondary)]">ALSO MAPPED</p>
+</div>
+
+<PairedImageRow
+  title="Shibuya"
+  leftSrc="/images/projects/sta-navi/shibuya-revit.png"
+  leftAlt="Shibuya Station Revit model"
+  leftLabel="Revit model"
+  rightSrc="/images/projects/sta-navi/shibuya-app.jpg"
+  rightAlt="Shibuya Station in Sta.Navi"
+  rightLabel="Sta.Navi view"
+/>
+
+Shibuya Stream, Sakura Stage, Hikarie, both station buildings, the elevated pedestrian walkway above the surrounding roads, and Scramble Square.
+
+<PairedImageRow
+  title="Takamatsu"
+  leftSrc="/images/projects/sta-navi/takamatsu-revit.png"
+  leftAlt="Takamatsu Station Revit model"
+  leftLabel="Revit model"
+  rightSrc="/images/projects/sta-navi/takamatsu-app.jpg"
+  rightAlt="Takamatsu Station in Sta.Navi"
+  rightLabel="Sta.Navi view"
+/>
+
+The elevated walkway spanning from the station all the way to the ferry building, Symbol Tower, the station itself, and the Orne shopping center.
+
+<PairedImageRow
+  title="Ikebukuro"
+  leftSrc="/images/projects/sta-navi/ikebukuro-revit.png"
+  leftAlt="Ikebukuro Station Revit model"
+  leftLabel="Revit model"
+  rightSrc="/images/projects/sta-navi/ikebukuro-app.jpg"
+  rightAlt="Ikebukuro Station in Sta.Navi"
+  rightLabel="Sta.Navi view"
+/>
+
+JR Ikebukuro Station's concourse and surrounding retail network, modeled and mapped into the same coordinate system as the other four stations.
+
+<PairedImageRow
+  title="Sapporo"
+  leftSrc="/images/projects/sta-navi/sapporo-revit.png"
+  leftAlt="Sapporo Station Revit model"
+  leftLabel="Revit model"
+  rightSrc="/images/projects/sta-navi/sapporo-app.jpg"
+  rightAlt="Sapporo Station in Sta.Navi"
+  rightLabel="Sta.Navi view"
+/>
+
+Almost entirely underground: the tunnel network and surface access stairs threading through central Sapporo Station.

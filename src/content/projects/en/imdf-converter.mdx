@@ -1,0 +1,47 @@
+---
+title: "Shapefile → IMDF Converter"
+description: "A web application that converts shapefiles into IMDF-compliant GeoJSON archives for Apple Maps and other indoor mapping platforms, with a guided wizard and an interactive map + table review."
+publishDate: "2026-02-19"
+lang: "en"
+tags: ["Python", "FastAPI", "React", "TypeScript", "MapLibre", "Geospatial", "IMDF"]
+coverImage: "/images/projects/imdf-converter/review-export.png"
+featured: false
+category: Tools
+role: "Sole Developer"
+problem: "Indoor mapping professionals receiving per-floor shapefiles from CAD/GIS workflows had no practical way to turn them into IMDF output for Apple Maps and other indoor mapping platforms without deep Python and geospatial knowledge."
+solution: "A four-stage pipeline — upload, guided wizard configuration, interactive map + table review, and validated export — that auto-detects IMDF feature types from shapefile filenames, looks up company-specific unit category codes, and auto-generates footprint, building, and venue features from unit geometry. It runs on a shared Windows PC; colleagues open it in a browser with nothing to install."
+techStack: ["Python", "FastAPI", "GeoPandas", "Shapely", "React", "TypeScript", "MapLibre GL JS", "Vite"]
+impact: "Geometry quality checks, spatial containment validation, and opening placement verification surface as filterable rows right alongside the reviewed features, so problems get caught and fixed in the same interface — no separate export-then-inspect cycle, and no local Python or GIS software required."
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Section label="PROBLEM">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="SOLUTION">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="WIZARD WALKTHROUGH"
+  images={[
+    { src: "/images/projects/imdf-converter/import.png", alt: "IMDF Converter import step — drag-and-drop shapefile upload", label: "1. Import" },
+    { src: "/images/projects/imdf-converter/review-export.png", alt: "IMDF Converter review step — interactive map of a Shinjuku Station floor plan with layer controls", label: "3. Review & export" },
+  ]}
+/>
+
+Colleagues receive shapefiles per floor from CAD and GIS tools and needed a way to turn them into valid IMDF archives without installing Python or learning geospatial libraries, so this runs as a full-stack web app — a FastAPI + GeoPandas/Shapely backend behind a React + TypeScript frontend — hosted on a shared Windows PC that anyone on the team can reach from a browser.
+
+The wizard auto-detects IMDF feature types straight from shapefile filenames, then walks through level, category, and unit-mapping configuration, including a lookup for company-specific unit category codes. From there it auto-generates footprint, building, and venue features directly from unit geometry, so those don't have to be modeled by hand.
+
+Review happens on an interactive MapLibre map paired with a feature table — geometry is colored by category, selection is bidirectional between map and table, and keyboard shortcuts (<code>Ctrl+Z</code>, <code>Escape</code>, <code>Enter</code>) keep the review pass fast. Validation — geometry quality, spatial containment, opening placement — runs inline and shows up as filterable rows next to the real features, not as a separate error report, before the final IMDF archive gets exported.
+
+<TechStack label="TECH STACK" items={frontmatter.techStack} />
+
+<Section label="IMPACT">
+  <p>{frontmatter.impact}</p>
+</Section>

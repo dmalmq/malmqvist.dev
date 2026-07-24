@@ -1,0 +1,65 @@
+---
+title: Ersta Sjukhus — New Hospital
+description: A ~23,000 m² hospital on Södermalm, built on a steep hillside between Folkungagatan and Fjällgatan — Tengbom took over the design in 2017 from Nyréns Arkitektkontor and carried it through to completion in 2023.
+publishDate: "2026-03-01"
+lang: en
+tags: [Revit, Facade, Healthcare]
+coverImage: /images/projects/ersta/01-revit-model-front.jpg
+featured: false
+category: Practice
+role: "Architect — Facade & Model Rebuild"
+context: "Tengbom · Stockholm"
+timelineLabel: "2017 — 2021"
+awards: ["Best Healthcare — Monocle Design Awards 2024", "Finalist — Årets Stockholmsbyggnad 2024"]
+problem: "Tengbom inherited the Ersta Sjukhus design in 2017 from Nyréns Arkitektkontor as an IFC export — reverse-engineering another firm's design intent into a production-ready Revit model, on a steep hillside site with 38,000 m³ of rock to blast and listed heritage structures to integrate around."
+solution: "I rebuilt the entire Revit model from scratch based on the inherited IFC, then became primary modeler for the building's facade — the ocher brown anodized aluminum cladding system that defines the hospital. I coordinated weekly with electrical, HVAC, and structural teams, and joined fabrication meetings to validate the facade could actually be manufactured and installed as designed."
+techStack: [Revit Architecture, IFC, Navisworks, Solibri]
+impact: "The completed hospital won Best Healthcare at the Monocle Design Awards 2024 and was a finalist for Årets Stockholmsbyggnad 2024. The facade — refined across dozens of coordination and fabrication meetings — became one of the building's defining features, and the project stands as proof of understanding a BIM model's full lifecycle: from inherited data, through design development, to what actually gets built."
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import FullBleedImage from "../../../components/mdx/FullBleedImage.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<ImageRow
+  title="REVIT MODEL — PRIMARY WORK PRODUCT"
+  images={[
+    { src: "/images/projects/ersta/01-revit-model-front.jpg", alt: "Ersta Revit Model — Front View", label: "Front view" },
+    { src: "/images/projects/ersta/02-revit-model-angle-a.jpg", alt: "Ersta Revit Model — Detail Angle A", label: "Detail angle A" },
+    { src: "/images/projects/ersta/03-revit-model-angle-b.jpg", alt: "Ersta Revit Model — Detail Angle B", label: "Detail angle B" },
+  ]}
+/>
+
+<Section label="PROBLEM">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="SOLUTION">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="FACADE DESIGN REVIEW"
+  images={[
+    { src: "/images/projects/ersta/07-tengbom-facade-review-a.jpg", alt: "Tengbom Facade Material Board A", label: "Material board A" },
+    { src: "/images/projects/ersta/08-tengbom-facade-review-b.jpg", alt: "Tengbom Facade Material Board B", label: "Material board B" },
+  ]}
+/>
+
+<TechStack label="TECH STACK" items={frontmatter.techStack} />
+
+<ImageRow
+  title="CONSTRUCTION"
+  images={[
+    { src: "/images/projects/ersta/04-construction-facade-crane.jpg", alt: "Ersta Facade Construction with Crane", label: "Facade erection" },
+    { src: "/images/projects/ersta/05-construction-facade-golden.jpg", alt: "Ersta Facade Golden Hour Detail", label: "Facade detail" },
+    { src: "/images/projects/ersta/06-construction-street-view.jpg", alt: "Ersta Street View Construction", label: "Street view" },
+  ]}
+/>
+
+<Section label="IMPACT">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+<FullBleedImage src="/images/projects/ersta/09-bim-render-exterior.jpg" alt="Ersta BIM Render Exterior" caption="Completed building" />

@@ -14,17 +14,20 @@ export default function LanguageToggle({ currentLang }: Props) {
         window.location.href = `${nextPath}${window.location.search}${window.location.hash}`;
     };
 
-    const toggleText = currentLang === 'en' ? '日本語' : 'EN';
-    const srText = currentLang === 'en' ? ' switch to Japanese' : ' switch to English';
+    const srText = currentLang === 'en' ? 'Switch to Japanese' : 'Switch to English';
 
     return (
         <button
             onClick={switchLanguage}
-            className="ui-pill-button min-w-[4.75rem] px-3"
-            title={currentLang === 'en' ? 'Switch to Japanese' : 'Switch to English'}
+            className="flex h-6 w-6 items-center justify-center text-[var(--color-text-heading)] transition-colors duration-200 hover:text-[var(--color-accent)]"
+            title={srText}
+            aria-label={srText}
         >
-            <span>{toggleText}</span>
-            <span className="sr-only">{srText}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z" />
+            </svg>
         </button>
     );
 }

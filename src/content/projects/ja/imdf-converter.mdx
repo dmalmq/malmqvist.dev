@@ -1,0 +1,47 @@
+---
+title: "Shapefile → IMDF コンバーター"
+description: "ShapefileをAppleマップなど屋内地図プラットフォーム向けのIMDF準拠GeoJSONアーカイブへ変換するWebアプリケーション。ガイド付きウィザードと、インタラクティブな地図＋テーブルによるレビュー機能を備えています。"
+publishDate: "2026-02-19"
+lang: "ja"
+tags: ["Python", "FastAPI", "React", "TypeScript", "MapLibre", "Geospatial", "IMDF"]
+coverImage: "/images/projects/imdf-converter/review-export.png"
+featured: false
+category: Tools
+role: "単独開発"
+problem: "CAD・GISのワークフローからフロアごとのShapefileを受け取る屋内マッピング担当者にとって、PythonやGISの深い知識なしにAppleマップなど屋内地図プラットフォーム向けのIMDF出力を作成する実用的な手段がありませんでした。"
+solution: "アップロード → ガイド付きウィザードでの設定 → 地図＋テーブルによるインタラクティブなレビュー → 検証済みエクスポートという4段階のパイプライン。Shapefileのファイル名からIMDFのフィーチャータイプを自動検出し、会社固有のユニットカテゴリコードを参照し、ユニットのジオメトリからフットプリント・building・venueの各フィーチャーを自動生成します。共有のWindows PC上で稼働しており、同僚はインストール不要でブラウザからアクセスできます。"
+techStack: ["Python", "FastAPI", "GeoPandas", "Shapely", "React", "TypeScript", "MapLibre GL JS", "Vite"]
+impact: "ジオメトリの品質チェック、空間包含関係の検証、開口部配置の確認が、レビュー中のフィーチャーと並んでフィルタ可能な行として表示されるため、エクスポートしてから別途確認するというサイクルが不要になり、同じ画面内で問題を見つけて修正できます。ローカルにPythonやGISソフトウェアを用意する必要もありません。"
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Section label="課題">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="アプローチ">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="ウィザードの流れ"
+  images={[
+    { src: "/images/projects/imdf-converter/import.png", alt: "IMDFコンバーター インポート画面 — ドラッグ＆ドロップでのShapefileアップロード", label: "1. インポート" },
+    { src: "/images/projects/imdf-converter/review-export.png", alt: "IMDFコンバーター レビュー画面 — 新宿駅フロアプランのインタラクティブ地図とレイヤーパネル", label: "3. レビュー＆エクスポート" },
+  ]}
+/>
+
+同僚たちはCAD・GISツールからフロアごとのShapefileを受け取りますが、Pythonのインストールや空間データライブラリの知識なしに有効なIMDFアーカイブへ変換する手段が必要でした。そこでFastAPI + GeoPandas/Shapelyのバックエンドと、React + TypeScriptのフロントエンドによるフルスタックWebアプリケーションとして構築し、チームの誰もがブラウザからアクセスできる共有Windows PC上でホストしています。
+
+ウィザードはShapefileのファイル名からIMDFのフィーチャータイプを直接自動検出し、レベル・カテゴリ・ユニットのマッピング設定へと進みます。ここには会社固有のユニットカテゴリコードの参照も含まれます。そこから、ユニットのジオメトリをもとにフットプリント・building・venueの各フィーチャーを自動生成するため、手作業でモデリングする必要がありません。
+
+レビューはインタラクティブなMapLibre地図とフィーチャーテーブルを組み合わせて行います。ジオメトリはカテゴリごとに色分けされ、地図とテーブルの選択は双方向に連動し、キーボードショートカット（<code>Ctrl+Z</code>、<code>Escape</code>、<code>Enter</code>）でレビュー作業を効率化できます。ジオメトリの品質・空間包含関係・開口部配置の検証はインラインで実行され、別途エラーレポートとしてではなく、実際のフィーチャーと並ぶフィルタ可能な行として表示されたうえで、最終的なIMDFアーカイブがエクスポートされます。
+
+<TechStack label="使用技術" items={frontmatter.techStack} />
+
+<Section label="成果">
+  <p>{frontmatter.impact}</p>
+</Section>

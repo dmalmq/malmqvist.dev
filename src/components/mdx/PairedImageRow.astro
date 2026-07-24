@@ -1,0 +1,50 @@
+---
+import ResponsivePicture from "../ResponsivePicture.astro";
+import { getLightboxImagePath } from "../../lib/image-assets.mjs";
+
+interface Props {
+  title: string;
+  leftSrc: string;
+  leftAlt: string;
+  leftLabel: string;
+  rightSrc: string;
+  rightAlt: string;
+  rightLabel: string;
+}
+
+const { title, leftSrc, leftAlt, leftLabel, rightSrc, rightAlt, rightLabel } = Astro.props;
+const pair = [
+  { src: leftSrc, alt: leftAlt, label: leftLabel },
+  { src: rightSrc, alt: rightAlt, label: rightLabel },
+];
+---
+
+<div class="mdx-media not-prose my-8">
+  <p class="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
+    {title}
+  </p>
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    {
+      pair.map((image) => (
+        <button
+          type="button"
+          data-lightbox-src={getLightboxImagePath(image.src)}
+          class="group relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-left shadow-[0_18px_48px_-42px_rgba(33,31,28,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:shadow-[0_26px_60px_-44px_rgba(33,31,28,0.28)]"
+        >
+          <ResponsivePicture
+            src={image.src}
+            alt={image.alt}
+            sizes="(min-width: 768px) 44vw, 100vw"
+            loading="lazy"
+            class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+          />
+          <div class="absolute inset-x-0 bottom-0 border-t border-[var(--color-border)] bg-[color:color-mix(in_srgb,var(--color-bg-primary)_82%,transparent)] px-4 py-3 backdrop-blur-md">
+            <span class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
+              {image.label}
+            </span>
+          </div>
+        </button>
+      ))
+    }
+  </div>
+</div>

@@ -370,67 +370,241 @@ const imageManifest = {
     "shareSrc": "/images/projects/ersta/09-bim-render-exterior.jpg",
     "lightboxSrc": "/images/_generated/projects__ersta__09-bim-render-exterior-1359w.webp"
   },
-  "/images/projects/revitgeoconverter/revitaddin-1.webp": {
-    "width": 1400,
-    "height": 852,
+  "/images/projects/imdf-converter/import.png": {
+    "width": 1917,
+    "height": 941,
     "avif": [
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-1-800w.avif",
+        "src": "/images/_generated/projects__imdf-converter__import-800w.avif",
         "width": 800,
-        "height": 487
+        "height": 393
       },
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-1-1400w.avif",
+        "src": "/images/_generated/projects__imdf-converter__import-1400w.avif",
         "width": 1400,
-        "height": 852
+        "height": 687
+      },
+      {
+        "src": "/images/_generated/projects__imdf-converter__import-1917w.avif",
+        "width": 1917,
+        "height": 941
       }
     ],
     "webp": [
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-1-800w.webp",
+        "src": "/images/_generated/projects__imdf-converter__import-800w.webp",
         "width": 800,
-        "height": 487
+        "height": 393
       },
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-1-1400w.webp",
+        "src": "/images/_generated/projects__imdf-converter__import-1400w.webp",
         "width": 1400,
-        "height": 852
+        "height": 687
+      },
+      {
+        "src": "/images/_generated/projects__imdf-converter__import-1917w.webp",
+        "width": 1917,
+        "height": 941
       }
     ],
-    "fallbackSrc": "/images/_generated/projects__revitgeoconverter__revitaddin-1-share.jpg",
-    "shareSrc": "/images/_generated/projects__revitgeoconverter__revitaddin-1-share.jpg",
-    "lightboxSrc": "/images/_generated/projects__revitgeoconverter__revitaddin-1-1400w.webp"
+    "fallbackSrc": "/images/projects/imdf-converter/import.png",
+    "shareSrc": "/images/projects/imdf-converter/import.png",
+    "lightboxSrc": "/images/_generated/projects__imdf-converter__import-1917w.webp"
   },
-  "/images/projects/revitgeoconverter/revitaddin-2.webp": {
-    "width": 888,
-    "height": 696,
+  "/images/projects/imdf-converter/review-export.png": {
+    "width": 1912,
+    "height": 938,
     "avif": [
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-2-800w.avif",
+        "src": "/images/_generated/projects__imdf-converter__review-export-800w.avif",
         "width": 800,
-        "height": 627
+        "height": 392
       },
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-2-888w.avif",
-        "width": 888,
-        "height": 696
+        "src": "/images/_generated/projects__imdf-converter__review-export-1400w.avif",
+        "width": 1400,
+        "height": 687
+      },
+      {
+        "src": "/images/_generated/projects__imdf-converter__review-export-1912w.avif",
+        "width": 1912,
+        "height": 938
       }
     ],
     "webp": [
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-2-800w.webp",
+        "src": "/images/_generated/projects__imdf-converter__review-export-800w.webp",
         "width": 800,
-        "height": 627
+        "height": 392
       },
       {
-        "src": "/images/_generated/projects__revitgeoconverter__revitaddin-2-888w.webp",
-        "width": 888,
-        "height": 696
+        "src": "/images/_generated/projects__imdf-converter__review-export-1400w.webp",
+        "width": 1400,
+        "height": 687
+      },
+      {
+        "src": "/images/_generated/projects__imdf-converter__review-export-1912w.webp",
+        "width": 1912,
+        "height": 938
       }
     ],
-    "fallbackSrc": "/images/_generated/projects__revitgeoconverter__revitaddin-2-share.jpg",
-    "shareSrc": "/images/_generated/projects__revitgeoconverter__revitaddin-2-share.jpg",
-    "lightboxSrc": "/images/_generated/projects__revitgeoconverter__revitaddin-2-888w.webp"
+    "fallbackSrc": "/images/projects/imdf-converter/review-export.png",
+    "shareSrc": "/images/projects/imdf-converter/review-export.png",
+    "lightboxSrc": "/images/_generated/projects__imdf-converter__review-export-1912w.webp"
+  },
+  "/images/projects/revit-geo-suite/crs-setup.png": {
+    "width": 1406,
+    "height": 872,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__crs-setup-800w.avif",
+        "width": 800,
+        "height": 496
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__crs-setup-1400w.avif",
+        "width": 1400,
+        "height": 868
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__crs-setup-1406w.avif",
+        "width": 1406,
+        "height": 872
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__crs-setup-800w.webp",
+        "width": 800,
+        "height": 496
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__crs-setup-1400w.webp",
+        "width": 1400,
+        "height": 868
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__crs-setup-1406w.webp",
+        "width": 1406,
+        "height": 872
+      }
+    ],
+    "fallbackSrc": "/images/projects/revit-geo-suite/crs-setup.png",
+    "shareSrc": "/images/projects/revit-geo-suite/crs-setup.png",
+    "lightboxSrc": "/images/_generated/projects__revit-geo-suite__crs-setup-1406w.webp"
+  },
+  "/images/projects/revit-geo-suite/export-formats.png": {
+    "width": 1409,
+    "height": 873,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__export-formats-800w.avif",
+        "width": 800,
+        "height": 496
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__export-formats-1400w.avif",
+        "width": 1400,
+        "height": 867
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__export-formats-1409w.avif",
+        "width": 1409,
+        "height": 873
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__export-formats-800w.webp",
+        "width": 800,
+        "height": 496
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__export-formats-1400w.webp",
+        "width": 1400,
+        "height": 867
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__export-formats-1409w.webp",
+        "width": 1409,
+        "height": 873
+      }
+    ],
+    "fallbackSrc": "/images/projects/revit-geo-suite/export-formats.png",
+    "shareSrc": "/images/projects/revit-geo-suite/export-formats.png",
+    "lightboxSrc": "/images/_generated/projects__revit-geo-suite__export-formats-1409w.webp"
+  },
+  "/images/projects/revit-geo-suite/geopackage-preview.png": {
+    "width": 1052,
+    "height": 749,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__geopackage-preview-800w.avif",
+        "width": 800,
+        "height": 570
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__geopackage-preview-1052w.avif",
+        "width": 1052,
+        "height": 749
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__geopackage-preview-800w.webp",
+        "width": 800,
+        "height": 570
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__geopackage-preview-1052w.webp",
+        "width": 1052,
+        "height": 749
+      }
+    ],
+    "fallbackSrc": "/images/projects/revit-geo-suite/geopackage-preview.png",
+    "shareSrc": "/images/projects/revit-geo-suite/geopackage-preview.png",
+    "lightboxSrc": "/images/_generated/projects__revit-geo-suite__geopackage-preview-1052w.webp"
+  },
+  "/images/projects/revit-geo-suite/import-sources.png": {
+    "width": 1413,
+    "height": 874,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__import-sources-800w.avif",
+        "width": 800,
+        "height": 495
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__import-sources-1400w.avif",
+        "width": 1400,
+        "height": 866
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__import-sources-1413w.avif",
+        "width": 1413,
+        "height": 874
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__import-sources-800w.webp",
+        "width": 800,
+        "height": 495
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__import-sources-1400w.webp",
+        "width": 1400,
+        "height": 866
+      },
+      {
+        "src": "/images/_generated/projects__revit-geo-suite__import-sources-1413w.webp",
+        "width": 1413,
+        "height": 874
+      }
+    ],
+    "fallbackSrc": "/images/projects/revit-geo-suite/import-sources.png",
+    "shareSrc": "/images/projects/revit-geo-suite/import-sources.png",
+    "lightboxSrc": "/images/_generated/projects__revit-geo-suite__import-sources-1413w.webp"
   },
   "/images/projects/shinjuku-nav-1-optimized.jpg": {
     "width": 1600,
@@ -473,46 +647,396 @@ const imageManifest = {
     "shareSrc": "/images/projects/shinjuku-nav-1-optimized.jpg",
     "lightboxSrc": "/images/_generated/projects__shinjuku-nav-1-optimized-1600w.webp"
   },
-  "/images/projects/shinjuku-nav-2-optimized.jpg": {
-    "width": 1600,
-    "height": 612,
+  "/images/projects/sta-navi/ikebukuro-app.jpg": {
+    "width": 1256,
+    "height": 2760,
     "avif": [
       {
-        "src": "/images/_generated/projects__shinjuku-nav-2-optimized-800w.avif",
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-app-800w.avif",
         "width": 800,
-        "height": 306
+        "height": 1758
       },
       {
-        "src": "/images/_generated/projects__shinjuku-nav-2-optimized-1400w.avif",
-        "width": 1400,
-        "height": 536
-      },
-      {
-        "src": "/images/_generated/projects__shinjuku-nav-2-optimized-1600w.avif",
-        "width": 1600,
-        "height": 612
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-app-1256w.avif",
+        "width": 1256,
+        "height": 2760
       }
     ],
     "webp": [
       {
-        "src": "/images/_generated/projects__shinjuku-nav-2-optimized-800w.webp",
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-app-800w.webp",
         "width": 800,
-        "height": 306
+        "height": 1758
       },
       {
-        "src": "/images/_generated/projects__shinjuku-nav-2-optimized-1400w.webp",
-        "width": 1400,
-        "height": 536
-      },
-      {
-        "src": "/images/_generated/projects__shinjuku-nav-2-optimized-1600w.webp",
-        "width": 1600,
-        "height": 612
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-app-1256w.webp",
+        "width": 1256,
+        "height": 2760
       }
     ],
-    "fallbackSrc": "/images/projects/shinjuku-nav-2-optimized.jpg",
-    "shareSrc": "/images/projects/shinjuku-nav-2-optimized.jpg",
-    "lightboxSrc": "/images/_generated/projects__shinjuku-nav-2-optimized-1600w.webp"
+    "fallbackSrc": "/images/projects/sta-navi/ikebukuro-app.jpg",
+    "shareSrc": "/images/projects/sta-navi/ikebukuro-app.jpg",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__ikebukuro-app-1256w.webp"
+  },
+  "/images/projects/sta-navi/ikebukuro-revit.png": {
+    "width": 1512,
+    "height": 793,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-revit-800w.avif",
+        "width": 800,
+        "height": 420
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-revit-1400w.avif",
+        "width": 1400,
+        "height": 734
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-revit-1512w.avif",
+        "width": 1512,
+        "height": 793
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-revit-800w.webp",
+        "width": 800,
+        "height": 420
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-revit-1400w.webp",
+        "width": 1400,
+        "height": 734
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__ikebukuro-revit-1512w.webp",
+        "width": 1512,
+        "height": 793
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/ikebukuro-revit.png",
+    "shareSrc": "/images/projects/sta-navi/ikebukuro-revit.png",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__ikebukuro-revit-1512w.webp"
+  },
+  "/images/projects/sta-navi/sapporo-app.jpg": {
+    "width": 1256,
+    "height": 2760,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-app-800w.avif",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-app-1256w.avif",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-app-800w.webp",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-app-1256w.webp",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/sapporo-app.jpg",
+    "shareSrc": "/images/projects/sta-navi/sapporo-app.jpg",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__sapporo-app-1256w.webp"
+  },
+  "/images/projects/sta-navi/sapporo-revit.png": {
+    "width": 1533,
+    "height": 785,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-revit-800w.avif",
+        "width": 800,
+        "height": 410
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-revit-1400w.avif",
+        "width": 1400,
+        "height": 717
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-revit-1533w.avif",
+        "width": 1533,
+        "height": 785
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-revit-800w.webp",
+        "width": 800,
+        "height": 410
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-revit-1400w.webp",
+        "width": 1400,
+        "height": 717
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__sapporo-revit-1533w.webp",
+        "width": 1533,
+        "height": 785
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/sapporo-revit.png",
+    "shareSrc": "/images/projects/sta-navi/sapporo-revit.png",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__sapporo-revit-1533w.webp"
+  },
+  "/images/projects/sta-navi/shibuya-app.jpg": {
+    "width": 1256,
+    "height": 2760,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-app-800w.avif",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-app-1256w.avif",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-app-800w.webp",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-app-1256w.webp",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/shibuya-app.jpg",
+    "shareSrc": "/images/projects/sta-navi/shibuya-app.jpg",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__shibuya-app-1256w.webp"
+  },
+  "/images/projects/sta-navi/shibuya-revit.png": {
+    "width": 1515,
+    "height": 791,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-revit-800w.avif",
+        "width": 800,
+        "height": 418
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-revit-1400w.avif",
+        "width": 1400,
+        "height": 731
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-revit-1515w.avif",
+        "width": 1515,
+        "height": 791
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-revit-800w.webp",
+        "width": 800,
+        "height": 418
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-revit-1400w.webp",
+        "width": 1400,
+        "height": 731
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shibuya-revit-1515w.webp",
+        "width": 1515,
+        "height": 791
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/shibuya-revit.png",
+    "shareSrc": "/images/projects/sta-navi/shibuya-revit.png",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__shibuya-revit-1515w.webp"
+  },
+  "/images/projects/sta-navi/shinjuku-app.jpg": {
+    "width": 1256,
+    "height": 2760,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-app-800w.avif",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-app-1256w.avif",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-app-800w.webp",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-app-1256w.webp",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/shinjuku-app.jpg",
+    "shareSrc": "/images/projects/sta-navi/shinjuku-app.jpg",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__shinjuku-app-1256w.webp"
+  },
+  "/images/projects/sta-navi/shinjuku-indoor-routing.jpg": {
+    "width": 1256,
+    "height": 2760,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-indoor-routing-800w.avif",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-indoor-routing-1256w.avif",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-indoor-routing-800w.webp",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-indoor-routing-1256w.webp",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/shinjuku-indoor-routing.jpg",
+    "shareSrc": "/images/projects/sta-navi/shinjuku-indoor-routing.jpg",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__shinjuku-indoor-routing-1256w.webp"
+  },
+  "/images/projects/sta-navi/shinjuku-revit.png": {
+    "width": 1508,
+    "height": 747,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-revit-800w.avif",
+        "width": 800,
+        "height": 396
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-revit-1400w.avif",
+        "width": 1400,
+        "height": 694
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-revit-1508w.avif",
+        "width": 1508,
+        "height": 747
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-revit-800w.webp",
+        "width": 800,
+        "height": 396
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-revit-1400w.webp",
+        "width": 1400,
+        "height": 694
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__shinjuku-revit-1508w.webp",
+        "width": 1508,
+        "height": 747
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/shinjuku-revit.png",
+    "shareSrc": "/images/projects/sta-navi/shinjuku-revit.png",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__shinjuku-revit-1508w.webp"
+  },
+  "/images/projects/sta-navi/takamatsu-app.jpg": {
+    "width": 1256,
+    "height": 2760,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-app-800w.avif",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-app-1256w.avif",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-app-800w.webp",
+        "width": 800,
+        "height": 1758
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-app-1256w.webp",
+        "width": 1256,
+        "height": 2760
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/takamatsu-app.jpg",
+    "shareSrc": "/images/projects/sta-navi/takamatsu-app.jpg",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__takamatsu-app-1256w.webp"
+  },
+  "/images/projects/sta-navi/takamatsu-revit.png": {
+    "width": 1515,
+    "height": 783,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-revit-800w.avif",
+        "width": 800,
+        "height": 413
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-revit-1400w.avif",
+        "width": 1400,
+        "height": 724
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-revit-1515w.avif",
+        "width": 1515,
+        "height": 783
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-revit-800w.webp",
+        "width": 800,
+        "height": 413
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-revit-1400w.webp",
+        "width": 1400,
+        "height": 724
+      },
+      {
+        "src": "/images/_generated/projects__sta-navi__takamatsu-revit-1515w.webp",
+        "width": 1515,
+        "height": 783
+      }
+    ],
+    "fallbackSrc": "/images/projects/sta-navi/takamatsu-revit.png",
+    "shareSrc": "/images/projects/sta-navi/takamatsu-revit.png",
+    "lightboxSrc": "/images/_generated/projects__sta-navi__takamatsu-revit-1515w.webp"
   }
 };
 

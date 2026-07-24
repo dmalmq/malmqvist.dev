@@ -1,0 +1,101 @@
+---
+title: "Sta.navi 屋内ナビゲーション"
+description: "JR東日本の5駅で、駅構内と周辺建物をRevitでモデル化 — Sta.navi屋内ナビアプリ向けの3Dアセットとして、また日本の3D都市モデルPLATEAU向けのCityGML / 3D Tilesとして提供。"
+publishDate: "2026-03-01"
+lang: "ja"
+tags: ["Revit", "PLATEAU", "Digital Twin", "CityGML"]
+coverImage: "/images/projects/sta-navi/shinjuku-revit.png"
+featured: true
+category: Digital Twin
+role: "BIMモデリング＆データパイプライン"
+context: "JRE Consultants・東京"
+timelineLabel: "2024年 — 現在"
+stations: ["新宿", "渋谷", "高松", "池袋", "札幌"]
+problem: "従来の2Dマップではナビゲーションが困難な東京の複雑な地下駅ネットワーク。日本の3D都市モデルPLATEAUは都市規模のデジタルツインデータを提供しますが、建物の外部で途切れてしまい、国内屈指の乗降客数を誇るこれらの駅の、地下通路や構内の迷路のような構造は可視化されないままでした。"
+solution: "JR東日本の5駅 — 新宿・渋谷・高松・池袋・札幌 — について、駅構内、地下通路、周辺建物の詳細なRevitモデルを作成しています。これをFBXに変換し、JR東日本の屋内ナビアプリSta.naviの3Dアセットとして利用。並行してBlenderとBonsaiを通じて同じモデルをCityGMLへ変換し、PLATEAUのデジタルツインと統合することで、屋内外がシームレスに連続する体験を実現しています。"
+techStack: ["Revit", "FBX", "CityGML", "3D Tiles", "Blender", "Bonsai", "RevitGeoSuite"]
+impact: "このモデル群は現在、5駅にわたってJR東日本の屋内ナビアプリSta.naviを支えており、地上から駅構内へ、そして再び地上へという、東京屈指のターミナル駅における一貫した経路案内を可能にしています。同じデータはPLATEAUの一般公開データにも反映され、日本の国家的デジタルツインを駅ごとに地下へと拡張しています。"
+---
+
+import FullBleedImage from "../../../components/mdx/FullBleedImage.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+import PairedImageRow from "../../../components/mdx/PairedImageRow.astro";
+
+<FullBleedImage src="/images/projects/sta-navi/shinjuku-revit.png" alt="新宿駅周辺 Revitモデル" />
+
+<Section label="課題">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="アプローチ">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<PairedImageRow
+  title="新宿 in Sta.Navi"
+  leftSrc="/images/projects/sta-navi/shinjuku-app.jpg"
+  leftAlt="Sta.Naviでの新宿駅3Dビュー"
+  leftLabel="3Dステーションビュー"
+  rightSrc="/images/projects/sta-navi/shinjuku-indoor-routing.jpg"
+  rightAlt="新宿駅の屋内ターンバイターン経路案内"
+  rightLabel="屋内経路案内"
+/>
+
+<TechStack label="使用技術" items={frontmatter.techStack} />
+
+<Section label="成果">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+<div class="mdx-media not-prose mt-10 max-w-[47.5rem]">
+  <p class="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.11em] text-[var(--color-text-secondary)]">その他のマッピング対象駅</p>
+</div>
+
+<PairedImageRow
+  title="渋谷"
+  leftSrc="/images/projects/sta-navi/shibuya-revit.png"
+  leftAlt="渋谷駅 Revitモデル"
+  leftLabel="Revitモデル"
+  rightSrc="/images/projects/sta-navi/shibuya-app.jpg"
+  rightAlt="Sta.Naviでの渋谷駅"
+  rightLabel="Sta.Naviビュー"
+/>
+
+渋谷ストリーム、桜丘口地区（サクラステージ）、ヒカリエ、両駅舎、道路上空を横断するデッキ、そしてスクランブルスクエア。
+
+<PairedImageRow
+  title="高松"
+  leftSrc="/images/projects/sta-navi/takamatsu-revit.png"
+  leftAlt="高松駅 Revitモデル"
+  leftLabel="Revitモデル"
+  rightSrc="/images/projects/sta-navi/takamatsu-app.jpg"
+  rightAlt="Sta.Naviでの高松駅"
+  rightLabel="Sta.Naviビュー"
+/>
+
+駅からフェリーターミナルまで続く高架デッキ、シンボルタワー、駅舎本体、そしてオルネ高松ショッピングセンター。
+
+<PairedImageRow
+  title="池袋"
+  leftSrc="/images/projects/sta-navi/ikebukuro-revit.png"
+  leftAlt="池袋駅 Revitモデル"
+  leftLabel="Revitモデル"
+  rightSrc="/images/projects/sta-navi/ikebukuro-app.jpg"
+  rightAlt="Sta.Naviでの池袋駅"
+  rightLabel="Sta.Naviビュー"
+/>
+
+JR池袋駅のコンコースと周辺の商業ネットワークを、他4駅と同一の座標系上にモデル化・マッピングしました。
+
+<PairedImageRow
+  title="札幌"
+  leftSrc="/images/projects/sta-navi/sapporo-revit.png"
+  leftAlt="札幌駅 Revitモデル"
+  leftLabel="Revitモデル"
+  rightSrc="/images/projects/sta-navi/sapporo-app.jpg"
+  rightAlt="Sta.Naviでの札幌駅"
+  rightLabel="Sta.Naviビュー"
+/>
+
+そのほぼ全体が地下にある案件です。札幌駅中心部を貫く地下通路網と地上へのアクセス階段をモデル化しました。

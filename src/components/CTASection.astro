@@ -1,0 +1,52 @@
+---
+import SocialLinks from "./SocialLinks.astro";
+import Button from "./ui/Button.astro";
+import MagneticButton from "./animation/MagneticButton";
+import { useTranslations, type Language } from "../i18n/utils";
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const isJa = lang === "ja";
+const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
+
+const eyebrow = "LET'S TALK";
+const note = isJa
+  ? "設計、BIM、自動化、空間データの実装について相談できます。"
+  : "Available for architecture, BIM, automation, and spatial-data collaborations.";
+---
+
+<section class="w-full bg-[var(--color-accent-muted)] px-5 py-16 sm:px-8 md:py-20 lg:px-10">
+  <div class="mx-auto flex max-w-[90rem] flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
+    <div class="max-w-2xl">
+      <p class="font-mono text-xs font-medium tracking-[0.16em] text-[var(--color-text-secondary)]">
+        {eyebrow}
+      </p>
+      <h2
+        class="mt-4 text-[clamp(1.75rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.02em] text-[var(--color-accent)]"
+        style={typeStyle}
+      >
+        {t("home.cta.title")}
+      </h2>
+      <p class="mt-4 max-w-xl text-base leading-7 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
+        {note}
+      </p>
+    </div>
+
+    <div class="flex flex-col items-start gap-5">
+      <MagneticButton client:idle>
+        <Button href={`/${lang}/contact`} variant="primary" class="gap-2 px-6 py-4 text-sm">
+          {t("home.cta.button")}
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </Button>
+      </MagneticButton>
+      <SocialLinks variant="bare" />
+    </div>
+  </div>
+</section>

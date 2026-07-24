@@ -27,15 +27,16 @@ interface Props {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const relatedProjects = (await getCollection("projects", ({ id }) =>
+const sortedProjects = (await getCollection("projects", ({ id }) =>
     id.startsWith("en/"),
-))
-    .filter((candidate) => candidate.id !== project.id)
-    .sort(
-        (a, b) =>
-            b.data.publishDate.getTime() - a.data.publishDate.getTime(),
-    )
-    .slice(0, 3);
+)).sort(
+    (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+);
+const currentIndex = sortedProjects.findIndex((candidate) => candidate.id === project.id);
+const nextProject =
+    sortedProjects.length > 1
+        ? sortedProjects[(currentIndex - 1 + sortedProjects.length) % sortedProjects.length]
+        : null;
 
 const jsonLd = buildArticleJsonLd({
     type: "Article",
@@ -63,6 +64,6 @@ const jsonLd = buildArticleJsonLd({
         lang="en"
         project={project}
         Content={Content}
-        relatedProjects={relatedProjects}
+        nextProject={nextProject}
     />
 </BaseLayout>

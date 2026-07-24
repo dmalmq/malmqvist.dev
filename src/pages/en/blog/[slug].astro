@@ -25,15 +25,16 @@ interface Props {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const relatedPosts = (await getCollection("blog", ({ id }) =>
+const sortedPosts = (await getCollection("blog", ({ id }) =>
     id.startsWith("en/"),
-))
-    .filter((candidate) => candidate.id !== post.id)
-    .sort(
-        (a, b) =>
-            b.data.publishDate.getTime() - a.data.publishDate.getTime(),
-    )
-    .slice(0, 3);
+)).sort(
+    (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+);
+const currentIndex = sortedPosts.findIndex((candidate) => candidate.id === post.id);
+const nextPost =
+    sortedPosts.length > 1
+        ? sortedPosts[(currentIndex - 1 + sortedPosts.length) % sortedPosts.length]
+        : null;
 
 const jsonLd = buildArticleJsonLd({
     type: "BlogPosting",
@@ -60,6 +61,6 @@ const jsonLd = buildArticleJsonLd({
         lang="en"
         post={post}
         Content={Content}
-        relatedPosts={relatedPosts}
+        nextPost={nextPost}
     />
 </BaseLayout>

@@ -1,11 +1,9 @@
 ---
-import Card from "./ui/Card.astro";
-import FadeIn from "./ui/FadeIn.astro";
-import ScrollReveal from "./ui/ScrollReveal.astro";
-
 import SocialLinks from "./SocialLinks.astro";
 import ContactForm from "./ContactForm";
-import FloatingShapes from "./animation/FloatingShapes";
+import FadeIn from "./ui/FadeIn.astro";
+import ScrollReveal from "./ui/ScrollReveal.astro";
+import SectionHeading from "./ui/SectionHeading.astro";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -19,149 +17,54 @@ const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
 const copy = isJa
   ? {
       eyebrow: "CONTACT",
-      title: "お問い合わせ",
+      title: "お話しましょう。",
       description:
-        "BIMワークフロー、デジタルツイン、空間データの変換、自動化について相談できます。案件のご相談でも、技術的な壁打ちでも構いません。",
-      statsTitle: "コンタクトの目安",
-      stats: [
-        { label: "拠点", value: "東京 / ストックホルム" },
-        { label: "返信", value: "通常 2〜4 日ほど" },
-        { label: "テーマ", value: "BIM / Automation / Spatial Data" },
-      ],
-      directTitle: "直接連絡したい場合",
-      directDesc:
-        "短い相談や紹介であれば、フォームではなくメールからでも問題ありません。",
-      focusTitle: "よく話す内容",
-      focusItems: [
-        "BIMモデルの運用改善と変換パイプライン",
-        "空間データを使ったプロトタイプやPoCの設計",
-        "既存ワークフローをAIで置き換える実装方針",
-      ],
-      formTitle: "フォームから送る",
-      formDesc: "必要な内容が決まっていれば、そのまま送ってください。",
+        "建築、BIM、自動化、空間データの実装についてのご相談を受け付けています。通常、数日以内に返信します。",
+      directTitle: "DIRECT",
+      directNote: "東京在住（JST, UTC+9）。通常、数日以内に返信します。",
     }
   : {
       eyebrow: "CONTACT",
-      title: "Get in touch",
+      title: "Let's build something together.",
       description:
-        "Available for conversations around BIM workflows, <a href='/en/blog/what-is-a-digital-twin'>digital twins</a>, spatial-data conversion, and automation. That can mean project work, technical planning, or just a focused discussion.",
-      statsTitle: "Contact context",
-      stats: [
-        { label: "Based", value: "Tokyo / Stockholm" },
-        { label: "Replies", value: "Usually within 2 to 4 days" },
-        { label: "Topics", value: "BIM / Automation / Spatial Data" },
-      ],
-      directTitle: "Prefer direct contact?",
-      directDesc:
-        "For short introductions or focused questions, email is completely fine.",
-      focusTitle: "Typical conversations",
-      focusItems: [
-        "Improving BIM model operations and conversion pipelines",
-        "Planning spatial-data prototypes and digital-twin proofs of concept",
-        "Replacing brittle legacy workflows with AI-assisted systems",
-      ],
-      formTitle: "Send a message",
-      formDesc: "If you already know what you want to discuss, the form is the fastest route.",
+        "Available for architecture, BIM, automation, and spatial-data collaborations. I usually reply within a few days.",
+      directTitle: "DIRECT",
+      directNote: "Based in Tokyo (JST, UTC+9). I usually reply within a few days.",
     };
 ---
 
-<section class="relative max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pt-8 md:pt-12 pb-[var(--space-section-lg)]">
-  <FloatingShapes client:idle />
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-16 pt-20 md:pb-20">
   <FadeIn>
-    <div class="max-w-3xl">
-      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[var(--color-text-secondary)]">
-        {copy.eyebrow}
-      </p>
-      <h1 class="mt-4 text-3xl font-semibold tracking-tight text-[var(--color-text-heading)] sm:text-4xl md:text-5xl" style={typeStyle}>
-        {copy.title}
-      </h1>
-      <p class="mt-6 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle} set:html={copy.description} />
-      <div class="mt-6">
-        <SocialLinks variant="buttons" />
-      </div>
-    </div>
+    <SectionHeading eyebrow={copy.eyebrow} title={copy.title} description={copy.description} style={typeStyle} />
   </FadeIn>
+</section>
 
-  <div class="mt-10 grid gap-8 md:mt-12 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-    <div class="space-y-6">
-      <ScrollReveal variant="slide-left">
-        <Card class="p-5 md:p-6">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.statsTitle}
-          </p>
-          <dl class="mt-5 space-y-4">
-            {
-              (() => {
-                const statColors = ["var(--color-foam)", "var(--color-gold)", "var(--color-iris)"];
-                return copy.stats.map((item, i) => (
-                  <div class="border-b border-[var(--color-border)] pb-4 last:border-b-0 last:pb-0">
-                    <dt class="text-[0.68rem] font-semibold uppercase tracking-[0.22em]" style={`color: ${statColors[i]};`}>
-                      {item.label}
-                    </dt>
-                    <dd class="mt-2 text-sm leading-6 text-[var(--color-text-heading)] md:text-base">
-                      {item.value}
-                    </dd>
-                  </div>
-                ));
-              })()
-            }
-          </dl>
-        </Card>
-      </ScrollReveal>
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-24">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_25rem]">
+    <ScrollReveal variant="fade-up">
+      <div style={typeStyle}>
+        <ContactForm lang={lang} client:load />
+      </div>
+    </ScrollReveal>
 
-      <ScrollReveal variant="slide-left" delay={80}>
-        <Card class="p-5 md:p-6">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.directTitle}
-          </p>
-          <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
-            {copy.directDesc}
-          </p>
-          <a
-            href="mailto:daniel@malmqvist.dev"
-            class="mt-6 inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text-heading)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]"
-          >
-            daniel@malmqvist.dev
-          </a>
-          <p class="mt-6 text-sm leading-7 text-[var(--color-text-secondary)]">
-            Tokyo, Japan / Stockholm, Sweden
-          </p>
-        </Card>
-      </ScrollReveal>
-
-      <ScrollReveal variant="slide-left" delay={100}>
-        <Card class="p-5 md:p-6">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.focusTitle}
-          </p>
-          <ul class="mt-5 space-y-4">
-            {
-              (() => {
-                const focusColors = ["var(--color-pine)", "var(--color-love)", "var(--color-gold)"];
-                return copy.focusItems.map((item, i) => (
-                  <li class="border-l-2 pl-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={`border-color: ${focusColors[i]}; ${typeStyle || ''}`}>
-                    {item}
-                  </li>
-                ));
-              })()
-            }
-          </ul>
-        </Card>
-      </ScrollReveal>
-    </div>
-
-    <ScrollReveal variant="slide-right" delay={140}>
-      <Card class="p-5 md:p-7">
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-          {copy.formTitle}
+    <ScrollReveal variant="fade-up" delay={80}>
+      <div class="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-8">
+        <p class="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-secondary)]">
+          {copy.directTitle}
         </p>
-        <p class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]" style={typeStyle}>
-          {copy.formDesc}
+        <a
+          href="mailto:daniel@malmqvist.dev"
+          class="mt-4 block text-xl font-semibold text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent-hover)]"
+        >
+          daniel@malmqvist.dev
+        </a>
+        <p class="mt-4 text-sm leading-6 text-[var(--color-text-secondary)]" style={typeStyle}>
+          {copy.directNote}
         </p>
-        <div class="mt-8" style={typeStyle}>
-          <ContactForm lang={lang} client:load />
+        <div class="mt-6">
+          <SocialLinks variant="bare" />
         </div>
-      </Card>
+      </div>
     </ScrollReveal>
   </div>
 </section>

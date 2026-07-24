@@ -1,90 +1,40 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import type { Language } from "../i18n/utils";
-import BlogPostCard from "./BlogPostCard.astro";
-import Button from "./ui/Button.astro";
+import CTASection from "./CTASection.astro";
 import FadeIn from "./ui/FadeIn.astro";
-import ResponsivePicture from "./ResponsivePicture.astro";
 import Tag from "./ui/Tag.astro";
 
 interface Props {
   lang: Language;
   post: CollectionEntry<"blog">;
   Content: any;
-  relatedPosts: CollectionEntry<"blog">[];
+  nextPost?: CollectionEntry<"blog"> | null;
 }
 
-const { lang, post, Content, relatedPosts } = Astro.props;
+const { lang, post, Content, nextPost } = Astro.props;
 const isJa = lang === "ja";
 const typeStyle = isJa ? "font-family: 'Noto Sans JP', sans-serif;" : undefined;
-const publishDate = post.data.publishDate;
-const readingTime = post.data.readingTime;
-const topicCount = post.data.tags.length;
-const formattedDate = new Intl.DateTimeFormat(isJa ? "ja-JP" : "en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-}).format(publishDate);
 
-const copy = isJa
-  ? {
-      back: "記事一覧に戻る",
-      lead: "この記事を読み、関連投稿を見つけ、次のアクションへ進めます。",
-      metaTitle: "記事メタ",
-      metaItems: [
-        { label: "公開日", value: formattedDate },
-        { label: "読了時間", value: readingTime || "数分" },
-        {
-          label: "トピック数",
-          value: `${topicCount} 件`,
-        },
-      ],
-      metaNote:
-        "記事はプロジェクト実務に近いテーマから順に増やしていきます。技術の断片ではなく、運用に効く考え方を残すための記録です。",
-      bodyEyebrow: "ARTICLE",
-      bodyTitle: "本文",
-      bodyDescription:
-        "まず本文で、実装判断の背景と手順を整理して確認します。",
-      topicsTitle: "主なトピック",
-      nextTitle: "次に見るもの",
-      primaryCta: "プロジェクトを見る",
-      secondaryCta: "問い合わせる",
-      relatedEyebrow: "MORE WRITING",
-      relatedTitle: "関連記事",
-      relatedDescription:
-        "次に、近い課題を扱う関連記事を見つけます。",
-    }
-  : {
-      back: "Back to writing",
-      lead: "Read this article, discover related posts, then move to your next action.",
-      metaTitle: "Article profile",
-      metaItems: [
-        { label: "Published", value: formattedDate },
-        { label: "Reading time", value: readingTime || "A few minutes" },
-        {
-          label: "Topics",
-          value: `${topicCount}`,
-        },
-      ],
-      metaNote:
-        "The writing stays close to practical implementation. The goal is not trend commentary, but reusable technical judgement.",
-      bodyEyebrow: "ARTICLE",
-      bodyTitle: "The full note",
-      bodyDescription:
-        "Start with the article to review the implementation decisions and execution details.",
-      topicsTitle: "Primary topics",
-      nextTitle: "Continue from here",
-      primaryCta: "See projects",
-      secondaryCta: "Get in touch",
-      relatedEyebrow: "MORE WRITING",
-      relatedTitle: "Related posts",
-      relatedDescription:
-        "Then discover related posts that explore similar technical problems.",
-    };
+const formattedDate = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).format(post.data.publishDate);
+
+const metaLine = [formattedDate, post.data.readingTime?.toUpperCase(), "DANIEL MALMQVIST"]
+  .filter(Boolean)
+  .join(" · ");
+
+const back = isJa ? "記事一覧に戻る" : "Back to writing";
+const nextPostLabel = isJa ? "次の記事" : "NEXT POST";
+
+const nextPostSlug = nextPost
+  ? nextPost.id.split("/").pop()?.replace(/\.mdx?$/, "")
+  : null;
 ---
 
-<div class="blog-post--compact">
-  <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-6 pt-12 md:pt-16">
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-6 pt-14 md:pt-18">
   <FadeIn>
     <a
       href={`/${lang}/blog`}
@@ -92,148 +42,67 @@ const copy = isJa
       style={typeStyle}
     >
       <span aria-hidden="true">←</span>
-      {copy.back}
+      {back}
     </a>
   </FadeIn>
 
-  <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(12rem,16rem)] lg:items-start">
-    <div class="max-w-4xl">
-      <FadeIn delay={60}>
-        <h1
-          class="text-[clamp(2rem,4.6vw,3.5rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[var(--color-text-heading)]"
-          style={typeStyle}
-        >
-          {post.data.title}
-        </h1>
-      </FadeIn>
+  <FadeIn delay={40}>
+    <div class="mt-6 flex flex-wrap gap-2">
+      {post.data.tags.map((tag) => <Tag>{tag}</Tag>)}
     </div>
+  </FadeIn>
 
-    {
-      post.data.coverImage && (
-        <FadeIn delay={110}>
-          <div class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-            <ResponsivePicture
-              src={post.data.coverImage}
-              alt={post.data.title}
-              sizes="(min-width: 1024px) 16rem, 100vw"
-              class="aspect-[4/3] w-full object-cover"
-            />
-          </div>
-        </FadeIn>
-      )
-    }
-  </div>
-  </section>
+  <FadeIn delay={80}>
+    <h1
+      class="mt-6 max-w-4xl text-[clamp(2rem,4.6vw,3rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-[var(--color-text-heading)]"
+      style={typeStyle}
+    >
+      {post.data.title}
+    </h1>
+  </FadeIn>
 
-  <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 border-t border-[var(--color-border)] pt-12 md:pt-14">
-  <div class="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.5fr)]">
-    <div>
-      <FadeIn delay={90}>
-        <article class="editorial-prose" style={typeStyle}>
-          <Content />
-        </article>
-      </FadeIn>
+  <FadeIn delay={110}>
+    <p class="mt-4 font-mono text-[0.75rem] font-medium tracking-[0.06em] text-[var(--color-text-secondary)]">
+      {metaLine}
+    </p>
+  </FadeIn>
+</section>
 
-      <FadeIn delay={120}>
-        <div class="blog-post--compact-intro mt-6">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-            {copy.bodyEyebrow}
-          </p>
-          <h2 class="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-heading)]" style={typeStyle}>
-            {copy.bodyTitle}
-          </h2>
-          <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
-            {copy.bodyDescription}
-          </p>
-          <p class="mt-4 text-sm leading-7 text-[var(--color-text-secondary)] md:text-base" style={typeStyle}>
-            {copy.lead}
-          </p>
-          <p class="mt-4 border-l border-[var(--color-border)] pl-4 text-sm leading-7 text-[var(--color-text-secondary)]" style={typeStyle}>
-            {copy.metaNote}
-          </p>
-        </div>
-      </FadeIn>
-    </div>
-
-    <div class="space-y-6 xl:sticky xl:top-28 self-start">
-      <FadeIn delay={120}>
-        <aside class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-4 shadow-[0_14px_38px_-34px_rgba(87,82,121,0.34)] dark:shadow-[0_14px_38px_-34px_rgba(25,23,36,0.95)]">
-          <p class="text-[0.64rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.metaTitle}
-          </p>
-          <dl class="mt-4 space-y-3">
-            {copy.metaItems.map((item) => (
-              <div class="flex items-center justify-between gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-2">
-                <dt class="text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-text-secondary)]" style={typeStyle}>
-                  {item.label}
-                </dt>
-                <dd class="text-sm font-semibold text-[var(--color-text-heading)]" style={typeStyle}>
-                  {item.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </aside>
-      </FadeIn>
-
-      <FadeIn delay={140}>
-        <div class="rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_22px_62px_-46px_rgba(87,82,121,0.36)] dark:shadow-[0_22px_62px_-46px_rgba(25,23,36,0.95)] md:p-7">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.topicsTitle}
-          </p>
-          <div class="mt-5 flex flex-wrap gap-2">
-            {post.data.tags.map((tag) => <Tag>{tag}</Tag>)}
-          </div>
-        </div>
-      </FadeIn>
-
-      <FadeIn delay={190}>
-        <div class="rounded-[1.5rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 shadow-[0_18px_48px_-42px_rgba(87,82,121,0.34)] dark:shadow-[0_18px_48px_-42px_rgba(25,23,36,0.95)] md:p-7">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--color-text-secondary)]">
-            {copy.nextTitle}
-          </p>
-          <div class="mt-6 flex flex-wrap gap-3">
-            <Button href={`/${lang}/projects`} variant="primary">
-              {copy.primaryCta}
-            </Button>
-            <Button href={`/${lang}/contact`} variant="secondary">
-              {copy.secondaryCta}
-            </Button>
-          </div>
-        </div>
-      </FadeIn>
-    </div>
-  </div>
-  </section>
+<section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-16">
+  <FadeIn delay={130}>
+    <article class="editorial-prose max-w-[47.5rem]" style={typeStyle}>
+      <Content />
+    </article>
+  </FadeIn>
+</section>
 
 {
-  relatedPosts.length > 0 && (
-    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 border-t border-[var(--color-border)] pt-20 md:pt-28">
+  nextPost && nextPostSlug && (
+    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-16">
       <FadeIn>
-        <div class="max-w-3xl">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-            {copy.relatedEyebrow}
-          </p>
-          <h2
-            class="mt-5 text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--color-text-heading)]"
-            style={typeStyle}
-          >
-            {copy.relatedTitle}
-          </h2>
-          <p class="mt-5 text-base leading-8 text-[var(--color-text-secondary)] md:text-lg" style={typeStyle}>
-            {copy.relatedDescription}
-          </p>
-        </div>
+        <a
+          href={`/${lang}/blog/${nextPostSlug}`}
+          class="group flex items-center justify-between gap-6 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-8 py-8 transition-all duration-300 hover:border-[var(--color-border-hover)]"
+        >
+          <div>
+            <p class="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-secondary)]">
+              {nextPostLabel}
+            </p>
+            <p
+              class="mt-2 text-2xl font-semibold leading-tight tracking-[-0.01em] text-[var(--color-text-heading)] transition-colors group-hover:text-[var(--color-accent)]"
+              style={typeStyle}
+            >
+              {nextPost.data.title}
+            </p>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-accent)]" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
       </FadeIn>
-
-      <div class="mt-10 space-y-4">
-        {relatedPosts.map((relatedPost, index) => (
-          <FadeIn delay={index * 110}>
-            <BlogPostCard post={relatedPost} lang={lang} />
-          </FadeIn>
-        ))}
-      </div>
     </section>
   )
 }
-</div>
+
+<CTASection lang={lang} />

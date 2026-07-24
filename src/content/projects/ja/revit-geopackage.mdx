@@ -1,0 +1,69 @@
+---
+title: "RevitGeoSuite"
+description: "座標設定、PLATEAU / OSMコンテキストのインポート、GeoPackage・CityGML・3D Tiles・Cesiumへのエクスポートまで、屋内マッピングのパイプライン全体をカバーするモジュール式Revitアドイン。Revit内で室内空間をモデル化し、GISに使える成果物への再現可能な経路を必要とするチーム向けに構築しました。"
+publishDate: "2025-06-01"
+lang: "ja"
+tags: ["C#", "Revit API", "Geospatial", "GeoPackage"]
+coverImage: "/images/projects/revit-geo-suite/export-formats.png"
+featured: false
+category: Tools
+role: "単独開発"
+context: "JRE Consultants・東京"
+timelineLabel: "2025年 — 現在"
+problem: "屋内のRevitモデルをGISで使える、IMDF準拠のデータへ変換するには、これまで壊れやすい手作業の連続が必要でした — 座標を手動で設定し、PLATEAUのコンテキストデータを別途探し出し、DWGへエクスポートし、別のツールで整形し、Shapefileへ手作業で変換する。検証は行われず、再エクスポートのたびにIDが安定しないという問題もありました。"
+solution: "RevitGeoSuiteはモジュール式のRevitアドインです。Georeference・Import・Exportの各機能は、WebView2ウィンドウ内で動くSvelte製のWebアプリとして開かれ、型付きRPCブリッジ経由でC#バックエンドと通信し、UIは英語・日本語の両方で提供されます。座標設定には専用のガイド付きワークフローがあり、日本の座標系プリセットからのCRS選択、地図上でのポイント指定、PLATEAUのグリッドタイルへのスナップを、作業中に座標設定とエクスポートの準備状況を確認するライブ検証パネルが支えています。そこからPLATEAU（フォルダまたはAPI）またはOpenStreetMapのコンテキストをインポートし、ローカルDEMまたはCesium Ionから地形を取得し、IMDF形式のスキーマを用いて3D Tiles・CityGML・GeoPackage/Shapefileの平面図へエクスポートします — 書き出す前に、プレビューマップ、カテゴリ／フロアの割り当て、診断マニフェストを確認できます。これはSta.navi屋内ナビゲーションプロジェクトを支えているのと同じ屋内マッピングのパイプラインを、使い捨てのスクリプトではなく、きちんとしたモジュール式ツールとして再構築したものです。"
+techStack: ["Revit API", "C#", "Svelte", "TypeScript", "SQLite", "PLATEAU", "CityGML", "3D Tiles"]
+impact: "かつては手作業でエラーの起きやすい変換の連続だったものが、事前に検証が組み込まれたガイド付きパイプラインになりました — 新宿の1フロアだけのエクスポートプレビューで、ファイルを1つも書き出す前に329件の問題を検出しています。差分エクスポートにより、モデルを少し変更した後の再実行では変更箇所のみが書き出され、英語・日本語のバイリンガルUIにより、私がその場で説明しなくても運用できるワークフローになっています。"
+---
+
+import Walkthrough from "../../../components/mdx/Walkthrough.astro";
+import WalkthroughStep from "../../../components/mdx/WalkthroughStep.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Walkthrough title="仕組み">
+  <WalkthroughStep
+    number={1}
+    title="座標系を確認する"
+    src="/images/projects/revit-geo-suite/crs-setup.png"
+    alt="RevitGeoSuiteの座標参照系確認画面"
+    caption="日本の平面直角座標系に対してCRSを確認 — 実際のShinjuku_LUMINE1測量点をもとに検出しています。"
+  />
+  <WalkthroughStep
+    number={2}
+    title="コンテキストデータをインポートする"
+    src="/images/projects/revit-geo-suite/import-sources.png"
+    alt="RevitGeoSuiteのインポートソース選択画面"
+    caption="ローカルのPLATEAUフォルダ、PLATEAU API、またはOpenStreetMapの建物データから直接コンテキストを取り込みます。"
+  />
+  <WalkthroughStep
+    number={3}
+    title="エクスポート先を選ぶ"
+    src="/images/projects/revit-geo-suite/export-formats.png"
+    alt="RevitGeoSuiteのエクスポート形式選択画面"
+    caption="1つのモデルから6つの出力先 — PLATEAU Context、3D Tiles、CityGML、Cesium、GeoPackage/Shapefile、ローカルGISファイル。"
+  />
+  <WalkthroughStep
+    number={4}
+    title="プレビューと検証"
+    src="/images/projects/revit-geo-suite/geopackage-preview.png"
+    alt="329件の問題を検出したRevitGeoSuiteのプレビュー・検証画面"
+    caption="この新宿B2Fフロアプランでは、ファイルを1つも書き出す前に329件の問題が検出されました。"
+  />
+</Walkthrough>
+
+<Section label="課題">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="アプローチ">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<TechStack label="使用技術" items={frontmatter.techStack} />
+
+<Section label="成果">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+このツールは、[Sta.navi 屋内ナビゲーション](/ja/projects/shinjuku-nav)プロジェクト向けの平面図準備にも実際に使用しています。

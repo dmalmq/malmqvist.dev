@@ -19,7 +19,7 @@ export default function AnimatedFact({ label, value, icon }: AnimatedFactProps) 
 
   return (
     <div
-      className="group rounded-[1.4rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/90 px-5 py-5 backdrop-blur-sm transition-colors duration-300 hover:border-[var(--color-accent)]"
+      className="group rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/90 px-5 py-5 backdrop-blur-sm transition-colors duration-300 hover:border-[var(--color-accent)]"
     >
       <div className="flex items-center gap-2">
         {icon && iconSvg[icon]}

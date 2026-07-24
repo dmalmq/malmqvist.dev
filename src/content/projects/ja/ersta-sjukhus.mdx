@@ -1,0 +1,65 @@
+---
+title: エルスタ病院 — 新病院棟
+description: ストックホルム・セーデルマルムに建つ約23,000㎡の病院。フォルクンガガータンとフィエルガータンの間の急斜面に位置し、Tengbomが2017年にNyréns Arkitektkontorから設計を引き継ぎ、2023年の竣工まで担当しました。
+publishDate: "2026-03-01"
+lang: ja
+tags: [Revit, ファサード, 医療施設]
+coverImage: /images/projects/ersta/01-revit-model-front.jpg
+featured: false
+category: Practice
+role: "建築担当 — ファサード＆モデル再構築"
+context: "Tengbom・ストックホルム"
+timelineLabel: "2017年 — 2021年"
+awards: ["Monocle Design Awards 2024「Best Healthcare」受賞", "Årets Stockholmsbyggnad 2024 ファイナリスト"]
+problem: "Tengbomは2017年、Nyréns ArkitektkontorからIFCデータとしてErsta Sjukhusの設計を引き継ぎました。他社の設計意図をリバースエンジニアリングして生産対応可能なRevitモデルへ変換する必要があり、しかも敷地は急斜面で38,000㎥の岩盤掘削と、周辺の保存対象建造物との統合が求められました。"
+solution: "引き継いだIFCデータをもとに、Revitモデルをゼロから完全に再構築しました。その後、建物を特徴づける黄土色のアルミ製アノダイズドクラッディングシステムのメインモデラーを担当。電気・設備（HVAC）・構造の各チームと毎週調整を行い、ファブリケーション（製造）会議にも参加して、設計通りに製造・設置が可能かを検証しました。"
+techStack: [Revit Architecture, IFC, Navisworks, Solibri]
+impact: "完成した病院はMonocle Design Awards 2024で「Best Healthcare」を受賞し、Årets Stockholmsbyggnad 2024のファイナリストにも選出されました。数十回に及ぶ調整・製造会議を経て磨き上げられたファサードは、この建物を象徴する要素の一つとなりました。本プロジェクトは、引き継いだデータから設計開発、そして実際の施工に至るまで、BIMモデルのライフサイクル全体を理解していることの証明でもあります。"
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import FullBleedImage from "../../../components/mdx/FullBleedImage.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<ImageRow
+  title="Revitモデル — 主要な成果物"
+  images={[
+    { src: "/images/projects/ersta/01-revit-model-front.jpg", alt: "Revitモデル — 正面ビュー", label: "正面ビュー" },
+    { src: "/images/projects/ersta/02-revit-model-angle-a.jpg", alt: "Revitモデル — 詳細アングル A", label: "詳細アングル A" },
+    { src: "/images/projects/ersta/03-revit-model-angle-b.jpg", alt: "Revitモデル — 詳細アングル B", label: "詳細アングル B" },
+  ]}
+/>
+
+<Section label="課題">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="アプローチ">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="ファサードデザインレビュー"
+  images={[
+    { src: "/images/projects/ersta/07-tengbom-facade-review-a.jpg", alt: "Tengbom ファサード素材検討 A", label: "素材検討 A" },
+    { src: "/images/projects/ersta/08-tengbom-facade-review-b.jpg", alt: "Tengbom ファサード素材検討 B", label: "素材検討 B" },
+  ]}
+/>
+
+<TechStack label="使用技術" items={frontmatter.techStack} />
+
+<ImageRow
+  title="建設"
+  images={[
+    { src: "/images/projects/ersta/04-construction-facade-crane.jpg", alt: "クレーンを用いたファサード建設", label: "ファサード建方" },
+    { src: "/images/projects/ersta/05-construction-facade-golden.jpg", alt: "ゴールデンアワーのファサード詳細", label: "ファサード詳細" },
+    { src: "/images/projects/ersta/06-construction-street-view.jpg", alt: "ストリートビューからの建設風景", label: "ストリートビュー" },
+  ]}
+/>
+
+<Section label="成果">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+<FullBleedImage src="/images/projects/ersta/09-bim-render-exterior.jpg" alt="BIM 外観レンダリング" caption="完成した建物" />

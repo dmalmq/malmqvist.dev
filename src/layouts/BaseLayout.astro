@@ -3,6 +3,7 @@ import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import BottomTabBar from "../components/BottomTabBar.astro";
 import ScrollProgress from "../components/animation/ScrollProgress.astro";
 import ImageLightbox from "../components/ImageLightbox";
 import SpeedInsights from "@vercel/speed-insights/astro";
@@ -69,12 +70,12 @@ const fullImageUrl = new URL(shareImagePath, Astro.site ?? "https://malmqvist.de
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta
       name="theme-color"
-      content="#191724"
+      content="#171512"
       media="(prefers-color-scheme: dark)"
     />
     <meta
       name="theme-color"
-      content="#faf4ed"
+      content="#f6f3ec"
       media="(prefers-color-scheme: light)"
     />
 
@@ -139,13 +140,14 @@ const fullImageUrl = new URL(shareImagePath, Astro.site ?? "https://malmqvist.de
     <Header currentLang={lang} currentPath={currentPath} transition:animate="none" />
 
     <main
-      class="flex-grow w-full"
+      class="flex-grow w-full pb-20 md:pb-0"
       transition:animate="fade"
     >
       <slot />
     </main>
 
     <Footer currentLang={lang} transition:animate="none" />
+    <BottomTabBar currentLang={lang} currentPath={currentPath} transition:animate="none" />
     {enableLightbox && <ImageLightbox client:idle />}
     <SpeedInsights />
   </body>

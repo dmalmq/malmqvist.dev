@@ -3,7 +3,6 @@ import LanguageToggle from "./LanguageToggle";
 import ThemeToggle from "./ThemeToggle";
 import MagneticButton from "./animation/MagneticButton";
 import Button from "./ui/Button.astro";
-import SocialLinks from "./SocialLinks.astro";
 import { useTranslations, type Language } from "../i18n/utils";
 
 interface Props {
@@ -13,13 +12,12 @@ interface Props {
 
 const { currentLang, currentPath } = Astro.props;
 const t = useTranslations(currentLang);
-const menuLabel = currentLang === "ja" ? "メニュー" : "Menu";
-const navigationLabel = currentLang === "ja" ? "ナビゲーション" : "Navigation";
 
 const navItems = [
   { href: `/${currentLang}/projects`, label: t("nav.projects") },
-  { href: `/${currentLang}/blog`, label: t("nav.blog") },
   { href: `/${currentLang}/about`, label: t("nav.about") },
+  { href: `/${currentLang}/blog`, label: t("nav.blog") },
+  { href: `/${currentLang}/contact`, label: t("nav.contact") },
 ];
 ---
 
@@ -28,22 +26,24 @@ const navItems = [
   class="sticky top-0 z-50 w-full border-b border-transparent bg-[color:color-mix(in_srgb,var(--color-bg-primary)_82%,transparent)] backdrop-blur-2xl transition-all duration-300"
 >
   <div class="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-10">
-    <div class="flex h-20 items-center justify-between gap-6">
-      <div class="min-w-0 flex-shrink-0">
-        <a
-          href={`/${currentLang}/`}
-          class="group inline-flex min-w-0 flex-col gap-1 text-[var(--color-text-heading)] transition-colors"
+    <div class="flex h-[4.5rem] items-center justify-between gap-6">
+      <a
+        href={`/${currentLang}/`}
+        class="group inline-flex min-w-0 flex-shrink items-center gap-3 text-[var(--color-text-heading)] transition-colors"
+      >
+        <span
+          class="flex h-8 w-8 flex-shrink-0 items-center justify-center bg-[var(--color-accent)] font-medium text-[var(--color-accent-foreground)]"
+          style="font-family: 'Noto Sans JP', sans-serif;"
+          aria-hidden="true"
         >
-          <span class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-            Tokyo / Stockholm
-          </span>
-          <span class="truncate text-lg font-semibold tracking-[-0.04em] group-hover:text-[var(--color-accent)] sm:text-xl">
-            Daniel Malmqvist
-          </span>
-        </a>
-      </div>
+          朱
+        </span>
+        <span class="truncate text-base font-semibold tracking-[-0.02em] group-hover:text-[var(--color-accent)]">
+          Daniel Malmqvist
+        </span>
+      </a>
 
-      <nav class="hidden md:flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-2 py-1.5">
+      <nav class="hidden md:flex items-center gap-7">
         {
           navItems.map((item) => {
             const isActive =
@@ -54,13 +54,19 @@ const navItems = [
               <a
                 href={item.href}
                 class:list={[
-                  "nav-link-underline relative rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300",
+                  "flex flex-col items-center gap-1 text-[0.9375rem] font-medium transition-colors duration-200",
                   isActive
-                    ? "bg-[var(--color-bg-secondary)] text-[var(--color-accent)] shadow-[0_14px_32px_-28px_rgba(87,82,121,0.5)]"
-                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]",
+                    ? "text-[var(--color-accent)]"
+                    : "text-[var(--color-text-heading)] hover:text-[var(--color-accent)]",
                 ]}
               >
                 {item.label}
+                <span
+                  class:list={[
+                    "h-[2px] w-5 rounded-full bg-[var(--color-accent)] transition-opacity duration-200",
+                    isActive ? "opacity-100" : "opacity-0",
+                  ]}
+                />
               </a>
             );
           })
@@ -68,217 +74,30 @@ const navItems = [
       </nav>
 
       <div class="hidden md:flex items-center gap-3">
+        <ThemeToggle client:idle />
+        <LanguageToggle currentLang={currentLang} client:idle />
         <MagneticButton strength={0.2} client:idle>
-          <Button href={`/${currentLang}/contact`} variant="secondary" class="px-4 py-2 text-sm">
-            {t("nav.contact")}
+          <Button href={`/${currentLang}/contact`} variant="primary" class="gap-2 px-4 py-2 text-sm">
+            {t("nav.cta")}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
           </Button>
         </MagneticButton>
-        <SocialLinks />
-        <LanguageToggle currentLang={currentLang} client:idle />
-        <ThemeToggle client:idle />
       </div>
 
-      <div class="flex md:hidden items-center">
-        <button
-          id="mobile-menu-btn"
-          type="button"
-          class="ui-pill-button px-4"
-          aria-controls="mobile-menu"
-          aria-expanded="false"
-        >
-          <span>{menuLabel}</span>
-          <svg
-            class="block h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
+      <!-- Mobile: compact top bar — brand + theme + language only, no hamburger/CTA -->
+      <div class="flex md:hidden flex-shrink-0 items-center gap-3">
+        <ThemeToggle client:idle />
+        <LanguageToggle currentLang={currentLang} client:idle />
       </div>
     </div>
   </div>
 </header>
 
-<!-- Mobile: full-screen overlay menu -->
-<div
-  id="mobile-menu-overlay"
-  class="fixed inset-0 z-40 hidden bg-[#191724]/45 backdrop-blur-sm md:hidden"
-  data-close-mobile-nav
-></div>
-
-<div
-  id="mobile-menu"
-  class="fixed inset-0 z-50 flex flex-col translate-y-full invisible overflow-auto bg-[var(--color-bg-primary)] transition-[transform,visibility] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="mobile-menu-title"
-  aria-hidden="true"
-  tabindex="-1"
->
-  <div class="flex items-start justify-between gap-4 px-5 py-6">
-    <div>
-      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
-        {navigationLabel}
-      </p>
-      <p id="mobile-menu-title" class="mt-2 text-lg font-semibold text-[var(--color-text-heading)]">
-        Daniel Malmqvist
-      </p>
-    </div>
-    <button
-      type="button"
-      class="ui-icon-button"
-      data-close-mobile-nav
-      data-mobile-menu-close-button
-    >
-      <span class="sr-only">Close menu</span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M18 6 6 18" />
-        <path d="m6 6 12 12" />
-      </svg>
-    </button>
-  </div>
-
-  <nav class="flex flex-1 flex-col justify-center gap-3 px-5">
-    {
-      navItems.map((item, i) => {
-        const isActive =
-          currentPath === item.href || currentPath.startsWith(`${item.href}/`);
-
-        return (
-          <a
-            href={item.href}
-            class:list={[
-              "mobile-nav-item rounded-[1.2rem] border px-5 py-4 text-xl font-semibold transition-all duration-300",
-              `opacity-0 translate-y-8`,
-              isActive
-                ? "border-[var(--color-border-hover)] bg-[var(--color-bg-secondary)] text-[var(--color-text-heading)]"
-                : "border-[var(--color-border)] bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]",
-            ]}
-            style={`transition-delay: ${i * 80}ms;`}
-            data-close-mobile-nav
-            data-mobile-menu-link
-          >
-            {item.label}
-          </a>
-        );
-      })
-    }
-  </nav>
-
-  <div class="space-y-4 border-t border-[var(--color-border)] px-5 py-6">
-    <Button href={`/${currentLang}/contact`} variant="primary" class="w-full justify-center text-lg py-4">
-      {t("nav.contact")}
-    </Button>
-    <div class="flex items-center justify-between gap-3">
-      <SocialLinks />
-      <div class="flex items-center gap-2">
-        <LanguageToggle currentLang={currentLang} client:idle />
-        <ThemeToggle client:idle />
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
   function initHeader() {
-    const btn = document.getElementById("mobile-menu-btn");
-    const menu = document.getElementById("mobile-menu");
-    const overlay = document.getElementById("mobile-menu-overlay");
-    const closeTargets = document.querySelectorAll("[data-close-mobile-nav]");
-    const closeButton = menu?.querySelector("[data-mobile-menu-close-button]");
-    const firstMenuLink = menu?.querySelector("[data-mobile-menu-link]");
-    const mobileNavItems = menu?.querySelectorAll(".mobile-nav-item");
-    const desktopMq = window.matchMedia("(min-width: 768px)");
-
-    if (btn && menu && overlay) {
-      const openMenu = () => {
-        btn.setAttribute("aria-expanded", "true");
-        menu.classList.remove("translate-y-full", "invisible");
-        menu.setAttribute("aria-hidden", "false");
-        overlay.classList.remove("hidden");
-        document.body.classList.add("overflow-hidden");
-
-        // Stagger nav items in from bottom
-        mobileNavItems?.forEach((item) => {
-          item.classList.remove("opacity-0", "translate-y-8");
-        });
-
-        window.requestAnimationFrame(() => {
-          (closeButton || firstMenuLink || menu).focus();
-        });
-      };
-
-      const closeMenu = ({ restoreFocus = true } = {}) => {
-        btn.setAttribute("aria-expanded", "false");
-        menu.classList.add("translate-y-full", "invisible");
-        menu.setAttribute("aria-hidden", "true");
-        overlay.classList.add("hidden");
-        document.body.classList.remove("overflow-hidden");
-
-        // Reset nav items
-        mobileNavItems?.forEach((item) => {
-          item.classList.add("opacity-0", "translate-y-8");
-        });
-
-        if (restoreFocus) {
-          btn.focus();
-        }
-      };
-
-      btn.addEventListener("click", () => {
-        const expanded = btn.getAttribute("aria-expanded") === "true";
-        if (expanded) {
-          closeMenu();
-        } else {
-          openMenu();
-        }
-      });
-
-      closeTargets.forEach((target) =>
-        target.addEventListener("click", () => {
-          const restoreFocus = !target.hasAttribute("data-mobile-menu-link");
-          closeMenu({ restoreFocus });
-        })
-      );
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && btn.getAttribute("aria-expanded") === "true") {
-          closeMenu();
-        }
-      });
-
-      const handleDesktopChange = (event) => {
-        if (event.matches) {
-          closeMenu({ restoreFocus: false });
-        }
-      };
-
-      if (desktopMq.addEventListener) {
-        desktopMq.addEventListener("change", handleDesktopChange);
-      } else {
-        desktopMq.addListener(handleDesktopChange);
-      }
-    }
-
     // Header scroll state with gradient border
     const header = document.getElementById("site-header");
     if (header) {

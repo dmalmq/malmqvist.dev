@@ -2,24 +2,15 @@ interface Props {
   items: string[];
   reverse?: boolean;
   className?: string;
-  colors?: string[];
 }
 
-const defaultColors = [
-  "var(--color-pine)",
-  "var(--color-iris)",
-  "var(--color-foam)",
-  "var(--color-love)",
-  "var(--color-gold)",
-];
-
-export default function Marquee({ items, reverse = false, className = "", colors = defaultColors }: Props) {
+export default function Marquee({ items, reverse = false, className = "" }: Props) {
   const direction = reverse ? "reverse" : "normal";
 
   const renderItems = () =>
     items.map((item, i) => (
       <span key={i}>
-        <span style={{ color: colors[i % colors.length] }}>{item}</span>
+        <span className="text-[var(--color-text-secondary)]">{item}</span>
         <span className="marquee-separator"> / </span>
       </span>
     ));

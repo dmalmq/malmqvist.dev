@@ -56,7 +56,7 @@ export default function SkillCard({
 
   return (
     <div
-      className="relative h-full rounded-[1.6rem] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_28px_70px_-48px_rgba(87,82,121,0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] md:p-7"
+      className="relative h-full rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 shadow-[0_28px_70px_-48px_rgba(33,31,28,0.28)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-border-hover)] md:p-7"
       style={{ borderLeft: `3px solid ${borderColor}` }}
     >
       <div className="flex items-center gap-2.5">

@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 import react from '@astrojs/react';
+import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
@@ -16,17 +17,14 @@ export default defineConfig({
       enabled: true,
     },
   }),
-  integrations: [react(), sitemap()],
+  integrations: [react(), mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()]
   },
   markdown: {
     remarkPlugins: [remarkResponsiveImages],
     shikiConfig: {
-      themes: {
-        light: 'github-light',
-        dark: 'catppuccin-mocha',
-      },
+      theme: 'css-variables',
     },
   },
 });

@@ -1,0 +1,69 @@
+---
+title: "RevitGeoSuite"
+description: "A modular Revit add-in covering the full indoor-mapping pipeline — coordinate setup, PLATEAU/OSM context import, and export to GeoPackage, CityGML, 3D Tiles, or Cesium — built for teams that model indoor spaces in Revit and need a repeatable path to GIS-ready deliverables."
+publishDate: "2025-06-01"
+lang: "en"
+tags: ["C#", "Revit API", "Geospatial", "GeoPackage"]
+coverImage: "/images/projects/revit-geo-suite/export-formats.png"
+featured: false
+category: Tools
+role: "Sole Developer"
+context: "JRE Consultants · Tokyo"
+timelineLabel: "2025 — Present"
+problem: "Getting an indoor Revit model into GIS-ready, IMDF-compliant data used to mean a brittle chain of manual steps — set coordinates by hand, hunt down PLATEAU context data separately, export to DWG, clean up in another tool, hand-convert to Shapefile — with no validation and no stable IDs across re-exports."
+solution: "RevitGeoSuite is a modular Revit add-in — Georeference, Import, and Export each open as a Svelte web app inside a WebView2 window, talking to the C# backend over a typed RPC bridge, with the UI shipped in English and Japanese. Georeferencing gets its own guided workflow: CRS selection from Japanese presets, map-based point picking, and PLATEAU grid-tile snapping, backed by a live validation panel that checks coordinate setup and export readiness as you work. From there it imports context from PLATEAU (folder or API) or OpenStreetMap, pulls terrain from a local DEM or Cesium Ion, and exports to 3D Tiles, CityGML, or GeoPackage/Shapefile floor plans using an IMDF-style schema — with a preview map, category/floor assignment, and a diagnostics manifest before anything gets written. It's the same indoor-mapping pipeline behind the Sta.navi Indoor Navigation project, now built as a proper modular tool instead of a one-off script."
+techStack: ["Revit API", "C#", "Svelte", "TypeScript", "SQLite", "PLATEAU", "CityGML", "3D Tiles"]
+impact: "What used to be a chain of manual, error-prone conversions is now a guided pipeline with validation built in up front — the export preview for one Shinjuku floor plan alone flagged 329 issues before a single file was written. Incremental export means re-running a job after a small model change only rewrites what changed, and bilingual (EN/JP) UI means the workflow doesn't depend on me being in the room to explain it."
+---
+
+import Walkthrough from "../../../components/mdx/Walkthrough.astro";
+import WalkthroughStep from "../../../components/mdx/WalkthroughStep.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Walkthrough title="WALKTHROUGH">
+  <WalkthroughStep
+    number={1}
+    title="Coordinate setup"
+    src="/images/projects/revit-geo-suite/crs-setup.png"
+    alt="RevitGeoSuite coordinate reference system confirmation screen"
+    caption="Confirming CRS against Japan's Plane Rectangular zones — detected against the actual Shinjuku_LUMINE1 survey point."
+  />
+  <WalkthroughStep
+    number={2}
+    title="Import context"
+    src="/images/projects/revit-geo-suite/import-sources.png"
+    alt="RevitGeoSuite import source selection screen"
+    caption="Pulling context directly from a local PLATEAU folder, the PLATEAU API, or OpenStreetMap buildings."
+  />
+  <WalkthroughStep
+    number={3}
+    title="Choose export"
+    src="/images/projects/revit-geo-suite/export-formats.png"
+    alt="RevitGeoSuite export format selection screen"
+    caption="Six export targets from one model — PLATEAU Context, 3D Tiles, CityGML, Cesium, GeoPackage/Shapefile, and local GIS files."
+  />
+  <WalkthroughStep
+    number={4}
+    title="Preview & validate"
+    src="/images/projects/revit-geo-suite/geopackage-preview.png"
+    alt="RevitGeoSuite preview and validation screen showing 329 flagged issues"
+    caption="This Shinjuku B2F floor plan flagged 329 issues to review before a single file was written."
+  />
+</Walkthrough>
+
+<Section label="PROBLEM">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="SOLUTION">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<TechStack label="TECH STACK" items={frontmatter.techStack} />
+
+<Section label="IMPACT">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+This is the same tool used to prepare floor plans for the [Sta.navi Indoor Navigation](/en/projects/shinjuku-nav) project.

@@ -1,6 +1,4 @@
 ---
-import Card from "./ui/Card.astro";
-import ScrollReveal from "./ui/ScrollReveal.astro";
 import { type Language } from "../i18n/utils";
 
 interface Props {
@@ -9,211 +7,75 @@ interface Props {
 const { lang } = Astro.props;
 const typeStyle = lang === "ja" ? "font-family: 'Noto Sans JP', sans-serif;" : "";
 
-const timelineColors = ["var(--color-foam)", "var(--color-iris)", "var(--color-gold)"];
-
-const timelineData = [
-  {
-    year: "2023 - Present",
-    role:
-      lang === "ja"
-        ? "BIMデジタルツイン・エンジニア"
-        : "BIM Digital Twin Engineer",
-    company:
-      lang === "ja" ? "JRE Consultants (東京)" : "JRE Consultants (Tokyo)",
-    desc:
-      lang === "ja"
-        ? "日本の国土交通省主導の3D都市モデル「PLATEAU」と連携し、詳細な屋内モデリングや都市スケールのデジタルツインを構築。ネイティブなBIMモデルを、Unity等で動作するインタラクティブプラットフォーム向けに変換する堅牢なデータパイプラインを開発。"
-        : "Building deep indoor navigation workflows and digital twins by integrating native BIM geometry into the Japanese government-backed PLATEAU 3D city model. Developing custom agentic pipelines to convert and connect complex spatial data formats.",
-  },
-  {
-    year: "2021 - 2023",
-    role: lang === "ja" ? "BIMマネージャー" : "BIM Manager",
-    company: lang === "ja" ? "Tengbom (ストックホルム)" : "Tengbom (Stockholm)",
-    desc:
-      lang === "ja"
-        ? "ストックホルム・アーランダ空港第5ターミナル拡張プロジェクト（330m規模）において、BIMマネジメントを牽引。複雑なモデルの統合と品質管理を指揮しました。"
-        : "Led BIM management for the 330m Terminal 5 expansion at Stockholm Arlanda Airport. Managed weekly model exports, quality control, and served as the key technical resource for the project team.",
-  },
-  {
-    year: "2016 - 2021",
-    role:
-      lang === "ja"
-        ? "建築エンジニア / BIMモデラー"
-        : "Architectural Engineer / BIM Modeler",
-    company: lang === "ja" ? "Tengbom (ストックホルム)" : "Tengbom (Stockholm)",
-    desc:
-      lang === "ja"
-        ? "受賞歴のある「Ersta Sjukhus（病院）」プロジェクトにおいて、他社のIFCデータからRevitモデルをゼロから再構築。特徴的なファサードシステムのプライマリモデラーを務め、設備・構造との干渉チェックと施工調整を主導しました。"
-        : "Rebuilt the entire Revit model from scratch based on an IFC model for the award-winning Ersta Sjukhus hospital. Served as primary modeler for the complex facade system, leading interdisciplinary coordination and fabrication meetings.",
-  },
-];
+const timelineData =
+  lang === "ja"
+    ? [
+        {
+          date: "2017年 — 2021年",
+          role: "建築エンジニア",
+          org: "Tengbom・ストックホルム",
+          body: "他社から引き継いだIFCファイルをもとにErsta Sjukhusの Revitモデルを再構築し、その後、病院の黄土色アルミファサードシステムのモデリングを主導しました。",
+        },
+        {
+          date: "2021年 — 2024年",
+          role: "BIMマネージャー",
+          org: "Tengbom・ストックホルム",
+          body: "ストックホルム・アーランダ空港の330m規模のターミナル5拡張プロジェクトにおいて、週次のモデルエクスポート管理と納品物の品質管理を担当しました。",
+        },
+        {
+          date: "2024年 — 現在",
+          role: "BIMモデラー → デジタルツイン",
+          org: "JRE Consultants・東京",
+          body: "東京のデジタルツインにおける屋内ナビゲーション可能なレイヤーを構築中。Sta.naviを支えるBIMモデルとデータパイプラインを開発し、日本のPLATEAU 3D都市モデルと統合しています。",
+        },
+      ]
+    : [
+        {
+          date: "2017 — 2021",
+          role: "Architectural Engineer",
+          org: "Tengbom · Stockholm",
+          body: "Rebuilt the Revit model for Ersta Sjukhus from an inherited IFC file, then led facade modeling for the hospital's ocher-toned aluminum cladding system.",
+        },
+        {
+          date: "2021 — 2024",
+          role: "BIM Manager",
+          org: "Tengbom · Stockholm",
+          body: "Managed weekly model exports and QC'd deliverables on Arlanda Porten, the 330m Terminal 5 expansion at Stockholm Arlanda Airport.",
+        },
+        {
+          date: "2024 — Present",
+          role: "BIM Modeler → Digital Twin",
+          org: "JRE Consultants · Tokyo",
+          body: "Building the indoor navigable layer of Tokyo's digital twin — BIM models and data pipelines behind Sta.navi, integrated with Japan's PLATEAU 3D city model.",
+        },
+      ];
 ---
 
-<div id="timeline-root" class="relative">
-  <!-- Desktop: alternating sides -->
-  <div class="hidden md:block">
-    <!-- Center line that draws itself -->
-    <div class="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-[var(--color-accent)]/10">
-      <div id="timeline-draw" class="timeline-draw-line absolute inset-0 w-full bg-[var(--color-accent)]/40"></div>
-    </div>
-
-    <div class="space-y-8">
-      {
-        timelineData.map((item, i) => {
-          const isLeft = i % 2 === 0;
-          const dotColor = timelineColors[i % timelineColors.length];
-          return (
-            <ScrollReveal variant={isLeft ? "slide-left" : "slide-right"} delay={i * 120}>
-              <div class="relative grid grid-cols-[1fr_auto_1fr] gap-8 items-start">
-                {/* Left column */}
-                <div class={isLeft ? "" : "order-3"}>
-                  {isLeft && (
-                    <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
-                      <div>
-                        <h3
-                          class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                          style={typeStyle}
-                        >
-                          {item.role}
-                        </h3>
-                        <p
-                          class="mt-2 text-sm font-semibold leading-7"
-                          style={`color: ${dotColor}; ${typeStyle || ''}`}
-                        >
-                          {item.company}
-                        </p>
-                        <p
-                          class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                          style={typeStyle}
-                        >
-                          {item.desc}
-                        </p>
-                      </div>
-                    </Card>
-                  )}
-                </div>
-
-                {/* Center: dot + year */}
-                <div class="flex flex-col items-center gap-3 pt-4">
-                  <div class="relative h-3.5 w-3.5 rounded-full border-2 bg-[var(--color-bg-primary)]" style={`border-color: ${dotColor}; animation: pulse-glow 2s ease-in-out infinite;`}></div>
-                  <span class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)] whitespace-nowrap" style={`box-shadow: 0 0 12px -4px ${dotColor};`}>
-                    {item.year}
-                  </span>
-                </div>
-
-                {/* Right column */}
-                <div class={isLeft ? "order-3" : ""}>
-                  {!isLeft && (
-                    <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
-                      <div>
-                        <h3
-                          class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                          style={typeStyle}
-                        >
-                          {item.role}
-                        </h3>
-                        <p
-                          class="mt-2 text-sm font-semibold leading-7"
-                          style={`color: ${dotColor}; ${typeStyle || ''}`}
-                        >
-                          {item.company}
-                        </p>
-                        <p
-                          class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                          style={typeStyle}
-                        >
-                          {item.desc}
-                        </p>
-                      </div>
-                    </Card>
-                  )}
-                </div>
-              </div>
-            </ScrollReveal>
-          );
-        })
-      }
-    </div>
-  </div>
-
-  <!-- Mobile: single column with left line -->
-  <div class="md:hidden relative pl-8">
-    <div class="absolute left-0 top-0 bottom-0 w-px bg-[var(--color-accent)]/30"></div>
-    <div class="space-y-4">
-      {
-        timelineData.map((item, i) => {
-          const dotColor = timelineColors[i % timelineColors.length];
-          return (
-          <ScrollReveal variant="slide-right" delay={i * 120}>
-            <div class="relative">
-              <div class="absolute -left-8 top-7 h-2.5 w-2.5 -translate-x-[calc(50%-0.5px)] rounded-full border-2 bg-[var(--color-bg-primary)]" style={`border-color: ${dotColor}; animation: pulse-glow 2s ease-in-out infinite;`}></div>
-              <Card class="card-hover-lift p-4 md:p-5" style={`border-left: 3px solid ${dotColor};`}>
-                <div class="grid gap-4">
-                  <div>
-                    <p class="inline-flex rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                      {item.year}
-                    </p>
-                    <p
-                      class="mt-4 text-sm font-semibold leading-7"
-                      style={`color: ${dotColor}; ${typeStyle || ''}`}
-                    >
-                      {item.company}
-                    </p>
-                  </div>
-                  <div>
-                    <h3
-                      class="text-xl font-semibold leading-tight text-[var(--color-text-heading)] md:text-2xl"
-                      style={typeStyle}
-                    >
-                      {item.role}
-                    </h3>
-                    <p
-                      class="mt-4 text-base leading-8 text-[var(--color-text-secondary)]"
-                      style={typeStyle}
-                    >
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </ScrollReveal>
-          );
-        })
-      }
-    </div>
-  </div>
-</div>
-
-<script>
-  function initTimelineDraw() {
-    const drawLine = document.getElementById("timeline-draw");
-    if (!drawLine) return;
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) {
-      drawLine.style.transform = "scaleY(1)";
-      return;
-    }
-
-    const root = document.getElementById("timeline-root");
-    if (!root) return;
-
-    const update = () => {
-      const rect = root.getBoundingClientRect();
-      const windowH = window.innerHeight;
-      const totalH = rect.height;
-      if (totalH <= 0) return;
-
-      const scrolled = Math.max(0, windowH - rect.top);
-      const progress = Math.min(1, scrolled / totalH);
-      drawLine.style.transform = `scaleY(${progress})`;
-    };
-
-    window.addEventListener("scroll", update, { passive: true });
-    update();
+<div class="flex flex-col gap-7">
+  {
+    timelineData.map((item, i) => (
+      <div class="flex items-start gap-5">
+        <div class="flex flex-shrink-0 flex-col items-center self-stretch">
+          <div class="h-[9px] w-[9px] flex-shrink-0 rounded-full bg-[var(--color-accent)]" />
+          {i < timelineData.length - 1 && (
+            <div class="mt-[3px] w-[1.5px] flex-1 bg-[var(--color-border-hover)] opacity-35" />
+          )}
+        </div>
+        <div class="flex flex-col gap-1 pb-1">
+          <p class="font-mono text-[0.6875rem] font-medium tracking-[0.1em] text-[var(--color-accent)]">
+            {item.date}
+          </p>
+          <h3 class="text-[1.0625rem] font-semibold leading-none text-[var(--color-text-heading)]" style={typeStyle}>
+            {item.role}
+          </h3>
+          <p class="text-sm text-[var(--color-text-secondary)]" style={typeStyle}>
+            {item.org}
+          </p>
+          <p class="max-w-[29rem] text-[0.8125rem] leading-5 text-[var(--color-text-secondary)]" style={typeStyle}>
+            {item.body}
+          </p>
+        </div>
+      </div>
+    ))
   }
-
-  initTimelineDraw();
-  document.addEventListener("astro:after-swap", initTimelineDraw);
-</script>
+</div>

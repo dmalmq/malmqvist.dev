@@ -1,0 +1,54 @@
+---
+import { useTranslations, type Language } from "../i18n/utils";
+
+interface Props {
+  currentLang: Language;
+  currentPath: string;
+}
+
+const { currentLang, currentPath } = Astro.props;
+const t = useTranslations(currentLang);
+
+const tabs = [
+  { href: `/${currentLang}/projects`, label: t("nav.projects") },
+  { href: `/${currentLang}/about`, label: t("nav.about") },
+  { href: `/${currentLang}/blog`, label: t("nav.blog") },
+  { href: `/${currentLang}/contact`, label: t("nav.contact") },
+];
+---
+
+<nav
+  class="fixed inset-x-0 bottom-0 z-50 flex md:hidden border-t border-[var(--color-border)] bg-[var(--color-bg-primary)] pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-[0_-8px_24px_-16px_rgba(33,31,28,0.18)]"
+  aria-label="Primary"
+>
+  {
+    tabs.map((tab) => {
+      const isActive =
+        currentPath === tab.href || currentPath.startsWith(`${tab.href}/`);
+
+      return (
+        <a
+          href={tab.href}
+          class="flex flex-1 flex-col items-center gap-1.5 px-2 py-1"
+        >
+          <span
+            class:list={[
+              "h-[3px] w-4 rounded-full transition-colors duration-200",
+              isActive ? "bg-[var(--color-accent)]" : "bg-transparent",
+            ]}
+          />
+          <span
+            class:list={[
+              "font-mono text-[0.65rem] font-medium uppercase tracking-[0.14em] transition-colors duration-200",
+              isActive
+                ? "text-[var(--color-accent)]"
+                : "text-[var(--color-text-secondary)]",
+            ]}
+          >
+            {tab.label}
+          </span>
+        </a>
+      );
+    })
+  }
+</nav>
