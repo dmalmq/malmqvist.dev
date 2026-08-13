@@ -7,6 +7,7 @@ const SRC_DIR = path.join(ROOT, "src");
 const PUBLIC_DIR = path.join(ROOT, "public");
 const GENERATED_DIR = path.join(PUBLIC_DIR, "images", "_generated");
 const MANIFEST_PATH = path.join(ROOT, "src", "generated", "image-manifest.mjs");
+const GENERATED_SRC_DIR = path.join(ROOT, "src", "generated");
 
 const SOURCE_WIDTHS = [800, 1400, 2000];
 const SOURCE_FILE_EXTENSIONS = new Set([
@@ -81,13 +82,20 @@ async function walk(directory) {
 
   return files;
 }
-
 async function collectReferencedImages() {
   const files = await walk(SRC_DIR);
   const matches = new Set();
   const pattern = /\/images\/[A-Za-z0-9_./-]+\.(?:avif|AVIF|gif|GIF|jpe?g|JPE?G|png|PNG|svg|SVG|webp|WEBP)/g;
+  const generatedSrcPrefix = GENERATED_SRC_DIR + path.sep;
 
   for (const filePath of files) {
+    // Generated artifacts (the image manifest itself) are outputs, never
+    // inputs: scanning them re-collects references to images that were
+    // already deleted, which crashes generateVariants on missing files.
+    if (filePath.startsWith(generatedSrcPrefix)) {
+      continue;
+    }
+
     const content = await fs.readFile(filePath, "utf8");
     for (const match of content.matchAll(pattern)) {
       const imagePath = match[0];
