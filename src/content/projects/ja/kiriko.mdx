@@ -1,0 +1,53 @@
+---
+title: "Kiriko"
+description: "屋内GISのためのForma/ACC型Webプラットフォーム。IMDF・GDBの駅データをイミュータブルでバージョン付きのバンドルとして公開し、地図上にピン留めされた指摘でレビューし、共有Rustコアに支えられた日英バイリンガルのReact/MapLibreビューアで経路探索まで行えます。"
+publishDate: "2026-07-13"
+lang: "ja"
+tags: ["React", "MapLibre", "Fastify", "Rust", "IMDF", "Geospatial"]
+coverImage: "/images/projects/kiriko/shinagawa-network.webp"
+featured: false
+category: Tools
+role: "単独開発"
+context: "JRE Consultants・東京"
+timelineLabel: "2026年 — 現在"
+problem: "JR東日本の駅の屋内GISデータレビューは、メール・スプレッドシート・ファイルの受け渡しで行われていました。GISソフトウェアを持たないレビューアは平面図を開いて確認することすらできず、フィードバックを地図上の特定の場所に指し示す手段もありませんでした。"
+solution: "屋内GISのライフサイクル全体を1つのWebプラットフォームにまとめました。プロデューサーはIMDFまたはFile Geodatabaseの駅データをレビュー付き変換パイプラインで公開し、Rustコアがそれをイミュータブルでコンテンツアドレス付きのKVBベニューバンドルへコンパイルします。レビューアはリンクを開き、バイリンガルのMapLibreビューアでフロアを歩き回り、地図上にピン留めされた指摘を返信・ステータス・担当者付きで残せます — 同期はSSEでリアルタイムです。同じバンドルがルーティンググラフとポイント施設を運ぶため、経路案内と施設までのルート検索も同じデータから動作します。"
+techStack: ["React", "TypeScript", "MapLibre GL JS", "Fastify", "SQLite", "Rust", "WebAssembly"]
+impact: "レビューの会話が地図の上に載り、イミュータブルなデータセットバージョンにピン留めされました — かつてメールスレッドだったものが、データそのものに紐づくフィードバックループになりました。公開のたびに新しいイミュータブルバージョンが作られ、ルーティングと施設情報は同じバンドルに同梱され、Rustコアはサーバー・ブラウザ（WASM）・将来のSDKで共有されるため、ベニュー解釈のロジックは一度書くだけですみます。"
+slidesUrl: "https://www.figma.com/deck/ztFsavZ6NTixFICMOU3HtL"
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Section label="課題">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="アプローチ">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="ギャラリー — レビュー — 経路"
+  images={[
+    { src: "/images/projects/kiriko/gallery-datasets.webp", alt: "渋谷スクランブルスクエア、LinkPillar1、JR高輪ゲートウェイ駅、JR品川駅の公開アクションを表示したKirikoのデータセットギャラリー", label: "データセットギャラリー" },
+    { src: "/images/projects/kiriko/issue-review.webp", alt: "渋谷スクランブルスクエア8階の地図上にピン留めされたレビュー指摘（ステータス・返信・ピン付きフィーチャー）", label: "地図ピン留め指摘" },
+    { src: "/images/projects/kiriko/shinagawa-network.webp", alt: "接続率89%のネットワークQAとフロアセレクタを表示したKirikoのJR品川駅フロアプラン", label: "ネットワークQA" },
+  ]}
+/>
+
+ギャラリーはプロデューサーの作業スペースです。サインインし、ベニューを作成・削除し、IMDFデータセットやFile Geodatabaseをアップロードします。GDBの取り込みはレビュー付きの変換パイプラインで行われます — アーカイブ検証とGDALによる調査、サーバーが提案する建物／レイヤー／フロア／カテゴリのマッピング、日英バイリンガルでのマッピング確認、WGS84への変換、厳密なIMDF合成 — 元データの識別情報とマッピングプランはバージョンに保持されるため、後からマッピングを開いて修正できます。
+
+公開はイミュータブルです。公開のたびに恒久的なランダム公開IDを持つ新しいバージョンが作られ、ソースとバンドルのブロブはSHA-256でコンテンツアドレス付けされます。コンパイルに失敗したバージョンが最新の公開済みバンドルを置き換えることはありません。ベニュー解釈はすべてRustコアが担います — 厳密なIMDFインポート、決定的なKVBバンドルエンコード、ルートグラフ構築とA*検索、ポイント施設の投影 — これをN-APIサーバーアドオンとブラウザWASMの両方へコンパイルしています。
+
+ルーティングは明示的なネットワークGDB（ジャンクションとパス）から、またはベニュー自身の歩行可能ジオメトリから生成したグラフから構築でき、生成に失敗した場合は誤解を招く成功として公開せず`no_routable_network`で失敗します。グラフアンカーを持つ施設には施設までの経路案内が使え、ネットワークQAは接続性サマリとフロアオーバーレイ、エッジ編集を提供し、GDBへ書き戻せます。
+
+レビュー指摘はバージョンにピン留めされます。ピン・返信・ステータス・担当者・期限・楽観的並行性制御を備え、SSEでクライアント間をリアルタイム同期します。埋め込みモードは同じビューアを顧客向けリンク用に軽量なクロームで実行します。
+
+<TechStack label="使用技術" items={frontmatter.techStack} />
+
+<Section label="成果">
+  <p>{frontmatter.impact}</p>
+</Section>

@@ -22,6 +22,7 @@ const projects = defineCollection({
         awards: z.array(z.string()).default([]),
         stations: z.array(z.string()).default([]),
         category: z.enum(['Practice', 'Tools', 'Digital Twin']).optional(),
+        slidesUrl: z.string().optional(),
     })
 });
 

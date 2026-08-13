@@ -61,6 +61,109 @@ const imageManifest = {
     "shareSrc": "/images/profile-img.JPG",
     "lightboxSrc": "/images/_generated/profile-img-709w.webp"
   },
+  "/images/projects/3d-tiles-viewer/layer-colors-dialog.png": {
+    "width": 512,
+    "height": 578,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__layer-colors-dialog-512w.avif",
+        "width": 512,
+        "height": 578
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__layer-colors-dialog-512w.webp",
+        "width": 512,
+        "height": 578
+      }
+    ],
+    "fallbackSrc": "/images/projects/3d-tiles-viewer/layer-colors-dialog.png",
+    "shareSrc": "/images/projects/3d-tiles-viewer/layer-colors-dialog.png",
+    "lightboxSrc": "/images/_generated/projects__3d-tiles-viewer__layer-colors-dialog-512w.webp"
+  },
+  "/images/projects/3d-tiles-viewer/tokyo-station-dark.webp": {
+    "width": 1568,
+    "height": 773,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-800w.avif",
+        "width": 800,
+        "height": 394
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-1400w.avif",
+        "width": 1400,
+        "height": 690
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-1568w.avif",
+        "width": 1568,
+        "height": 773
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-800w.webp",
+        "width": 800,
+        "height": 394
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-1400w.webp",
+        "width": 1400,
+        "height": 690
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-1568w.webp",
+        "width": 1568,
+        "height": 773
+      }
+    ],
+    "fallbackSrc": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-share.jpg",
+    "shareSrc": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-share.jpg",
+    "lightboxSrc": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-dark-1568w.webp"
+  },
+  "/images/projects/3d-tiles-viewer/tokyo-station-light.webp": {
+    "width": 1568,
+    "height": 771,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-800w.avif",
+        "width": 800,
+        "height": 393
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-1400w.avif",
+        "width": 1400,
+        "height": 688
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-1568w.avif",
+        "width": 1568,
+        "height": 771
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-800w.webp",
+        "width": 800,
+        "height": 393
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-1400w.webp",
+        "width": 1400,
+        "height": 688
+      },
+      {
+        "src": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-1568w.webp",
+        "width": 1568,
+        "height": 771
+      }
+    ],
+    "fallbackSrc": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-share.jpg",
+    "shareSrc": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-share.jpg",
+    "lightboxSrc": "/images/_generated/projects__3d-tiles-viewer__tokyo-station-light-1568w.webp"
+  },
   "/images/projects/ersta/01-revit-model-front.jpg": {
     "width": 2000,
     "height": 1227,
@@ -451,6 +554,129 @@ const imageManifest = {
     "fallbackSrc": "/images/projects/imdf-converter/review-export.png",
     "shareSrc": "/images/projects/imdf-converter/review-export.png",
     "lightboxSrc": "/images/_generated/projects__imdf-converter__review-export-1912w.webp"
+  },
+  "/images/projects/kiriko/gallery-datasets.webp": {
+    "width": 1568,
+    "height": 770,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__kiriko__gallery-datasets-800w.avif",
+        "width": 800,
+        "height": 393
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__gallery-datasets-1400w.avif",
+        "width": 1400,
+        "height": 688
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__gallery-datasets-1568w.avif",
+        "width": 1568,
+        "height": 770
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__kiriko__gallery-datasets-800w.webp",
+        "width": 800,
+        "height": 393
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__gallery-datasets-1400w.webp",
+        "width": 1400,
+        "height": 688
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__gallery-datasets-1568w.webp",
+        "width": 1568,
+        "height": 770
+      }
+    ],
+    "fallbackSrc": "/images/_generated/projects__kiriko__gallery-datasets-share.jpg",
+    "shareSrc": "/images/_generated/projects__kiriko__gallery-datasets-share.jpg",
+    "lightboxSrc": "/images/_generated/projects__kiriko__gallery-datasets-1568w.webp"
+  },
+  "/images/projects/kiriko/issue-review.webp": {
+    "width": 1568,
+    "height": 775,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__kiriko__issue-review-800w.avif",
+        "width": 800,
+        "height": 395
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__issue-review-1400w.avif",
+        "width": 1400,
+        "height": 692
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__issue-review-1568w.avif",
+        "width": 1568,
+        "height": 775
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__kiriko__issue-review-800w.webp",
+        "width": 800,
+        "height": 395
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__issue-review-1400w.webp",
+        "width": 1400,
+        "height": 692
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__issue-review-1568w.webp",
+        "width": 1568,
+        "height": 775
+      }
+    ],
+    "fallbackSrc": "/images/_generated/projects__kiriko__issue-review-share.jpg",
+    "shareSrc": "/images/_generated/projects__kiriko__issue-review-share.jpg",
+    "lightboxSrc": "/images/_generated/projects__kiriko__issue-review-1568w.webp"
+  },
+  "/images/projects/kiriko/shinagawa-network.webp": {
+    "width": 1568,
+    "height": 770,
+    "avif": [
+      {
+        "src": "/images/_generated/projects__kiriko__shinagawa-network-800w.avif",
+        "width": 800,
+        "height": 393
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__shinagawa-network-1400w.avif",
+        "width": 1400,
+        "height": 688
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__shinagawa-network-1568w.avif",
+        "width": 1568,
+        "height": 770
+      }
+    ],
+    "webp": [
+      {
+        "src": "/images/_generated/projects__kiriko__shinagawa-network-800w.webp",
+        "width": 800,
+        "height": 393
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__shinagawa-network-1400w.webp",
+        "width": 1400,
+        "height": 688
+      },
+      {
+        "src": "/images/_generated/projects__kiriko__shinagawa-network-1568w.webp",
+        "width": 1568,
+        "height": 770
+      }
+    ],
+    "fallbackSrc": "/images/_generated/projects__kiriko__shinagawa-network-share.jpg",
+    "shareSrc": "/images/_generated/projects__kiriko__shinagawa-network-share.jpg",
+    "lightboxSrc": "/images/_generated/projects__kiriko__shinagawa-network-1568w.webp"
   },
   "/images/projects/revit-geo-suite/crs-setup.png": {
     "width": 1406,

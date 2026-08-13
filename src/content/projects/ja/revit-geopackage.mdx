@@ -14,6 +14,7 @@ problem: "屋内のRevitモデルをGISで使える、IMDF準拠のデータへ�
 solution: "RevitGeoSuiteはモジュール式のRevitアドインです。Georeference・Import・Exportの各機能は、WebView2ウィンドウ内で動くSvelte製のWebアプリとして開かれ、型付きRPCブリッジ経由でC#バックエンドと通信し、UIは英語・日本語の両方で提供されます。座標設定には専用のガイド付きワークフローがあり、日本の座標系プリセットからのCRS選択、地図上でのポイント指定、PLATEAUのグリッドタイルへのスナップを、作業中に座標設定とエクスポートの準備状況を確認するライブ検証パネルが支えています。そこからPLATEAU（フォルダまたはAPI）またはOpenStreetMapのコンテキストをインポートし、ローカルDEMまたはCesium Ionから地形を取得し、IMDF形式のスキーマを用いて3D Tiles・CityGML・GeoPackage/Shapefileの平面図へエクスポートします — 書き出す前に、プレビューマップ、カテゴリ／フロアの割り当て、診断マニフェストを確認できます。これはSta.navi屋内ナビゲーションプロジェクトを支えているのと同じ屋内マッピングのパイプラインを、使い捨てのスクリプトではなく、きちんとしたモジュール式ツールとして再構築したものです。"
 techStack: ["Revit API", "C#", "Svelte", "TypeScript", "SQLite", "PLATEAU", "CityGML", "3D Tiles"]
 impact: "かつては手作業でエラーの起きやすい変換の連続だったものが、事前に検証が組み込まれたガイド付きパイプラインになりました — 新宿の1フロアだけのエクスポートプレビューで、ファイルを1つも書き出す前に329件の問題を検出しています。差分エクスポートにより、モデルを少し変更した後の再実行では変更箇所のみが書き出され、英語・日本語のバイリンガルUIにより、私がその場で説明しなくても運用できるワークフローになっています。"
+slidesUrl: "https://www.figma.com/deck/a5uc7Aik11Wcr43YJBU4JE"
 ---
 
 import Walkthrough from "../../../components/mdx/Walkthrough.astro";

@@ -1,0 +1,55 @@
+---
+title: "3D Tiles Viewer"
+description: "A browser-based 3D Tiles authoring and publishing tool built on CesiumJS — load Revit and PLATEAU tilesets, split Revit links, assign floors with clipping cutaways, overlay GIS layers, author indoor networks, and publish self-contained viewer packages that colleagues open with nothing to install."
+publishDate: "2026-05-13"
+lang: "en"
+tags: ["CesiumJS", "3D Tiles", "Node.js", "Vite", "Geospatial"]
+coverImage: "/images/projects/3d-tiles-viewer/tokyo-station-light.webp"
+featured: false
+category: Tools
+role: "Sole Developer"
+context: "JRE Consultants · Tokyo"
+timelineLabel: "2026"
+problem: "3D Tiles datasets coming out of Revit and PLATEAU needed cleaning, floor assignment, and packaging before anyone else could look at them — so the person who exported the model was also the only person who could review it."
+solution: "A single-page CesiumJS app that covers the whole authoring-to-sharing pipeline: load tilesets from URLs or local folders, split Revit-linked models into per-link buildings, assign floors with clipping-plane cutaways, overlay shapefile/GDB/GeoPackage layers, author indoor networks across floors, group buildings into named venues, and publish a self-contained package to a shared server."
+techStack: ["CesiumJS", "Vite", "Leaflet", "shpjs", "gdal3.js", "Node.js", "Express"]
+impact: "Publishing a venue is one click: tilesets, session metadata, and GIS floor plans get bundled and pushed to the Express server, and colleagues open a plain link instead of receiving a file handoff. RevitGeoSuite pushes packages into the same server, and the running session updates live over SSE."
+slidesUrl: "https://www.figma.com/deck/Wmym8uEPIZ5Dy5BFco4mMH"
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Section label="PROBLEM">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="SOLUTION">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="SCREENSHOTS"
+  images={[
+    { src: "/images/projects/3d-tiles-viewer/tokyo-station-light.webp", alt: "3D Tiles Viewer with the Tokyo Station 3D model loaded, 1F active, venue and scene panels open", label: "Tokyo Station — 1F" },
+    { src: "/images/projects/3d-tiles-viewer/tokyo-station-dark.webp", alt: "3D Tiles Viewer dark viewport showing Tokyo Station buildings with the route network and point markers", label: "Network view" },
+    { src: "/images/projects/3d-tiles-viewer/layer-colors-dialog.png", alt: "Layer color configuration dialog with Japanese category color names and palette management", label: "Layer colors" },
+  ]}
+/>
+
+Tilesets load from a URL, a local folder picker, or a persistent File System Access handle. Revit-linked models are auto-detected and split into per-link buildings with feature-level filters, and each building gets its own floor list — clipping-plane cutaways expose the interior of a single level, with a cross-building floor selector to move through the station.
+
+PLATEAU context comes from a catalog picker with a Leaflet map preview, with LOD filtering to suppress duplicate buildings across CityGML levels of detail and per-feature ghost/hide overrides with click-through picking. Shapefile overlays render as flat-height polygons, and File Geodatabase or GeoPackage layers import through GDAL in a web worker, with heuristic matching to buildings and floors.
+
+Indoor networks are authored directly on the model: stairs, escalators, elevators, slopes, and moving walkways connect across floors through a floor-to-floor connect mode, with waypoint placement along stair geometry and GeoJSON export of the authored connectors.
+
+Sessions back up and restore automatically with snapshots and a visual diff between states, and publishing bundles the tilesets and session metadata into a package the server mirrors and shares by link.
+
+<TechStack label="TECH STACK" items={frontmatter.techStack} />
+
+<Section label="IMPACT">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+RevitGeoSuite pushes its export packages into the same server — the viewer is where its 3D Tiles and GIS floor plans land for review.

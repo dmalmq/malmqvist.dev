@@ -30,10 +30,16 @@ const copy = isJa
   ? {
       back: "← Workに戻る",
       nextProjectLabel: "次のプロジェクト",
+      slidesLabel: "スライド",
+      slidesCaption: "Tech Stack（技術スタック）スライド",
+      slidesOpen: "Figmaで開く",
     }
   : {
       back: "← Back to Work",
       nextProjectLabel: "NEXT PROJECT",
+      slidesLabel: "SLIDES",
+      slidesCaption: "Tech Stack deck",
+      slidesOpen: "Open in Figma",
     };
 
 const nextProjectSlug = nextProject
@@ -127,6 +133,41 @@ const nextProjectSlug = nextProject
       </article>
     </FadeIn>
   </section>
+
+{
+  project.data.slidesUrl && (
+    <section class="max-w-[90rem] mx-auto px-5 sm:px-8 lg:px-10 pb-20">
+      <FadeIn delay={80}>
+        <div class="max-w-[85rem]">
+          <p class="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.11em] text-[var(--color-text-secondary)]">
+            {copy.slidesLabel}
+          </p>
+          <div class="mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]">
+            <iframe
+              src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(project.data.slidesUrl)}`}
+              title={`${project.data.title} — ${copy.slidesCaption}`}
+              class="aspect-video w-full"
+              loading="lazy"
+              allow="fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <p class="mt-3 text-sm text-[var(--color-text-secondary)]" style={typeStyle}>
+            {copy.slidesCaption} —{" "}
+            <a
+              href={project.data.slidesUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-[var(--color-accent)] underline underline-offset-2 hover:text-[var(--color-accent-hover)]"
+            >
+              {copy.slidesOpen}
+            </a>
+          </p>
+        </div>
+      </FadeIn>
+    </section>
+  )
+}
 </div>
 
 {

@@ -1,0 +1,53 @@
+---
+title: "Kiriko"
+description: "A Forma/ACC-style web platform for indoor GIS — publish IMDF and GDB station data as immutable, versioned bundles, review it with map-pinned issues, and route through it in a bilingual React/MapLibre viewer backed by a shared Rust core."
+publishDate: "2026-07-13"
+lang: "en"
+tags: ["React", "MapLibre", "Fastify", "Rust", "IMDF", "Geospatial"]
+coverImage: "/images/projects/kiriko/shinagawa-network.webp"
+featured: false
+category: Tools
+role: "Sole Developer"
+context: "JRE Consultants · Tokyo"
+timelineLabel: "2026 — Present"
+problem: "Indoor GIS dataset review for JR East stations happened over email, spreadsheets, and file-passing. Reviewers without GIS software couldn't open a floor plan to check it, and feedback couldn't point at a place on the map."
+solution: "One web platform for the whole indoor-GIS lifecycle. Producers publish IMDF or File Geodatabase station data through a reviewed conversion pipeline, and the Rust core compiles it into immutable, content-addressed KVB venue bundles. Reviewers open a link, walk the floors in a bilingual MapLibre viewer, and leave issues pinned to the map with replies, status, and assignment — synced live over SSE. The same bundles carry routing graphs and point facilities, so directions and route-to-facility work from the same data."
+techStack: ["React", "TypeScript", "MapLibre GL JS", "Fastify", "SQLite", "Rust", "WebAssembly"]
+impact: "Review conversations now live on the map, version-pinned against immutable dataset versions — what used to be email threads is now a feedback loop on the data itself. Every publish creates a new immutable version, routing and facilities ride in the same bundle, and the Rust core is shared between the server, the browser over WASM, and future SDKs, so venue interpretation is written once."
+slidesUrl: "https://www.figma.com/deck/ztFsavZ6NTixFICMOU3HtL"
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Section label="PROBLEM">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="SOLUTION">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="GALLERY — REVIEW — ROUTING"
+  images={[
+    { src: "/images/projects/kiriko/gallery-datasets.webp", alt: "Kiriko dataset gallery showing Shibuya Scramble Square, LinkPillar1, JR Takanawa Gateway Station, and JR Shinagawa Station with publish actions", label: "Dataset gallery" },
+    { src: "/images/projects/kiriko/issue-review.webp", alt: "Kiriko map-pinned review issue on Shibuya Scramble Square floor 8 with status, replies, and pinned feature", label: "Map-pinned issue" },
+    { src: "/images/projects/kiriko/shinagawa-network.webp", alt: "Kiriko JR Shinagawa Station floor plan with network connectivity QA at 89% and floor selector", label: "Network QA" },
+  ]}
+/>
+
+The gallery is the producer workspace: sign in, create and delete venues, and upload IMDF datasets or File Geodatabases. GDB ingestion is a reviewed conversion pipeline — archive validation and GDAL inspection, a server-suggested building/layer/floor/category mapping, bilingual mapping review, WGS84 conversion, and strict IMDF synthesis — with the raw source identity and mapping plan retained so a producer can reopen and refine the mapping later.
+
+Publication is immutable. Every publish creates a new version with a permanent random public ID; source and bundle blobs are content-addressed by SHA-256; a failed compilation never replaces the latest published bundle. The Rust core owns all venue interpretation — strict IMDF import, deterministic KVB bundle encoding, route-graph construction and A* queries, and point-facility projection — compiled to both an N-API server addon and browser WASM.
+
+Routing comes from an explicit network GDB (junctions and paths), from a graph generated from the venue's own walkable geometry, or both: the generator fails with `no_routable_network` instead of publishing a misleading success. Facilities with graph anchors support route-to-facility directions, and network QA shows a connectivity summary with floor overlays and edge editing, exportable back to GDB.
+
+Review issues are version-pinned: pins, replies, status, assignment, due dates, and optimistic concurrency, synchronized across clients over SSE. Embed mode runs the same viewer with reduced chrome for client-facing links.
+
+<TechStack label="TECH STACK" items={frontmatter.techStack} />
+
+<Section label="IMPACT">
+  <p>{frontmatter.impact}</p>
+</Section>

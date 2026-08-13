@@ -1,0 +1,55 @@
+---
+title: "3D Tiles Viewer"
+description: "CesiumJSベースの3D Tilesオーサリング＆公開ツール。RevitやPLATEAUのタイルセットを読み込み、Revitリンクを分割し、クリッピングによるフロア割り当てを行い、GISレイヤーを重ね、屋内ネットワークを作成し、インストール不要で同僚が開ける自己完結型のビューアパッケージとして公開します。"
+publishDate: "2026-05-13"
+lang: "ja"
+tags: ["CesiumJS", "3D Tiles", "Node.js", "Vite", "Geospatial"]
+coverImage: "/images/projects/3d-tiles-viewer/tokyo-station-light.webp"
+featured: false
+category: Tools
+role: "単独開発"
+context: "JRE Consultants・東京"
+timelineLabel: "2026年"
+problem: "RevitやPLATEAUから書き出された3D Tilesデータは、誰かが見られる状態になるまでにクリーニング・フロア割り当て・パッケージングが必要でした。そのため、モデルを書き出した本人だけがレビューできる状態が続いていました。"
+solution: "オーサリングから共有までのパイプライン全体を1つのCesiumJSシングルページアプリケーションにまとめました。URLやローカルフォルダからタイルセットを読み込み、Revitリンク付きモデルをリンクごとの建物に分割し、クリッピングプレーンでフロアを割り当て、Shapefile・GDB・GeoPackageレイヤーを重ね、フロアをまたぐ屋内ネットワークを作成し、建物を名前付きベニューにグループ化して、共有サーバーへ自己完結型パッケージとして公開します。"
+techStack: ["CesiumJS", "Vite", "Leaflet", "shpjs", "gdal3.js", "Node.js", "Express"]
+impact: "公開はワンクリックです。タイルセット、セッションメタデータ、GIS平面図が1つのパッケージにまとめられてExpressサーバーへアップロードされ、同僚はファイルの受け渡しではなくリンクを開くだけで閲覧できます。RevitGeoSuiteは同じサーバーへパッケージをプッシュし、実行中のセッションはSSEでリアルタイムに更新されます。"
+slidesUrl: "https://www.figma.com/deck/Wmym8uEPIZ5Dy5BFco4mMH"
+---
+
+import ImageRow from "../../../components/mdx/ImageRow.astro";
+import Section from "../../../components/mdx/Section.astro";
+import TechStack from "../../../components/mdx/TechStack.astro";
+
+<Section label="課題">
+  <p>{frontmatter.problem}</p>
+</Section>
+
+<Section label="アプローチ">
+  <p>{frontmatter.solution}</p>
+</Section>
+
+<ImageRow
+  title="スクリーンショット"
+  images={[
+    { src: "/images/projects/3d-tiles-viewer/tokyo-station-light.webp", alt: "東京駅の3Dモデルを読み込み、1Fを表示した3D Tiles Viewer（ベニュー・シーンパネル展開中）", label: "東京駅 — 1F" },
+    { src: "/images/projects/3d-tiles-viewer/tokyo-station-dark.webp", alt: "東京駅の建物と経路ネットワーク、ポイントマーカーをダークビューポートで表示した3D Tiles Viewer", label: "ネットワーク表示" },
+    { src: "/images/projects/3d-tiles-viewer/layer-colors-dialog.png", alt: "日本語のカテゴリ色名とパレット管理機能を備えたレイヤー色設定ダイアログ", label: "レイヤー配色" },
+  ]}
+/>
+
+タイルセットはURL、ローカルフォルダのピッカー、または永続化されたFile System Accessハンドルから読み込めます。Revitリンク付きのモデルは自動検出され、リンクごとの建物に分割され、建物ごとにフロアリストが生成されます。クリッピングプレーンのカットアウェイで任意の1フロアの内部を表示でき、建物をまたぐフロアセレクタで駅全体を移動できます。
+
+PLATEAUのコンテキストはLeaflet地図プレビュー付きのカタログピッカーから取得でき、CityGMLのLOD間で重複する建物を抑制するLODフィルタと、クリックスルー選択に対応したフィーチャー単位のゴースト／非表示設定を備えています。Shapefileオーバーレイはフラットハイトのポリゴンとして描画され、File GeodatabaseやGeoPackageのレイヤーはWeb Worker内のGDALでインポートし、建物・フロアへのヒューリスティックなマッチングを行います。
+
+屋内ネットワークはモデル上で直接作成できます。階段・エスカレータ・エレベータ・スロープ・動く歩道をフロア間接続モードでつなぎ、階段形状に沿ったウェイポイント配置と、作成したコネクタのGeoJSONエクスポートに対応しています。
+
+セッションは自動スナップショットでバックアップ・復元でき、状態間のビジュアル差分も確認できます。公開時にはタイルセットとセッションメタデータがパッケージ化され、サーバーがミラーしてリンクで共有します。
+
+<TechStack label="使用技術" items={frontmatter.techStack} />
+
+<Section label="成果">
+  <p>{frontmatter.impact}</p>
+</Section>
+
+RevitGeoSuiteのエクスポートパッケージは同じサーバーへプッシュされます。このビューアは、3D TilesとGIS平面図がレビューのために届く場所です。
