@@ -51,17 +51,17 @@ const timelineData =
       ];
 ---
 
-<div class="flex flex-col gap-7">
+<div class="flex flex-col">
   {
     timelineData.map((item, i) => (
       <div class="flex items-start gap-5">
         <div class="flex flex-shrink-0 flex-col items-center self-stretch">
           <div class="h-[9px] w-[9px] flex-shrink-0 rounded-full bg-[var(--color-accent)]" />
           {i < timelineData.length - 1 && (
-            <div class="mt-[3px] w-[1.5px] flex-1 bg-[var(--color-border-hover)] opacity-35" />
+            <div class="w-[1.5px] flex-1 bg-[var(--color-border-hover)] opacity-35" />
           )}
         </div>
-        <div class="flex flex-col gap-1 pb-1">
+        <div class:list={["flex flex-col gap-1", i < timelineData.length - 1 ? "pb-7" : "pb-1"]}>
           <p class="font-mono text-[0.6875rem] font-medium tracking-[0.1em] text-[var(--color-accent)]">
             {item.date}
           </p>
