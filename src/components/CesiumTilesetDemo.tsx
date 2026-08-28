@@ -15,6 +15,7 @@ import {
   type VenueLevel,
 } from "../lib/venueBundle";
 import { buildVenueScene, type VenueFeature, type VenueScene } from "../lib/venueScene";
+import { filesFromVenueZip } from "../lib/zipFolder";
 
 type Lang = "en" | "ja";
 type Dataset = "sample" | "local";
@@ -31,10 +32,12 @@ const copy = {
     sampleHint: "Synthetic two-storey venue with levels, layers, and markers.",
     local: "Files already on this device",
     localHint:
-      "Folder picker only. Tiles stay in this browser — no upload, no publish, no CDN.",
+      "Choose a folder or a website-export zip. Nothing leaves this browser.",
     chooseFolder: "Choose folder",
     changeFolder: "Change folder",
-    noFolder: "No folder selected",
+    openZip: "Open exported zip",
+    openAnotherZip: "Open another zip",
+    noFolder: "No folder or zip selected",
     load: "Load 3D viewer",
     loading: "Loading viewer…",
     readySample: "Synthetic indoor sample loaded. Pick a level or click a marker.",
@@ -44,9 +47,9 @@ const copy = {
     localAttribution:
       "Dataset: files from this device, rewritten to blob URLs in this browser. Nothing was uploaded, published, or stored on the site.",
     error: "Could not load the venue.",
-    fsaFallback: "This browser will use the folder file picker.",
+    fsaFallback: "This browser will use its standard folder and file pickers.",
     localPrivacy:
-      "Local tiles never leave the device. Use this to show a JR station bundle already on the laptop — do not put those models on the public internet.",
+      "Local folders and zips never leave the device. Use this to show a JR station bundle already on the laptop — do not put those models on the public internet.",
     levels: "Levels",
     allLevels: "All levels",
     layers: "Layers",
@@ -65,10 +68,12 @@ const copy = {
     sampleHint: "フロア・レイヤー・マーカー付きの、2階建て合成会場。",
     local: "この端末上のファイル",
     localHint:
-      "フォルダ選択のみ。タイルはこのブラウザ内に留まり、アップロード・公開・CDN送信はしません。",
+      "フォルダまたはWebサイト用ZIPを選択できます。データはブラウザ内に留まります。",
     chooseFolder: "フォルダを選ぶ",
     changeFolder: "フォルダを変更",
-    noFolder: "フォルダ未選択",
+    openZip: "エクスポートZIPを開く",
+    openAnotherZip: "別のZIPを開く",
+    noFolder: "フォルダ・ZIP未選択",
     load: "3Dビューアを読み込む",
     loading: "ビューアを読み込み中…",
     readySample: "合成屋内サンプルを読み込みました。フロア切替やマーカーを試せます。",
@@ -78,9 +83,9 @@ const copy = {
     localAttribution:
       "データセット：この端末のファイルを、ブラウザ内のblob URLとして読み込みました。アップロード・公開・サイトへの保存はしていません。",
     error: "会場データを読み込めませんでした。",
-    fsaFallback: "このブラウザではフォルダのファイルピッカーを使います。",
+    fsaFallback: "このブラウザでは標準のフォルダ・ファイル選択を使います。",
     localPrivacy:
-      "ローカルのタイルが端末の外に出ることはありません。ノートPC上のJR駅バンドルをその場で見せる用途です。公開インターネットには置かないでください。",
+      "ローカルのフォルダとZIPが端末の外に出ることはありません。ノートPC上のJR駅バンドルをその場で見せる用途です。公開インターネットには置かないでください。",
     levels: "フロア",
     allLevels: "全フロア",
     layers: "レイヤー",
@@ -117,6 +122,51 @@ function pickFolderWithInput(): Promise<File[]> {
   return promise;
 }
 
+function pickZipWithInput(): Promise<File> {
+  const { promise, resolve, reject } = Promise.withResolvers<File>();
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".zip,application/zip";
+  input.style.display = "none";
+  input.addEventListener("change", () => {
+    const file = input.files?.[0];
+    input.remove();
+    if (!file) {
+      reject(new DOMException("No file selected", "AbortError"));
+      return;
+    }
+    resolve(file);
+  });
+  input.addEventListener("cancel", () => {
+    input.remove();
+    reject(new DOMException("The user aborted a request.", "AbortError"));
+  });
+  document.body.appendChild(input);
+  input.click();
+  return promise;
+}
+
+async function pickLocalZip(): Promise<File> {
+  if (!window.showOpenFilePicker) return pickZipWithInput();
+  try {
+    const [handle] = await window.showOpenFilePicker({
+      multiple: false,
+      excludeAcceptAllOption: true,
+      types: [
+        {
+          description: "3D Tiles venue bundle",
+          accept: { "application/zip": [".zip"] },
+        },
+      ],
+    });
+    if (!handle) throw new DOMException("No file selected", "AbortError");
+    return handle.getFile();
+  } catch (error) {
+    if (isAbortError(error)) throw error;
+    return pickZipWithInput();
+  }
+}
+
 function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
 }
@@ -144,7 +194,6 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
   const sceneRef = useRef<VenueScene | null>(null);
   const localHandleRef = useRef<LocalVenueHandle | null>(null);
   const localFilesRef = useRef<File[] | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const loadIdRef = useRef(0);
   const mountedRef = useRef(true);
 
@@ -162,6 +211,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
   const [countByLayer, setCountByLayer] = useState<Record<string, number>>({});
   const [selected, setSelected] = useState<VenueFeature | null>(null);
   const [partial, setPartial] = useState(false);
+  const [localPending, setLocalPending] = useState(false);
 
   const isCurrentLoad = (loadId: number) =>
     mountedRef.current && loadId === loadIdRef.current;
@@ -182,10 +232,10 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     };
   }, []);
 
-  const rememberLocalFiles = (files: File[]) => {
+  const rememberLocalFiles = (files: File[], label?: string) => {
     localFilesRef.current = files;
     setHasLocalFiles(true);
-    setLocalLabel(describeLocalFolder(files));
+    setLocalLabel(label ?? describeLocalFolder(files));
   };
 
   const reportCaught = (caught: unknown) => {
@@ -361,33 +411,34 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
 
   const commitDataset = (next: Dataset) => setDataset(next);
 
+  const adoptLocalFiles = async (files: File[], label?: string) => {
+    const commit = () => {
+      rememberLocalFiles(files, label);
+      commitDataset("local");
+      setLocalPending(false);
+    };
+    if (!viewerRef.current) {
+      commit();
+      return;
+    }
+    if (await loadDataset("local", files)) commit();
+  };
+
   const chooseFolder = async () => {
     setError("");
     try {
-      const files = await pickLocalFolder();
-      if (!viewerRef.current) {
-        rememberLocalFiles(files);
-        commitDataset("local");
-        return;
-      }
-      if (await loadDataset("local", files)) {
-        rememberLocalFiles(files);
-        commitDataset("local");
-      }
+      await adoptLocalFiles(await pickLocalFolder());
     } catch (caught) {
       reportCaught(caught);
     }
   };
 
-  const onFallbackFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []);
-    event.target.value = "";
-    if (!files.length) return;
+  const chooseZip = async () => {
+    setError("");
     try {
-      if (await loadDataset("local", files)) {
-        rememberLocalFiles(files);
-        commitDataset("local");
-      }
+      const archive = await pickLocalZip();
+      const files = await filesFromVenueZip(archive);
+      await adoptLocalFiles(files, `${archive.name} · ${files.length} files`);
     } catch (caught) {
       reportCaught(caught);
     }
@@ -413,8 +464,10 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
 
   const onDatasetChange = async (next: Dataset) => {
     if (next === dataset) return;
+    // Selecting the local source only reveals the folder and zip buttons; the
+    // radio still commits after a load so it cannot disagree with the scene.
     if (next === "local" && !localFilesRef.current?.length) {
-      await chooseFolder();
+      setLocalPending(true);
       return;
     }
     if (!viewerRef.current) {
@@ -422,7 +475,10 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       return;
     }
     try {
-      if (await loadDataset(next)) commitDataset(next);
+      if (await loadDataset(next)) {
+        commitDataset(next);
+        if (next === "sample") setLocalPending(false);
+      }
     } catch (caught) {
       reportCaught(caught);
     }
@@ -494,7 +550,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
           </div>
         </fieldset>
 
-        {dataset === "local" && (
+        {(dataset === "local" || localPending) && (
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button
               type="button"
@@ -503,19 +559,16 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
             >
               {hasLocalFiles ? t.changeFolder : t.chooseFolder}
             </button>
+            <button
+              type="button"
+              onClick={() => void chooseZip()}
+              className="inline-flex items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-border-hover)] hover:text-[var(--color-accent)]"
+            >
+              {hasLocalFiles ? t.openAnotherZip : t.openZip}
+            </button>
             <p className="text-sm text-[var(--color-text-secondary)]">
               {hasLocalFiles ? localLabel : t.noFolder}
             </p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              onChange={(event) => void onFallbackFiles(event)}
-              {...{ webkitdirectory: "", directory: "" }}
-            />
             {!isFileSystemAccessSupported() && (
               <p className="w-full text-xs text-[var(--color-text-secondary)]">{t.fsaFallback}</p>
             )}
