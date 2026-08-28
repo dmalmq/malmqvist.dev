@@ -239,11 +239,27 @@ function styleEntity(
   ctx: StyleContext,
 ): void {
   const { source, lang, groundHeight, elevationByLevel } = ctx;
-  const color = layer.color ? Cesium.Color.fromCssColorString(layer.color) : undefined;
+  const featureColorRaw = entity.properties?.__viewerColor?.getValue();
+  const featureOutlineRaw = entity.properties?.__viewerOutlineColor?.getValue();
+  const featureColor =
+    typeof featureColorRaw === "string"
+      ? Cesium.Color.fromCssColorString(featureColorRaw)
+      : undefined;
+  const layerColor = layer.color
+    ? Cesium.Color.fromCssColorString(layer.color)
+    : undefined;
+  const color = featureColor ?? layerColor;
 
   if (layer.geometry !== "point") {
-    if (entity.polyline && color) entity.polyline.material = color;
-    if (entity.polygon && color) entity.polygon.material = color.withAlpha(0.35);
+    if (entity.polyline && color) entity.polyline.material = color.withAlpha(1);
+    if (entity.polygon && color) {
+      entity.polygon.material = color.withAlpha(featureColor ? 1 : 0.35);
+      entity.polygon.perPositionHeight = true;
+      entity.polygon.arcType = Cesium.ArcType.NONE;
+      if (typeof featureOutlineRaw === "string") {
+        entity.polygon.outlineColor = Cesium.Color.fromCssColorString(featureOutlineRaw);
+      }
+    }
     return;
   }
 
@@ -251,11 +267,11 @@ function styleEntity(
   const position = entity.position?.getValue();
   if (position) {
     const carto = Cesium.Cartographic.fromCartesian(position);
-    // A 2D coordinate arrives at height 0; lift it to eye height on its own floor.
+    // Placed exports carry their authoring-viewer world height. Only legacy
+    // 2D features need the bundle-level fallback.
     if (carto && Math.abs(carto.height) < 0.001) {
       const elevation = levelKey === null ? 0 : (elevationByLevel.get(levelKey) ?? 0);
       carto.height = groundHeight + elevation + EYE_HEIGHT_METERS;
-      // Cesium coerces a Cartesian3 assignment into a ConstantPositionProperty.
       entity.position = Cesium.Cartographic.toCartesian(
         carto,
       ) as unknown as CesiumEntity["position"];
