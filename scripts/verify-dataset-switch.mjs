@@ -23,6 +23,9 @@ const root = path.resolve(__dirname, "..");
 const publicDir = path.join(root, "public");
 const sampleDir = path.join(publicDir, "demos/3d-tiles-viewer/synthetic-indoor");
 const SAMPLE_VENUE = "/demos/3d-tiles-viewer/synthetic-indoor/venue.json";
+const sampleFileCount = (
+  await readdir(sampleDir, { recursive: true, withFileTypes: true })
+).filter((entry) => entry.isFile()).length;
 
 const stamp = Date.now();
 const stubFile = path.join(tmpdir(), `dataset-switch-cesium-${stamp}.js`);
@@ -52,7 +55,8 @@ await build({
     contents: `import { act, createElement } from "react";
 import { createRoot } from "react-dom/client";
 import Demo from ${JSON.stringify(path.join(root, "src/components/CesiumTilesetDemo.tsx"))};
-export { act, createElement, createRoot, Demo };
+import { buildVenueScene } from ${JSON.stringify(path.join(root, "src/lib/venueScene.ts"))};
+export { act, createElement, createRoot, Demo, buildVenueScene };
 `,
     resolveDir: root,
     sourcefile: "dataset-switch-entry.jsx",
@@ -105,6 +109,26 @@ for (const key of [
 }
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
+// A gate parks the first caller that reaches it, so a race test can hold one
+// load inside an await while a newer load overtakes it. Only the first caller
+// waits; every later caller passes straight through.
+const gates = {};
+const parkedAt = [];
+const armGate = (key) => {
+  let release;
+  gates[key] = new Promise((resolve) => {
+    release = resolve;
+  });
+  return release;
+};
+const passGate = async (key) => {
+  const gate = gates[key];
+  if (!gate) return;
+  gates[key] = null;
+  parkedAt.push(key);
+  await gate;
+};
+
 const requested = [];
 const nodeFetch = globalThis.fetch;
 const baseFetch = async (input, init) => {
@@ -123,6 +147,7 @@ const baseFetch = async (input, init) => {
   if (globalThis.__sampleOffline) {
     return new Response("gone", { status: 503 });
   }
+  if (samePath.endsWith("venue.json")) await passGate("venue");
   try {
     return new Response(await readFile(path.join(publicDir, samePath)), { status: 200 });
   } catch {
@@ -177,7 +202,9 @@ function makeViewer() {
     },
     dataSources: { add: async () => {}, remove: () => {} },
     creditDisplay: { container: { style: {} } },
-    zoomTo: async () => {},
+    zoomTo: async () => {
+      await passGate("zoom");
+    },
     isDestroyed: () => viewer.destroyed,
     destroy: () => {
       viewer.destroyed = true;
@@ -216,7 +243,17 @@ function fileHandle(abs, name) {
   };
 }
 
-function directoryHandle(abs, name) {
+// `pickExtras` lets one pick return a folder the previous pick did not: the
+// demo's folder label counts files, so an extra entry makes the two picks
+// distinguishable on screen.
+let pickExtras = [];
+const textFileHandle = (name, text) => ({
+  kind: "file",
+  name,
+  getFile: async () => new File([text], name),
+});
+
+function directoryHandle(abs, name, extras = []) {
   return {
     kind: "directory",
     name,
@@ -228,13 +265,16 @@ function directoryHandle(abs, name) {
           entry.isDirectory() ? directoryHandle(child, entry.name) : fileHandle(child, entry.name),
         ];
       }
+      for (const extra of extras) yield [extra.name, extra];
     },
   };
 }
 
-dom.window.showDirectoryPicker = async () => directoryHandle(sampleDir, "picked");
+dom.window.showDirectoryPicker = async () => directoryHandle(sampleDir, "picked", pickExtras);
 
-const { act, createElement, createRoot, Demo } = await import(pathToFileURL(outFile).href);
+const { act, buildVenueScene, createElement, createRoot, Demo } = await import(
+  pathToFileURL(outFile).href
+);
 
 const container = dom.window.document.getElementById("root");
 const reactRoot = createRoot(container);
@@ -387,7 +427,7 @@ assert(
   "a committed sample load must report the sample",
 );
 
-// Re-pick the same folder, then unmount: teardown must not leave an intercept.
+// Re-pick the same folder: the races below start from a live local scene.
 await click(radio("local"));
 await until(
   () => idle() && bodyText().includes("Local venue loaded in this browser only."),
@@ -398,6 +438,90 @@ assert(globalThis.fetch !== baseFetch, "a reloaded local folder must reinstall t
 const repickedUrls = [...tilesetUrls].filter((url) => url.startsWith("blob:"));
 assert(repickedUrls.length === 2, "the remembered folder must mint fresh blobs");
 
+const settle = async () => {
+  for (let turn = 0; turn < 20; turn += 1) {
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    });
+  }
+};
+
+// A load parked past its own scene must commit nothing. Park folder A inside its
+// camera flight, pick folder B, then wake A: B keeps the label, the files, and
+// the scene. A that still reported "ready" would drag the label back to A.
+const changeFolder = () =>
+  [...dom.window.document.querySelectorAll("button")].find(
+    (node) => node.textContent === "Change folder",
+  );
+const folderA = `· ${sampleFileCount} files`;
+const folderB = `· ${sampleFileCount + 1} files`;
+const releaseZoom = armGate("zoom");
+
+pickExtras = [];
+await click(changeFolder());
+await until(() => parkedAt.includes("zoom"), "folder A to park in its camera flight");
+pickExtras = [textFileHandle("notes.txt", "not part of the bundle")];
+await click(changeFolder());
+await until(() => idle() && bodyText().includes(folderB), "folder B to load while A is parked");
+releaseZoom();
+await settle();
+assert(bodyText().includes(folderB), "the folder that won must keep the label");
+assert(
+  !bodyText().includes(folderA),
+  "a load parked past its scene must not restore its own folder",
+);
+assert(radio("local").checked, "the local dataset must stay selected across the race");
+assert(globalThis.fetch !== baseFetch, "the winning folder must keep its blob intercept");
+pickExtras = [];
+
+// Park the first sample load inside its manifest fetch and let a second sample
+// load win. The parked build wakes owning nothing: no tilesets of its own, no
+// handle, no status. It used to wake up and report "No tileset in this bundle
+// could be loaded." over the scene the winner had already committed.
+const releaseVenue = armGate("venue");
+tilesetUrls.length = 0;
+await click(radio("sample"));
+await until(() => parkedAt.includes("venue"), "the first sample load to park in its fetch");
+await click(radio("sample"));
+await until(
+  () => idle() && bodyText().includes("Synthetic indoor sample loaded."),
+  "the second sample load to finish while the first is parked",
+);
+releaseVenue();
+await settle();
+assert(radio("sample").checked, "the winning sample load must commit the radio");
+assert(
+  !bodyText().includes("No tileset in this bundle could be loaded."),
+  "a superseded build must not report a missing tileset",
+);
+assert(
+  !bodyText().includes("Some parts of this bundle could not be loaded."),
+  "the winning sample scene must stay complete",
+);
+assert(
+  bodyText().includes("Synthetic indoor sample loaded."),
+  "a superseded build must leave the winner's status line alone",
+);
+assert(
+  globalThis.fetch === baseFetch,
+  "a superseded build must not reinstall the intercept the winner tore down",
+);
+assert(
+  tilesetUrls.length === 2 && tilesetUrls.every((url) => url.startsWith(sampleBase)),
+  "only the winning sample load may put tilesets in the scene",
+);
+
+// Unmount from a live local scene: teardown must not leave an intercept.
+tilesetUrls.length = 0;
+await click(radio("local"));
+await until(
+  () => idle() && bodyText().includes("Local venue loaded in this browser only."),
+  "the local scene to come back before unmount",
+);
+const liveUrls = [...tilesetUrls].filter((url) => url.startsWith("blob:"));
+assert(liveUrls.length === 2, "the reloaded folder must mint fresh blobs before unmount");
+assert(globalThis.fetch !== baseFetch, "the live local scene must hold the blob intercept");
+
 await act(async () => {
   reactRoot.unmount();
 });
@@ -405,7 +529,7 @@ assert(
   globalThis.fetch === baseFetch,
   "unmount must uninstall the local intercept",
 );
-for (const url of repickedUrls) {
+for (const url of liveUrls) {
   let stillLive = true;
   try {
     stillLive = (await fetch(url)).ok;
@@ -414,6 +538,83 @@ for (const url of repickedUrls) {
   }
   assert(!stillLive, "unmount must revoke the local blobs");
 }
+
+// Straight at the builder: a build that goes stale must reject and leave the
+// scene exactly as it found it, whether it was cancelled before its first
+// tileset or between two of them. A cancelled build that reported "No tileset in
+// this bundle could be loaded." blamed the bundle for a load nobody wanted.
+const staleManifest = {
+  id: "stale",
+  name: "stale",
+  generator: null,
+  generatedAt: null,
+  synthetic: true,
+  levels: [],
+  buildings: [
+    { id: "one", name: "one", tilesets: [{ levelKey: null, uri: "tiles/a/tileset.json" }] },
+    { id: "two", name: "two", tilesets: [{ levelKey: null, uri: "tiles/b/tileset.json" }] },
+  ],
+  layers: [
+    {
+      id: "pins",
+      name: "pins",
+      uri: "layers/pins.geojson",
+      geometry: "point",
+      color: null,
+      defaultVisible: true,
+    },
+  ],
+  iconBase: "icons/marker/",
+  camera: null,
+};
+const staleSource = {
+  manifest: staleManifest,
+  resolve: (uri) => `${sampleBase}${uri}`,
+  cleanup: () => {},
+};
+
+const cancelledBuild = async (isStale) => {
+  const viewer = makeViewer();
+  let rejection = null;
+  let built = null;
+  try {
+    built = await buildVenueScene(globalThis.__cesium, viewer, staleSource, {
+      lang: "en",
+      onSelect: () => {},
+      isStale,
+    });
+  } catch (error) {
+    rejection = error;
+  }
+  return { viewer, built, rejection };
+};
+
+tilesetUrls.length = 0;
+const upFront = await cancelledBuild(() => true);
+assert(!upFront.built, "a build cancelled up front must not hand back a scene");
+assert(
+  !/No tileset/.test(upFront.rejection?.message ?? ""),
+  `a cancelled build must not blame the bundle: ${upFront.rejection?.message}`,
+);
+assert(tilesetUrls.length === 0, "a build cancelled up front must not ask for a tileset");
+assert(
+  upFront.viewer.scene.primitives.items.length === 0,
+  "a build cancelled up front must leave the scene empty",
+);
+
+// Stale from the moment the first tileset exists: the second building must never
+// be reached, and the first tileset must not stay in the scene.
+const midway = await cancelledBuild(() => tilesetUrls.length > 0);
+assert(!midway.built, "a build cancelled after its first tileset must not hand back a scene");
+assert(tilesetUrls.length === 1, "a cancelled build must stop at the tileset it was on");
+assert(
+  midway.viewer.scene.primitives.items.length === 0,
+  "a cancelled build must remove the tileset it had already added",
+);
+assert(
+  !requested.slice(-4).some((url) => url.endsWith(".geojson")),
+  "a cancelled build must not fetch its layers",
+);
 
 URL.revokeObjectURL = realRevoke;
 // pretendToBeVisual keeps a rAF timer alive; without this the process hangs.

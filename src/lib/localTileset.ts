@@ -694,7 +694,9 @@ export async function prepareLocalVenue(files: File[]): Promise<LocalVenueHandle
     const cached = resolved.get(key);
     if (cached) return cached;
     const file = filesByPath.get(key) ?? filesByPath.get(normalizeUri(uri));
-    if (!file) return uri;
+    // Handing back the authored relative uri would send Cesium at this page's
+    // origin for a file the folder never had; fail instead.
+    if (!file) throw new Error(`Bundle is missing ${uri}`);
     const url = rememberBlob(life.ctx, URL.createObjectURL(file));
     resolved.set(key, url);
     return url;

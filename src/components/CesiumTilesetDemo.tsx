@@ -298,19 +298,24 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
           },
           isStale: () => !isCurrentLoad(loadId),
         });
+        // A newer load owns the local handle from here on: it either detached it
+        // for its own sample fetch or replaced it, so this one must not attach.
         if (!isCurrentLoad(loadId)) {
           scene.destroy();
-          local?.attach();
           return false;
         }
         adoptScene(scene, source.manifest.levels, source.manifest.layers);
       } catch (caught) {
+        // A cancelled build reports nothing: the load that superseded this one
+        // owns the status, the error, and the handle.
+        if (!isCurrentLoad(loadId)) return false;
         local?.attach();
         throw caught;
       }
       if (localHandleRef.current === local) localHandleRef.current = null;
       local?.cleanup();
       await scene.frame();
+      if (!isCurrentLoad(loadId)) return false;
       setStatus("ready");
       return true;
     }
@@ -336,6 +341,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       });
     } catch (caught) {
       handle.cleanup();
+      if (!isCurrentLoad(loadId)) return false;
       throw caught;
     }
     if (!isCurrentLoad(loadId)) {
@@ -348,6 +354,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     localHandleRef.current = handle;
     if (previous !== handle) previous?.cleanup();
     await scene.frame();
+    if (!isCurrentLoad(loadId)) return false;
     setStatus("ready");
     return true;
   };

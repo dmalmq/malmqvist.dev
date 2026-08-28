@@ -80,9 +80,21 @@ export async function buildVenueScene(
   const tilesets: LevelTileset[] = [];
   const layers: LayerEntities[] = [];
 
-  for (const building of manifest.buildings) {
+  /**
+   * A newer load (or an unmount) owns the viewer now: drop everything this build
+   * put in the scene and reject, so a cancelled build never reads as a failure.
+   */
+  const cancel = (): never => {
+    if (!viewer.isDestroyed?.()) {
+      for (const { dataSource } of layers) viewer.dataSources.remove(dataSource, true);
+      for (const { tileset } of tilesets) viewer.scene.primitives.remove(tileset);
+    }
+    throw new Error("Scene build cancelled.");
+  };
+
+  buildings: for (const building of manifest.buildings) {
     for (const ref of building.tilesets) {
-      if (isStale()) break;
+      if (isStale()) break buildings;
       try {
         const tileset = await Cesium.Cesium3DTileset.fromUrl(source.resolve(ref.uri));
         viewer.scene.primitives.add(tileset);
@@ -93,6 +105,7 @@ export async function buildVenueScene(
     }
   }
 
+  if (isStale()) cancel();
   if (tilesets.length === 0) {
     throw new Error("No tileset in this bundle could be loaded.");
   }
@@ -125,6 +138,8 @@ export async function buildVenueScene(
       warnings.push(`${pickText(layer.name, lang)}: layer could not be loaded.`);
     }
   }
+
+  if (isStale()) cancel();
 
   const countByLevel: Record<string, number> = {};
   const countByLayer: Record<string, number> = {};
@@ -248,8 +263,19 @@ function styleEntity(
   }
 
   const image = entity.properties?.image?.getValue();
-  if (entity.billboard && typeof image === "string" && image !== "") {
-    entity.billboard.image = source.resolve(resolveIconUri(source.manifest, image));
+  let iconUri: string | null = null;
+  if (typeof image === "string" && image !== "") {
+    try {
+      // A bundle that does not carry this icon keeps the plain point marker:
+      // resolve throws for a missing file rather than hand back a page-relative path.
+      iconUri = source.resolve(resolveIconUri(source.manifest, image));
+    } catch {
+      iconUri = null;
+    }
+  }
+
+  if (entity.billboard && iconUri) {
+    entity.billboard.image = iconUri;
     entity.billboard.width = MARKER_PX;
     entity.billboard.height = MARKER_PX;
     entity.billboard.verticalOrigin = Cesium.VerticalOrigin.BOTTOM;

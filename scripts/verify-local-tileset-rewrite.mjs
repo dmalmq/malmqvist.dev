@@ -396,6 +396,52 @@ for (const layer of venue.source.manifest.layers) {
 }
 venue.cleanup();
 
+// A manifest may name files the picked folder does not carry. Resolving those to
+// the authored relative path would send the viewer at this page's origin, so
+// resolve must fail instead; http(s) URIs still pass through untouched.
+const REMOTE_LAYER = "https://example.invalid/layers/remote.geojson";
+const gapFiles = [
+  fileFromText(
+    "gap/venue.json",
+    JSON.stringify({
+      format: "venue-web",
+      version: 1,
+      id: "gap",
+      buildings: [{ id: "b", tilesets: [{ levelKey: null, uri: "tiles/1f/tileset.json" }] }],
+      layers: [
+        { id: "missing", uri: "layers/missing.geojson" },
+        { id: "remote", uri: REMOTE_LAYER },
+      ],
+      iconBase: "icons/marker/",
+    }),
+  ),
+  fileFromText(
+    "gap/tiles/1f/tileset.json",
+    JSON.stringify({
+      asset: { version: "1.1" },
+      geometricError: 0,
+      root: { boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] }, geometricError: 0 },
+    }),
+  ),
+];
+
+const gap = await prepareLocalVenue(gapFiles);
+assert(
+  gap.source.resolve("tiles/1f/tileset.json").startsWith("blob:"),
+  "a present tileset must still resolve to a blob URL",
+);
+assert(gap.source.resolve(REMOTE_LAYER) === REMOTE_LAYER, "http(s) URIs must stay as authored");
+for (const missing of ["layers/missing.geojson", "icons/marker/gone.png"]) {
+  let threw = "";
+  try {
+    threw = `resolved to ${gap.source.resolve(missing)}`;
+  } catch (error) {
+    threw = error instanceof Error && error.message.includes(missing) ? "" : String(error);
+  }
+  assert(threw === "", `resolve must reject ${missing} instead of a page-relative path (${threw})`);
+}
+gap.cleanup();
+
 const plainFolder = await prepareLocalVenue(sampleFiles);
 assert(
   plainFolder.source.manifest.buildings[0].tilesets[0].uri.startsWith("blob:"),
