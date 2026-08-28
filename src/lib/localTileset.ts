@@ -137,6 +137,8 @@ type BlobCleanup = {
 type RewriteCtx = {
   filesByPath: Map<string, File>;
   rewritten: Map<string, string>;
+  pending: Set<string>;
+  cycleWaiters: Map<string, Set<string>>;
   cleanup: BlobCleanup;
 };
 
@@ -369,6 +371,25 @@ async function registerTemplateMatches(
   }
 }
 
+function noteCycleWaiter(
+  ctx: RewriteCtx,
+  filePath: string,
+  original: string,
+  baseDir: string,
+): void {
+  let waiters = ctx.cycleWaiters.get(filePath);
+  if (!waiters) {
+    waiters = new Set();
+    ctx.cycleWaiters.set(filePath, waiters);
+  }
+  waiters.add(original);
+  const resolved = joinPath(baseDir, original);
+  if (resolved) waiters.add(resolved);
+  waiters.add(filePath);
+  const relative = relToBase(filePath, baseDir);
+  if (relative) waiters.add(relative);
+}
+
 async function resolveUri(
   original: string,
   baseDir: string,
@@ -384,6 +405,13 @@ async function resolveUri(
     throw new Error(
       `Tileset content is not in the selected folder: ${original}`,
     );
+  }
+  const filePath = fileRelPath(file);
+  const cached = ctx.rewritten.get(filePath);
+  if (cached) return cached;
+  if (ctx.pending.has(filePath)) {
+    noteCycleWaiter(ctx, filePath, original, baseDir);
+    return original;
   }
   return rewriteFileToBlob(file, ctx);
 }
@@ -426,20 +454,33 @@ async function rewriteFileToBlob(file: File, ctx: RewriteCtx): Promise<string> {
   const filePath = fileRelPath(file);
   const cached = ctx.rewritten.get(filePath);
   if (cached) return cached;
-
-  const ext = extensionOf(filePath);
-  let url: string;
-  if (ext === ".gltf") {
-    url = await rewriteGltfDocument(file, ctx);
-  } else if (ext === ".glb") {
-    url = await rewriteGlbDocument(file, ctx);
-  } else if (ext === ".json") {
-    url = await rewriteJsonDocument(file, ctx);
-  } else {
-    url = rememberBlob(ctx, URL.createObjectURL(file));
+  if (ctx.pending.has(filePath)) {
+    throw new Error(`Tileset rewrite re-entered ${filePath} before its blob URL existed`);
   }
-  ctx.rewritten.set(filePath, url);
-  return url;
+
+  ctx.pending.add(filePath);
+  try {
+    const ext = extensionOf(filePath);
+    let url: string;
+    if (ext === ".gltf") {
+      url = await rewriteGltfDocument(file, ctx);
+    } else if (ext === ".glb") {
+      url = await rewriteGlbDocument(file, ctx);
+    } else if (ext === ".json") {
+      url = await rewriteJsonDocument(file, ctx);
+    } else {
+      url = rememberBlob(ctx, URL.createObjectURL(file));
+    }
+    ctx.rewritten.set(filePath, url);
+    const waiters = ctx.cycleWaiters.get(filePath);
+    if (waiters) {
+      for (const rel of waiters) rememberPathBlob(ctx, rel, url);
+      ctx.cycleWaiters.delete(filePath);
+    }
+    return url;
+  } finally {
+    ctx.pending.delete(filePath);
+  }
 }
 
 async function rewriteTilesetFile(
@@ -448,7 +489,13 @@ async function rewriteTilesetFile(
   rewrittenJson: Map<string, string>,
   cleanup: BlobCleanup,
 ): Promise<string> {
-  const ctx: RewriteCtx = { filesByPath, rewritten: rewrittenJson, cleanup };
+  const ctx: RewriteCtx = {
+    filesByPath,
+    rewritten: rewrittenJson,
+    pending: new Set(),
+    cycleWaiters: new Map(),
+    cleanup,
+  };
   return rewriteFileToBlob(file, ctx);
 }
 

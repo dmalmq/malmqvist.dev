@@ -203,5 +203,60 @@ try {
 }
 assert(missingThrew, "missing relative URI must throw");
 
+let emptyThrew = false;
+try {
+  await prepareLocalTileset([]);
+} catch (error) {
+  emptyThrew = error instanceof Error && error.message === "No files selected.";
+}
+assert(emptyThrew, "empty selection must throw");
+
+const cycleFiles = [
+  fileFromText(
+    "cycle/a/tileset.json",
+    JSON.stringify({
+      asset: { version: "1.1" },
+      geometricError: 1,
+      root: {
+        boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] },
+        geometricError: 0,
+        content: { uri: "../b/tileset.json" },
+      },
+    }),
+  ),
+  fileFromText(
+    "cycle/b/tileset.json",
+    JSON.stringify({
+      asset: { version: "1.1" },
+      geometricError: 1,
+      root: {
+        boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] },
+        geometricError: 0,
+        content: { uri: "../a/tileset.json" },
+      },
+    }),
+  ),
+];
+
+const cycle = await prepareLocalTileset(cycleFiles);
+const cycleRoot = await readBlobJson(cycle.url);
+assert(
+  String(cycleRoot.root.content.uri).startsWith("blob:"),
+  "root cycle edge should rewrite to a blob URL",
+);
+const cycleChild = await readBlobJson(cycleRoot.root.content.uri);
+assert(
+  cycleChild.root.content.uri === "../a/tileset.json",
+  "back-edge must keep the relative URI",
+);
+const cycleRedirect = await fetch("../a/tileset.json");
+assert(cycleRedirect.ok, "cycle relative URI should redirect to the finished blob");
+const redirectedRoot = await cycleRedirect.json();
+assert(
+  String(redirectedRoot.root.content.uri).startsWith("blob:"),
+  "redirected cycle tileset should be the rewritten root",
+);
+cycle.cleanup();
+
 await rm(outFile, { force: true });
 console.log("local tileset rewrite checks passed");

@@ -113,7 +113,9 @@ async function pickLocalFolder(): Promise<File[]> {
     if (isAbortError(error)) throw error;
     return pickFolderWithInput();
   }
-  return getFilesFromDirectoryHandle(handle);
+  const files = await getFilesFromDirectoryHandle(handle);
+  if (!files.length) throw new Error("No files selected.");
+  return files;
 }
 
 export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
@@ -362,8 +364,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       const selected = files ?? localFilesRef.current;
       if (!selected?.length) {
         if (!isCurrentLoad(loadId)) return false;
-        setStatus(viewerRef.current ? "ready" : "idle");
-        return false;
+        throw new Error("No files selected.");
       }
 
       const handle = await prepareLocalTileset(selected);
