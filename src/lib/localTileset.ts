@@ -129,7 +129,7 @@ function pad4(n: number): number {
 }
 
 type BlobCleanup = {
-  blobUrls: string[];
+  blobUrls: Set<string>;
   pathBlobs: Map<string, string>;
   uninstall: () => void;
 };
@@ -143,6 +143,7 @@ type RewriteCtx = {
 };
 
 const activePathBlobs: BlobCleanup["pathBlobs"][] = [];
+const activeBlobUrls: BlobCleanup["blobUrls"][] = [];
 let redirectDepth = 0;
 let restoreRedirect: (() => void) | null = null;
 
@@ -161,6 +162,13 @@ function urlMatchesRelative(url: string, rel: string): boolean {
 }
 
 function blobForRequestUrl(url: string): string | undefined {
+  if (url.startsWith("blob:")) {
+    // Cesium appends ?v=<asset.tilesetVersion> to content requests, and a blob
+    // URL only resolves without a query or hash.
+    const bare = stripQueryAndHash(url);
+    if (bare === url) return undefined;
+    return activeBlobUrls.some((minted) => minted.has(bare)) ? bare : undefined;
+  }
   for (const map of activePathBlobs) {
     const exact = map.get(stripQueryAndHash(url)) ?? map.get(normalizeUri(url));
     if (exact) return exact;
@@ -211,7 +219,14 @@ function installBlobRedirects(): () => void {
     ) {
       const href = typeof url === "string" ? url : String(url);
       const mapped = blobForRequestUrl(href);
-      return originalOpen.call(this, method, mapped ?? url, async, username, password);
+      return originalOpen.call(
+        this,
+        method,
+        mapped ?? url,
+        async ?? true,
+        username,
+        password,
+      );
     };
   }
 
@@ -230,7 +245,7 @@ function installBlobRedirects(): () => void {
 }
 
 function rememberBlob(ctx: RewriteCtx, url: string): string {
-  ctx.cleanup.blobUrls.push(url);
+  ctx.cleanup.blobUrls.add(url);
   return url;
 }
 
@@ -291,7 +306,7 @@ function parseGlb(bytes: Uint8Array): { json: Record<string, unknown>; bin: Uint
   return { json, bin };
 }
 
-function rebuildGlb(jsonText: string, bin: Uint8Array | null): Uint8Array {
+function rebuildGlb(jsonText: string, bin: Uint8Array | null): Uint8Array<ArrayBuffer> {
   const jsonBytes = new TextEncoder().encode(jsonText);
   const jsonPadded = pad4(jsonBytes.length);
   const binPadded = bin ? pad4(bin.byteLength) : 0;
@@ -522,8 +537,9 @@ export async function prepareLocalTileset(
 
   const root = pickRootTileset(files);
   const pathBlobs = new Map<string, string>();
+  const blobUrls = new Set<string>();
   const cleanup: BlobCleanup = {
-    blobUrls: [],
+    blobUrls,
     pathBlobs,
     uninstall: () => {},
   };
@@ -533,8 +549,10 @@ export async function prepareLocalTileset(
   let revoked = false;
 
   const attach = () => {
-    if (attached || revoked || pathBlobs.size === 0) return;
+    if (attached || revoked) return;
+    if (pathBlobs.size === 0 && blobUrls.size === 0) return;
     activePathBlobs.push(pathBlobs);
+    activeBlobUrls.push(blobUrls);
     cleanup.uninstall = installBlobRedirects();
     attached = true;
   };
@@ -545,15 +563,17 @@ export async function prepareLocalTileset(
     const uninstall = cleanup.uninstall;
     cleanup.uninstall = () => {};
     uninstall();
-    const idx = activePathBlobs.indexOf(pathBlobs);
-    if (idx >= 0) activePathBlobs.splice(idx, 1);
+    const pathIdx = activePathBlobs.indexOf(pathBlobs);
+    if (pathIdx >= 0) activePathBlobs.splice(pathIdx, 1);
+    const blobIdx = activeBlobUrls.indexOf(blobUrls);
+    if (blobIdx >= 0) activeBlobUrls.splice(blobIdx, 1);
   };
 
   const revokeAll = () => {
     detach();
     revoked = true;
-    for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
-    cleanup.blobUrls.length = 0;
+    for (const blobUrl of blobUrls) URL.revokeObjectURL(blobUrl);
+    blobUrls.clear();
     pathBlobs.clear();
   };
 

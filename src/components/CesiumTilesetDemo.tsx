@@ -383,27 +383,42 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
         throw new Error("No files selected.");
       }
 
-      const handle = await prepareLocalTileset(selected);
+      const previous = localHandleRef.current;
+      // Attached folders share one redirect table and the older keys win, so the
+      // folder being replaced must be off before the new one resolves its blobs.
+      previous?.detach();
+
+      let handle: LocalTilesetHandle;
+      try {
+        handle = await prepareLocalTileset(selected);
+      } catch (caught) {
+        previous?.attach();
+        throw caught;
+      }
       if (!isCurrentLoad(loadId)) {
         handle.cleanup();
+        previous?.attach();
         return false;
       }
       try {
         const tileset = await replaceTileset(Cesium, handle.url, loadId);
         if (tileset && tilesetRef.current === tileset) {
-          const previous = localHandleRef.current;
+          const stale = localHandleRef.current;
           localHandleRef.current = handle;
+          stale?.cleanup();
           previous?.cleanup();
           if (isCurrentLoad(loadId)) {
             setStatus("ready");
             return true;
           }
-        } else {
-          handle.cleanup();
+          return false;
         }
+        handle.cleanup();
+        previous?.attach();
         return false;
       } catch (caught) {
         handle.cleanup();
+        previous?.attach();
         throw caught;
       }
     } catch (caught) {

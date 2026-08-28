@@ -94,6 +94,21 @@ assert(
   !sampleJson.root.content.uri.includes("building.glb"),
   "sample should not leave the relative glb path",
 );
+
+const versionSuffix = `?v=${sampleJson.asset.tilesetVersion}`;
+assert(
+  (await fetch(`${sample.url}${versionSuffix}`)).ok,
+  "a versioned request for the rewritten tileset must resolve",
+);
+const versionedContent = await fetch(`${sampleJson.root.content.uri}${versionSuffix}`);
+assert(
+  versionedContent.ok,
+  "Cesium appends ?v=<asset.tilesetVersion> to content, so the content blob must resolve with a query",
+);
+assert(
+  (await versionedContent.arrayBuffer()).byteLength > 0,
+  "a versioned content request must return the GLB bytes",
+);
 sample.cleanup();
 
 const remoteKept = "https://example.invalid/keep/{level}/{x}/{y}.glb";
@@ -259,21 +274,25 @@ assert(
 );
 cycle.cleanup();
 
-const selfCycleFolder = await prepareLocalTileset([
-  fileFromText(
-    "tileset.json",
-    JSON.stringify({
-      asset: { version: "1.1" },
-      geometricError: 1,
-      extras: { mark: "local" },
-      root: {
-        boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] },
-        geometricError: 0,
-        content: { uri: "tileset.json" },
-      },
-    }),
-  ),
-]);
+function selfCycleFolderFiles(mark) {
+  return [
+    fileFromText(
+      "tileset.json",
+      JSON.stringify({
+        asset: { version: "1.1" },
+        geometricError: 1,
+        extras: { mark },
+        root: {
+          boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] },
+          geometricError: 0,
+          content: { uri: "tileset.json" },
+        },
+      }),
+    ),
+  ];
+}
+
+const selfCycleFolder = await prepareLocalTileset(selfCycleFolderFiles("local"));
 
 const SAMPLE_URL = "/demos/3d-tiles-viewer/synthetic-indoor/tileset.json?v=3";
 
@@ -316,6 +335,20 @@ assert(
   await sampleUrlReachesRealFetch(),
   "attach after cleanup must not resurrect revoked blobs",
 );
+
+const folderA = await prepareLocalTileset(selfCycleFolderFiles("A"));
+const folderB = await prepareLocalTileset(selfCycleFolderFiles("B"));
+assert(
+  (await fetch("tileset.json").then((res) => res.json())).extras.mark === "A",
+  "two attached folders share one redirect table and the older keys win",
+);
+folderA.detach();
+assert(
+  (await fetch("tileset.json").then((res) => res.json())).extras.mark === "B",
+  "detaching the previous folder leaves the new one its own colliding keys",
+);
+folderA.cleanup();
+folderB.cleanup();
 
 await rm(outFile, { force: true });
 console.log("local tileset rewrite checks passed");
