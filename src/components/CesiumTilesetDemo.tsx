@@ -195,6 +195,9 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     if (!container) throw new Error("Missing viewer container");
 
     Cesium.Ion.defaultAccessToken = "";
+    const creditContainer = document.createElement("div");
+    creditContainer.hidden = true;
+
     const viewer = new Cesium.Viewer(container, {
       animation: false,
       timeline: false,
@@ -211,27 +214,36 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       baseLayer: false,
       skyBox: false,
       skyAtmosphere: false,
-      terrain: undefined,
-      requestRenderMode: true,
-      maximumRenderTimeChange: Infinity,
+      creditContainer,
+      requestRenderMode: false,
     });
-
-    viewer.scene.globe.show = false;
-    viewer.scene.globe.depthTestAgainstTerrain = false;
-    viewer.scene.backgroundColor = Cesium.Color.fromCssColorString("#171512");
-    viewer.scene.sun.show = false;
-    viewer.scene.moon.show = false;
-    viewer.scene.fog.enabled = false;
-    viewer.scene.skyAtmosphere.show = false;
-    if (viewer.scene.skyBox) viewer.scene.skyBox.show = false;
-    viewer.scene.screenSpaceCameraController.enableCollisionDetection = false;
-    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 1;
-    if (viewer.creditDisplay?.container) {
-      viewer.creditDisplay.container.style.display = "none";
-    }
 
     viewerRef.current = viewer;
     setBooted(true);
+
+    const scene = viewer.scene;
+    scene.globe.show = false;
+    scene.globe.depthTestAgainstTerrain = false;
+    scene.backgroundColor = Cesium.Color.fromCssColorString("#171512");
+    if (scene.sun) scene.sun.show = false;
+    if (scene.moon) scene.moon.show = false;
+    if (scene.fog) scene.fog.enabled = false;
+    if (scene.skyAtmosphere) scene.skyAtmosphere.show = false;
+    if (scene.skyBox) scene.skyBox.show = false;
+    scene.screenSpaceCameraController.enableCollisionDetection = false;
+    scene.screenSpaceCameraController.minimumZoomDistance = 1;
+    if (viewer.creditDisplay?.container) {
+      viewer.creditDisplay.container.style.display = "none";
+    }
+    try {
+      scene.light = new Cesium.DirectionalLight({
+        direction: new Cesium.Cartesian3(0.35, 0.25, -1),
+        intensity: 2.2,
+      });
+    } catch {
+      // Default lighting is fine if DirectionalLight is unavailable.
+    }
+
     return viewer;
   };
 
@@ -241,15 +253,15 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       viewer.scene.primitives.remove(tilesetRef.current);
       tilesetRef.current = null;
     }
-    const tileset = await Cesium.Cesium3DTileset.fromUrl(url, {
-      enableCollision: false,
-    });
+    const tileset = await Cesium.Cesium3DTileset.fromUrl(url);
+    if (tileset.tileFailed) {
+      tileset.tileFailed.addEventListener((failed: { url?: string; message?: string }) => {
+        console.warn("3D Tiles content failed", failed?.url, failed?.message);
+      });
+    }
     viewer.scene.primitives.add(tileset);
     tilesetRef.current = tileset;
-    await viewer.zoomTo(
-      tileset,
-      new Cesium.HeadingPitchRange(0.6, Cesium.Math.toRadians(-28), tileset.boundingSphere.radius * 2.4),
-    );
+    await viewer.zoomTo(tileset);
     viewer.scene.requestRender();
     return tileset;
   };
@@ -335,12 +347,12 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
         <p className="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.11em] text-[var(--color-text-secondary)]">
           {t.label}
         </p>
-        <h2
+        <p
           className="mt-2 text-xl font-semibold tracking-[-0.02em] text-[var(--color-text-heading)] md:text-2xl"
           style={lang === "ja" ? { fontFamily: "'Noto Sans JP', sans-serif" } : undefined}
         >
           {t.title}
-        </h2>
+        </p>
         <p
           className="mt-2 max-w-3xl text-sm leading-6 text-[var(--color-text-secondary)] md:text-base"
           style={lang === "ja" ? { fontFamily: "'Noto Sans JP', sans-serif" } : undefined}

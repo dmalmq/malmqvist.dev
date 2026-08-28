@@ -63,4 +63,4 @@ export function loadCesium(): Promise<any> {
 }
 
 export const PUBLIC_SAMPLE_TILESET =
-  "/demos/3d-tiles-viewer/synthetic-indoor/tileset.json";
+  "/demos/3d-tiles-viewer/synthetic-indoor/tileset.json?v=3";

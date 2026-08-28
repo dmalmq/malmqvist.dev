@@ -7,10 +7,34 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+const isJa = lang === "ja";
 ---
 
 <div class="mdx-media not-prose my-8 max-w-[85rem]">
-  <CesiumTilesetDemo client:visible lang={lang} />
+  <CesiumTilesetDemo client:only="react" lang={lang}>
+    <div class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]">
+      <div class="border-b border-[var(--color-border)] px-5 py-5 md:px-6">
+        <p class="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.11em] text-[var(--color-text-secondary)]">
+          {isJa ? "ライブデモ" : "Live demo"}
+        </p>
+        <p class="mt-2 text-xl font-semibold tracking-[-0.02em] text-[var(--color-text-heading)] md:text-2xl">
+          {isJa ? "読み取り専用 3D Tiles ビューア" : "Read-only 3D Tiles viewer"}
+        </p>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--color-text-secondary)] md:text-base">
+          {isJa
+            ? "Cesiumは指示があるまで起動しません。"
+            : "Cesium stays off until you ask for it."}
+        </p>
+      </div>
+      <div class="relative h-[32rem] bg-[#171512] md:h-[40rem]">
+        <p class="sr-only">
+          {isJa
+            ? "3Dデモの読み込みにはJavaScriptが必要です。"
+            : "JavaScript is required to load the 3D Tiles demo. Cesium has not started."}
+        </p>
+      </div>
+    </div>
+  </CesiumTilesetDemo>
 </div>
 
 <style>

@@ -73,20 +73,25 @@ function enuToEcefMatrix(latDeg, lonDeg, h) {
  * glTF is Y-up. 3D Tiles applies a +90° rotation about X to get Z-up:
  * (x, y, z) -> (x, -z, y). Author X=east, Y=up, Z=south so the converted
  * frame is east / north / up.
+ *
+ * Geometry is grouped by unlit material (not vertex colors) so Cesium
+ * shows distinct room colors without relying on COLOR_0.
  */
-const positions = [];
-const normals = [];
-const colors = [];
-const indices = [];
+/** @type {Map<string, { rgb: number[], positions: number[], normals: number[], indices: number[] }>} */
+const batches = new Map();
 
-function pushVertex(x, y, z, nx, ny, nz, r, g, b) {
-  positions.push(x, y, z);
-  normals.push(nx, ny, nz);
-  colors.push(r, g, b, 255);
+function batchFor(rgb) {
+  const key = rgb.join(",");
+  let batch = batches.get(key);
+  if (!batch) {
+    batch = { rgb, positions: [], normals: [], indices: [] };
+    batches.set(key, batch);
+  }
+  return batch;
 }
 
 function addBox(x0, y0, z0, x1, y1, z1, rgb) {
-  const [r, g, b] = rgb;
+  const batch = batchFor(rgb);
   const faces = [
     { n: [0, 0, -1], quad: [[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0]] },
     { n: [0, 0, 1], quad: [[x1, y0, z1], [x0, y0, z1], [x0, y1, z1], [x1, y1, z1]] },
@@ -96,11 +101,12 @@ function addBox(x0, y0, z0, x1, y1, z1, rgb) {
     { n: [1, 0, 0], quad: [[x1, y0, z0], [x1, y0, z1], [x1, y1, z1], [x1, y1, z0]] },
   ];
   for (const face of faces) {
-    const base = positions.length / 3;
+    const base = batch.positions.length / 3;
     for (const [x, y, z] of face.quad) {
-      pushVertex(x, y, z, face.n[0], face.n[1], face.n[2], r, g, b);
+      batch.positions.push(x, y, z);
+      batch.normals.push(face.n[0], face.n[1], face.n[2]);
     }
-    indices.push(base, base + 1, base + 2, base, base + 2, base + 3);
+    batch.indices.push(base, base + 1, base + 2, base, base + 2, base + 3);
   }
 }
 
@@ -117,17 +123,17 @@ function addWallWithDoor(x0, y0, z0, x1, y1, z1, door, rgb) {
   }
 }
 
-const WALL = [232, 224, 210];
+const WALL = [214, 201, 184];
 const FLOOR1 = [196, 168, 132];
-const FLOOR2 = [176, 186, 176];
-const LOBBY = [214, 186, 154];
-const ROOM_A = [186, 154, 138];
-const ROOM_B = [168, 176, 186];
-const ROOM_C = [154, 168, 162];
-const ROOM_D = [176, 162, 154];
+const FLOOR2 = [142, 168, 150];
+const LOBBY = [232, 176, 112];
+const ROOM_A = [201, 96, 84];
+const ROOM_B = [96, 148, 186];
+const ROOM_C = [92, 158, 132];
+const ROOM_D = [176, 122, 168];
 const STAIR = [201, 58, 34];
-const CEIL = [244, 240, 232];
-const EXT = [210, 204, 192];
+const CEIL = [244, 236, 220];
+const EXT = [168, 158, 146];
 
 const W = 18;
 const D = 12;
@@ -156,14 +162,13 @@ addBox(7, H1 - 0.12, 5, W, H1, 7, FLOOR2);
 // Roof
 addBox(0, H2, 0, W, H2 + 0.16, D, CEIL);
 
-// Exterior walls, first floor (door on +Z south facade)
-addBox(0, 0, 0, W, H2, T, EXT);
-addBox(0, 0, D - T, 8.2, H1, D, EXT);
-addBox(9.4, 0, D - T, W, H1, D, EXT);
-addBox(8.2, DOOR_H, D - T, 9.4, H1, D, EXT);
-addBox(0, H1, D - T, W, H2, D, EXT);
+// East and west walls only — north/south left open so interiors read from any orbit
 addBox(0, 0, 0, T, H2, D, EXT);
 addBox(W - T, 0, 0, W, H2, D, EXT);
+addBox(0, 0, 0, 0.55, H2, T, EXT);
+addBox(W - 0.55, 0, 0, W, H2, T, EXT);
+addBox(0, 0, D - T, 0.55, H2, D, EXT);
+addBox(W - 0.55, 0, D - T, W, H2, D, EXT);
 
 // Interior: lobby | rooms split at x=7, corridor at z=5–7
 addWallWithDoor(7 - T / 2, 0, 0, 7 + T / 2, H1, 5, [1.6, 1.6 + DOOR_W, DOOR_H], WALL);
@@ -195,50 +200,121 @@ function align(bytes, size, pad = 0x20) {
   return out;
 }
 
-const posF32 = new Float32Array(positions);
-const nrmF32 = new Float32Array(normals);
-const colU8 = new Uint8Array(colors);
-const maxIndex = Math.max(...indices);
-const idxArray =
-  maxIndex > 65535 ? new Uint32Array(indices) : new Uint16Array(indices);
-const idxBytes = Buffer.from(
-  idxArray.buffer,
-  idxArray.byteOffset,
-  idxArray.byteLength,
-);
-const idxPadded = align(idxBytes, 4, 0x00);
-
-const binParts = [
-  Buffer.from(posF32.buffer, posF32.byteOffset, posF32.byteLength),
-  Buffer.from(nrmF32.buffer, nrmF32.byteOffset, nrmF32.byteLength),
-  Buffer.from(colU8.buffer, colU8.byteOffset, colU8.byteLength),
-];
-binParts[2] = align(binParts[2], 4, 0x00);
-
-let offset = 0;
-const bufferViews = [];
-for (const part of [...binParts, idxPadded]) {
-  bufferViews.push({ buffer: 0, byteOffset: offset, byteLength: part.length });
-  offset += part.length;
-}
-const bin = Buffer.concat([...binParts, idxPadded]);
-
 let minX = Infinity,
   minY = Infinity,
   minZ = Infinity,
   maxX = -Infinity,
   maxY = -Infinity,
   maxZ = -Infinity;
-for (let i = 0; i < positions.length; i += 3) {
-  minX = Math.min(minX, positions[i]);
-  minY = Math.min(minY, positions[i + 1]);
-  minZ = Math.min(minZ, positions[i + 2]);
-  maxX = Math.max(maxX, positions[i]);
-  maxY = Math.max(maxY, positions[i + 1]);
-  maxZ = Math.max(maxZ, positions[i + 2]);
+
+const binChunks = [];
+const bufferViews = [];
+const accessors = [];
+const materials = [];
+const primitives = [];
+let byteOffset = 0;
+let accessorIndex = 0;
+let totalVerts = 0;
+
+function pushBufferView(bytes, target) {
+  const padded = align(bytes, 4, 0x00);
+  bufferViews.push({
+    buffer: 0,
+    byteOffset,
+    byteLength: padded.length,
+    target,
+  });
+  binChunks.push(padded);
+  byteOffset += padded.length;
+  return bufferViews.length - 1;
 }
 
-const componentType = maxIndex > 65535 ? 5125 : 5123;
+for (const batch of batches.values()) {
+  const posF32 = new Float32Array(batch.positions);
+  const nrmF32 = new Float32Array(batch.normals);
+  const maxIndex = Math.max(0, ...batch.indices);
+  const idxArray =
+    maxIndex > 65535 ? new Uint32Array(batch.indices) : new Uint16Array(batch.indices);
+
+  let bMinX = Infinity,
+    bMinY = Infinity,
+    bMinZ = Infinity,
+    bMaxX = -Infinity,
+    bMaxY = -Infinity,
+    bMaxZ = -Infinity;
+  for (let i = 0; i < batch.positions.length; i += 3) {
+    bMinX = Math.min(bMinX, batch.positions[i]);
+    bMinY = Math.min(bMinY, batch.positions[i + 1]);
+    bMinZ = Math.min(bMinZ, batch.positions[i + 2]);
+    bMaxX = Math.max(bMaxX, batch.positions[i]);
+    bMaxY = Math.max(bMaxY, batch.positions[i + 1]);
+    bMaxZ = Math.max(bMaxZ, batch.positions[i + 2]);
+  }
+  minX = Math.min(minX, bMinX);
+  minY = Math.min(minY, bMinY);
+  minZ = Math.min(minZ, bMinZ);
+  maxX = Math.max(maxX, bMaxX);
+  maxY = Math.max(maxY, bMaxY);
+  maxZ = Math.max(maxZ, bMaxZ);
+
+  const posView = pushBufferView(
+    Buffer.from(posF32.buffer, posF32.byteOffset, posF32.byteLength),
+    34962,
+  );
+  const nrmView = pushBufferView(
+    Buffer.from(nrmF32.buffer, nrmF32.byteOffset, nrmF32.byteLength),
+    34962,
+  );
+  const idxView = pushBufferView(
+    Buffer.from(idxArray.buffer, idxArray.byteOffset, idxArray.byteLength),
+    34963,
+  );
+
+  const posAccessor = accessorIndex++;
+  const nrmAccessor = accessorIndex++;
+  const idxAccessor = accessorIndex++;
+  accessors.push(
+    {
+      bufferView: posView,
+      componentType: 5126,
+      count: batch.positions.length / 3,
+      type: "VEC3",
+      min: [bMinX, bMinY, bMinZ],
+      max: [bMaxX, bMaxY, bMaxZ],
+    },
+    {
+      bufferView: nrmView,
+      componentType: 5126,
+      count: batch.normals.length / 3,
+      type: "VEC3",
+    },
+    {
+      bufferView: idxView,
+      componentType: maxIndex > 65535 ? 5125 : 5123,
+      count: batch.indices.length,
+      type: "SCALAR",
+    },
+  );
+
+  const materialIndex = materials.length;
+  materials.push({
+    name: `Unlit_${batch.rgb.join("_")}`,
+    pbrMetallicRoughness: {
+      baseColorFactor: [batch.rgb[0] / 255, batch.rgb[1] / 255, batch.rgb[2] / 255, 1],
+      metallicFactor: 0,
+      roughnessFactor: 1,
+    },
+    extensions: { KHR_materials_unlit: {} },
+  });
+  primitives.push({
+    attributes: { POSITION: posAccessor, NORMAL: nrmAccessor },
+    indices: idxAccessor,
+    material: materialIndex,
+  });
+  totalVerts += batch.positions.length / 3;
+}
+
+const bin = Buffer.concat(binChunks);
 const gltf = {
   asset: {
     version: "2.0",
@@ -248,64 +324,10 @@ const gltf = {
   scenes: [{ nodes: [0] }],
   scene: 0,
   nodes: [{ mesh: 0, name: "SyntheticIndoor" }],
-  meshes: [
-    {
-      name: "SyntheticIndoor",
-      primitives: [
-        {
-          attributes: { POSITION: 0, NORMAL: 1, COLOR_0: 2 },
-          indices: 3,
-          material: 0,
-        },
-      ],
-    },
-  ],
-  materials: [
-    {
-      name: "UnlitVertexColor",
-      pbrMetallicRoughness: {
-        baseColorFactor: [1, 1, 1, 1],
-        metallicFactor: 0,
-        roughnessFactor: 1,
-      },
-      extensions: { KHR_materials_unlit: {} },
-    },
-  ],
-  accessors: [
-    {
-      bufferView: 0,
-      componentType: 5126,
-      count: positions.length / 3,
-      type: "VEC3",
-      min: [minX, minY, minZ],
-      max: [maxX, maxY, maxZ],
-    },
-    {
-      bufferView: 1,
-      componentType: 5126,
-      count: normals.length / 3,
-      type: "VEC3",
-    },
-    {
-      bufferView: 2,
-      componentType: 5121,
-      count: colors.length / 4,
-      type: "VEC4",
-      normalized: true,
-    },
-    {
-      bufferView: 3,
-      componentType,
-      count: indices.length,
-      type: "SCALAR",
-    },
-  ],
-  bufferViews: [
-    { ...bufferViews[0], target: 34962 },
-    { ...bufferViews[1], target: 34962 },
-    { ...bufferViews[2], target: 34962 },
-    { ...bufferViews[3], target: 34963 },
-  ],
+  meshes: [{ name: "SyntheticIndoor", primitives }],
+  materials,
+  accessors,
+  bufferViews,
   buffers: [{ byteLength: bin.length }],
 };
 
@@ -336,7 +358,7 @@ const hz = (zUpMax[2] - zUpMin[2]) / 2;
 const tileset = {
   asset: {
     version: "1.1",
-    tilesetVersion: "synthetic-indoor-1",
+    tilesetVersion: "synthetic-indoor-3",
     extras: {
       attribution:
         "Synthetic indoor sample generated for malmqvist.dev. Invented geometry — not a real building, JR station, workplace, or client dataset.",
@@ -355,7 +377,7 @@ const tileset = {
     geometricError: 0,
     refine: "ADD",
     transform: enuToEcefMatrix(ORIGIN.lat, ORIGIN.lon, ORIGIN.height),
-    content: { uri: "building.glb" },
+    content: { uri: "building.glb?v=3" },
   },
 };
 
@@ -367,5 +389,5 @@ await writeFile(
 );
 
 console.log(
-  `Wrote ${path.relative(process.cwd(), OUT_DIR)} (${glb.length} byte GLB, ${positions.length / 3} verts)`,
+  `Wrote ${path.relative(process.cwd(), OUT_DIR)} (${glb.length} byte GLB, ${totalVerts} verts, ${materials.length} materials)`,
 );

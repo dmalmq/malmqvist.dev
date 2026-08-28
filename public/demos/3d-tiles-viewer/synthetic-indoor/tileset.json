@@ -1,7 +1,7 @@
 {
   "asset": {
     "version": "1.1",
-    "tilesetVersion": "synthetic-indoor-1",
+    "tilesetVersion": "synthetic-indoor-3",
     "extras": {
       "attribution": "Synthetic indoor sample generated for malmqvist.dev. Invented geometry — not a real building, JR station, workplace, or client dataset."
     }
@@ -53,7 +53,7 @@
       1
     ],
     "content": {
-      "uri": "building.glb"
+      "uri": "building.glb?v=3"
     }
   }
 }
