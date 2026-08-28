@@ -28,6 +28,10 @@ const { prepareLocalTileset, prepareLocalVenue } = await import(
   pathToFileURL(outFile).href
 );
 
+// Captured before any folder is prepared: an uninstall that only unwinds part
+// of what installBlobRedirects registered leaves this identity changed.
+const pristineFetch = globalThis.fetch;
+
 function fileFromBytes(relPath, bytes, type = "application/octet-stream") {
   const file = new File([bytes], path.posix.basename(relPath), { type });
   Object.defineProperty(file, "relativePath", {
@@ -113,6 +117,10 @@ assert(
   "a versioned content request must return the GLB bytes",
 );
 sample.cleanup();
+assert(
+  globalThis.fetch === pristineFetch,
+  "cleanup must restore the original fetch, not a wrapper around it",
+);
 
 const remoteKept = "https://example.invalid/keep/{level}/{x}/{y}.glb";
 const implicitFiles = [
@@ -221,6 +229,10 @@ try {
   missingThrew = error instanceof Error && error.message.includes("not in the selected folder");
 }
 assert(missingThrew, "missing relative URI must throw");
+assert(
+  globalThis.fetch === pristineFetch,
+  "a prepare that throws must not leave an intercept installed",
+);
 
 let emptyThrew = false;
 try {

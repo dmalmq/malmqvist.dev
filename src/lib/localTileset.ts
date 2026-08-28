@@ -196,8 +196,8 @@ function installBlobRedirects(): () => void {
     };
   }
 
-  const originalFetch = globalThis.fetch.bind(globalThis);
-  globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const originalFetch = globalThis.fetch;
+  const patchedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
     const href =
       typeof input === "string"
         ? input
@@ -205,17 +205,20 @@ function installBlobRedirects(): () => void {
           ? input.href
           : input.url;
     const mapped = blobForRequestUrl(href);
-    if (!mapped) return originalFetch(input, init);
+    if (!mapped) return originalFetch.call(globalThis, input, init);
     if (typeof Request !== "undefined" && input instanceof Request) {
-      return originalFetch(new Request(mapped, input), init);
+      return originalFetch.call(globalThis, new Request(mapped, input), init);
     }
-    return originalFetch(mapped, init);
+    return originalFetch.call(globalThis, mapped, init);
   };
+  globalThis.fetch = patchedFetch;
 
   const XHR = globalThis.XMLHttpRequest;
   const originalOpen = XHR?.prototype.open;
+  let patchedOpen: typeof originalOpen | undefined;
   if (XHR && originalOpen) {
-    XHR.prototype.open = function (
+    patchedOpen = function (
+      this: XMLHttpRequest,
       method: string,
       url: string | URL,
       async?: boolean,
@@ -232,12 +235,17 @@ function installBlobRedirects(): () => void {
         username,
         password,
       );
-    };
+    } as typeof originalOpen;
+    XHR.prototype.open = patchedOpen;
   }
 
   restoreRedirect = () => {
-    globalThis.fetch = originalFetch;
-    if (XHR && originalOpen) XHR.prototype.open = originalOpen;
+    // Only unwind our own patch. Anything installed on top of it owns the slot
+    // and must restore what it captured, which is this patched pair.
+    if (globalThis.fetch === patchedFetch) globalThis.fetch = originalFetch;
+    if (XHR && originalOpen && XHR.prototype.open === patchedOpen) {
+      XHR.prototype.open = originalOpen;
+    }
   };
 
   return () => {
