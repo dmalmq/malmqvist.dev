@@ -304,26 +304,27 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       });
     }
 
-    if (tilesetRef.current) {
-      viewer.scene.primitives.remove(tilesetRef.current);
+    const previous = tilesetRef.current;
+    viewer.scene.primitives.add(tileset);
+    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+      discardTileset(viewer, tileset);
+      return null;
+    }
+    if (previous && previous !== tileset) {
+      viewer.scene.primitives.remove(previous);
       try {
-        tilesetRef.current.destroy?.();
+        previous.destroy?.();
       } catch {
         // Previous tileset may already be gone.
       }
-      tilesetRef.current = null;
     }
-
-    viewer.scene.primitives.add(tileset);
     tilesetRef.current = tileset;
 
-    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
-      discardTileset(viewer, tileset);
-      if (tilesetRef.current === tileset) tilesetRef.current = null;
-      return null;
+    try {
+      await viewer.zoomTo(tileset);
+    } catch {
+      // New tileset is already in the scene; camera framing is best-effort.
     }
-
-    await viewer.zoomTo(tileset);
     if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
       discardTileset(viewer, tileset);
       if (tilesetRef.current === tileset) tilesetRef.current = null;
@@ -345,10 +346,10 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       if (!isCurrentLoad(loadId) || !viewer) return;
 
       if (next === "sample") {
-        localHandleRef.current?.cleanup();
-        localHandleRef.current = null;
         const tileset = await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET, loadId);
         if (!isCurrentLoad(loadId) || !tileset) return;
+        localHandleRef.current?.cleanup();
+        localHandleRef.current = null;
         setStatus("ready");
         return;
       }
@@ -365,11 +366,20 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
         handle.cleanup();
         return;
       }
-      localHandleRef.current?.cleanup();
-      localHandleRef.current = handle;
-      const tileset = await replaceTileset(Cesium, handle.url, loadId);
-      if (!isCurrentLoad(loadId) || !tileset) return;
-      setStatus("ready");
+      try {
+        const tileset = await replaceTileset(Cesium, handle.url, loadId);
+        if (!isCurrentLoad(loadId) || !tileset) {
+          handle.cleanup();
+          return;
+        }
+        const previous = localHandleRef.current;
+        localHandleRef.current = handle;
+        previous?.cleanup();
+        setStatus("ready");
+      } catch (caught) {
+        handle.cleanup();
+        throw caught;
+      }
     } catch (caught) {
       if (!isCurrentLoad(loadId)) return;
       throw caught;

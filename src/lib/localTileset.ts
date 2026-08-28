@@ -45,8 +45,18 @@ function stripQueryAndHash(uri: string): string {
   return uri.split("#")[0].split("?")[0];
 }
 
+function decodePath(path: string): string {
+  try {
+    return decodeURIComponent(path);
+  } catch {
+    return path;
+  }
+}
+
 function normalizeUri(uri: string): string {
-  return stripQueryAndHash(uri).replace(/\\/g, "/").replace(/^\.\//, "");
+  return decodePath(
+    stripQueryAndHash(uri).replace(/\\/g, "/").replace(/^\.\//, ""),
+  );
 }
 
 function isAbsoluteContentUri(uri: string): boolean {
