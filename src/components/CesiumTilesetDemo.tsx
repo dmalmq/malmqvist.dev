@@ -132,7 +132,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
   const [error, setError] = useState("");
   const [localLabel, setLocalLabel] = useState("");
   const [hasLocalFiles, setHasLocalFiles] = useState(false);
-  const [booted, setBooted] = useState(false);
+  const [hasTileset, setHasTileset] = useState(false);
 
   datasetRef.current = dataset;
 
@@ -242,7 +242,6 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     }
 
     viewerRef.current = viewer;
-    setBooted(true);
 
     try {
       const scene = viewer.scene;
@@ -315,6 +314,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       }
     }
     tilesetRef.current = tileset;
+    setHasTileset(true);
 
     if (isCurrentLoad(loadId)) {
       try {
@@ -455,7 +455,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     }
   };
 
-  const showIdleOverlay = !booted && status !== "loading";
+  const showIdleOverlay = !hasTileset && status !== "loading";
   const statusText =
     status === "loading"
       ? viewerRef.current
@@ -581,7 +581,7 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
         <p className="mt-2 text-xs leading-5 text-[var(--color-text-secondary)]">
           {dataset === "local" && hasLocalFiles ? t.localAttribution : t.attribution}
         </p>
-        {!booted && (
+        {!hasTileset && (
           <p className="sr-only">
             Cesium has not started. WebGL will not initialize until the load control is used.
           </p>
