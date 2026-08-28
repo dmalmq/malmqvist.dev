@@ -84,8 +84,10 @@ function requireString(value: unknown, field: string): string {
 }
 
 function parseLevels(raw: unknown): VenueLevel[] {
-  if (!Array.isArray(raw) || raw.length === 0) {
-    throw new Error("Venue manifest must list at least one level.");
+  // A single-level venue exports no levels at all; tilesets then carry levelKey null.
+  if (raw == null) return [];
+  if (!Array.isArray(raw)) {
+    throw new Error("Venue manifest levels must be an array.");
   }
   const levels = raw.map((entry, index) => {
     const level = entry as Record<string, unknown>;
