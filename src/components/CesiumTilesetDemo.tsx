@@ -185,6 +185,11 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     datasetRef.current = "local";
   };
 
+  const commitSample = () => {
+    setDataset("sample");
+    datasetRef.current = "sample";
+  };
+
   const reportCaught = (caught: unknown) => {
     if (isAbortError(caught)) return;
     setError(caught instanceof Error ? caught.message : t.error);
@@ -348,15 +353,26 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       if (!isCurrentLoad(loadId) || !viewer) return false;
 
       if (next === "sample") {
-        const tileset = await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET, loadId);
-        if (!tileset) return false;
-        if (tilesetRef.current === tileset) {
-          localHandleRef.current?.cleanup();
-          localHandleRef.current = null;
-          if (isCurrentLoad(loadId)) {
-            setStatus("ready");
-            return true;
-          }
+        const local = localHandleRef.current;
+        // A local folder's blob redirect suffix-matches same-origin paths such as
+        // /demos/.../tileset.json, so it must be off before the sample is fetched.
+        local?.detach();
+        let tileset: unknown;
+        try {
+          tileset = await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET, loadId);
+        } catch (caught) {
+          local?.attach();
+          throw caught;
+        }
+        if (!tileset || tilesetRef.current !== tileset) {
+          local?.attach();
+          return false;
+        }
+        if (localHandleRef.current === local) localHandleRef.current = null;
+        local?.cleanup();
+        if (isCurrentLoad(loadId)) {
+          setStatus("ready");
+          return true;
         }
         return false;
       }
@@ -417,11 +433,13 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
 
   const onDatasetChange = async (next: Dataset) => {
     if (next === "sample") {
-      setDataset("sample");
-      datasetRef.current = "sample";
-      if (!viewerRef.current) return;
+      if (!viewerRef.current) {
+        commitSample();
+        return;
+      }
       try {
-        await loadDataset("sample");
+        const loaded = await loadDataset("sample");
+        if (loaded) commitSample();
       } catch (caught) {
         reportCaught(caught);
       }
@@ -498,7 +516,11 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
                 name="tileset-dataset"
                 value="sample"
                 checked={dataset === "sample"}
-                onChange={() => void onDatasetChange("sample")}
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (dataset !== "sample") void onDatasetChange("sample");
+                }}
+                onChange={(event) => event.preventDefault()}
                 className="mt-1"
               />
               <span>

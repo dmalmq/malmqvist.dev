@@ -503,6 +503,8 @@ export type LocalTilesetHandle = {
   url: string;
   label: string;
   fileCount: number;
+  attach: () => void;
+  detach: () => void;
   cleanup: () => void;
 };
 
@@ -526,6 +528,35 @@ export async function prepareLocalTileset(
     uninstall: () => {},
   };
   const rewrittenJson = new Map<string, string>();
+
+  let attached = false;
+  let revoked = false;
+
+  const attach = () => {
+    if (attached || revoked || pathBlobs.size === 0) return;
+    activePathBlobs.push(pathBlobs);
+    cleanup.uninstall = installBlobRedirects();
+    attached = true;
+  };
+
+  const detach = () => {
+    if (!attached) return;
+    attached = false;
+    const uninstall = cleanup.uninstall;
+    cleanup.uninstall = () => {};
+    uninstall();
+    const idx = activePathBlobs.indexOf(pathBlobs);
+    if (idx >= 0) activePathBlobs.splice(idx, 1);
+  };
+
+  const revokeAll = () => {
+    detach();
+    revoked = true;
+    for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
+    cleanup.blobUrls.length = 0;
+    pathBlobs.clear();
+  };
+
   let url: string | undefined;
   try {
     url = await rewriteTilesetFile(
@@ -534,19 +565,9 @@ export async function prepareLocalTileset(
       rewrittenJson,
       cleanup,
     );
-    if (url && pathBlobs.size > 0) {
-      activePathBlobs.push(pathBlobs);
-      cleanup.uninstall = installBlobRedirects();
-    }
+    if (url) attach();
   } finally {
-    if (!url) {
-      cleanup.uninstall();
-      const idx = activePathBlobs.indexOf(pathBlobs);
-      if (idx >= 0) activePathBlobs.splice(idx, 1);
-      for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
-      cleanup.blobUrls.length = 0;
-      pathBlobs.clear();
-    }
+    if (!url) revokeAll();
   }
   if (!url) {
     throw new Error("Failed to rewrite tileset.json");
@@ -556,14 +577,9 @@ export async function prepareLocalTileset(
     url,
     label: fileRelPath(root),
     fileCount: files.length,
-    cleanup: () => {
-      cleanup.uninstall();
-      const idx = activePathBlobs.indexOf(pathBlobs);
-      if (idx >= 0) activePathBlobs.splice(idx, 1);
-      for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
-      cleanup.blobUrls.length = 0;
-      pathBlobs.clear();
-    },
+    attach,
+    detach,
+    cleanup: revokeAll,
   };
 }
 

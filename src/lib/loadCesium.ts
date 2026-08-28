@@ -1,6 +1,8 @@
 const CESIUM_VERSION = "1.134.0";
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`;
 
+const SCRIPT_ID = "cesium-js";
+
 type CesiumNamespace = typeof window & { Cesium?: any; CESIUM_BASE_URL?: string };
 
 let loading: Promise<any> | null = null;
@@ -16,8 +18,7 @@ function injectStylesheet(href: string): void {
 }
 
 function injectScript(src: string): Promise<void> {
-  const id = "cesium-js";
-  const existing = document.getElementById(id) as HTMLScriptElement | null;
+  const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
   if (existing) {
     if ((window as CesiumNamespace).Cesium) return Promise.resolve();
     return new Promise((resolve, reject) => {
@@ -29,7 +30,7 @@ function injectScript(src: string): Promise<void> {
   }
   return new Promise((resolve, reject) => {
     const script = document.createElement("script");
-    script.id = id;
+    script.id = SCRIPT_ID;
     script.src = src;
     script.async = true;
     script.onload = () => resolve();
@@ -48,18 +49,21 @@ export function loadCesium(): Promise<any> {
   if (loading) return loading;
 
   loading = (async () => {
-    (window as CesiumNamespace).CESIUM_BASE_URL = CESIUM_BASE;
-    injectStylesheet(`${CESIUM_BASE}Widgets/widgets.css`);
-    await injectScript(`${CESIUM_BASE}Cesium.js`);
-    const Cesium = (window as CesiumNamespace).Cesium;
-    if (!Cesium) throw new Error("CesiumJS loaded without a global");
-    return Cesium;
+    try {
+      (window as CesiumNamespace).CESIUM_BASE_URL = CESIUM_BASE;
+      injectStylesheet(`${CESIUM_BASE}Widgets/widgets.css`);
+      await injectScript(`${CESIUM_BASE}Cesium.js`);
+      const Cesium = (window as CesiumNamespace).Cesium;
+      if (!Cesium) throw new Error("CesiumJS loaded without a global");
+      return Cesium;
+    } catch (error) {
+      document.getElementById(SCRIPT_ID)?.remove();
+      loading = null;
+      throw error;
+    }
   })();
 
-  return loading.catch((error) => {
-    loading = null;
-    throw error;
-  });
+  return loading;
 }
 
 export const PUBLIC_SAMPLE_TILESET =

@@ -1,6 +1,7 @@
 /**
  * Rerunnable check for local-folder URI rewrite.
- * Covers the public synthetic sample plus a tiny implicit+glTF fixture.
+ * Covers the public synthetic sample, a tiny implicit+glTF fixture, cyclic
+ * external tilesets, and redirect isolation from same-origin site URLs.
  * Does not load workplace or JR station data.
  */
 import { readFile, rm } from "node:fs/promises";
@@ -257,6 +258,64 @@ assert(
   "redirected cycle tileset should be the rewritten root",
 );
 cycle.cleanup();
+
+const selfCycleFolder = await prepareLocalTileset([
+  fileFromText(
+    "tileset.json",
+    JSON.stringify({
+      asset: { version: "1.1" },
+      geometricError: 1,
+      extras: { mark: "local" },
+      root: {
+        boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] },
+        geometricError: 0,
+        content: { uri: "tileset.json" },
+      },
+    }),
+  ),
+]);
+
+const SAMPLE_URL = "/demos/3d-tiles-viewer/synthetic-indoor/tileset.json?v=3";
+
+async function sampleUrlReachesRealFetch() {
+  try {
+    await fetch(SAMPLE_URL);
+    return false;
+  } catch (error) {
+    return error instanceof TypeError;
+  }
+}
+
+const hijacked = await fetch(SAMPLE_URL).then((res) => res.json());
+assert(
+  hijacked.extras?.mark === "local",
+  "a self-referencing folder registers a tileset.json redirect that shadows the sample URL",
+);
+
+selfCycleFolder.detach();
+assert(
+  await sampleUrlReachesRealFetch(),
+  "detach must let the public sample URL reach the real fetch",
+);
+
+selfCycleFolder.attach();
+const rehijacked = await fetch(SAMPLE_URL).then((res) => res.json());
+assert(
+  rehijacked.extras?.mark === "local",
+  "attach must restore the redirect for a still-live local tileset",
+);
+
+selfCycleFolder.cleanup();
+assert(
+  await sampleUrlReachesRealFetch(),
+  "cleanup must remove the local redirect",
+);
+
+selfCycleFolder.attach();
+assert(
+  await sampleUrlReachesRealFetch(),
+  "attach after cleanup must not resurrect revoked blobs",
+);
 
 await rm(outFile, { force: true });
 console.log("local tileset rewrite checks passed");
