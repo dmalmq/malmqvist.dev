@@ -220,12 +220,23 @@ export async function prepareLocalTileset(
   const root = pickRootTileset(files);
   const cleanup: BlobCleanup = { blobUrls: [] };
   const rewrittenJson = new Map<string, string>();
-  const url = await rewriteTilesetFile(
-    root,
-    filesByPath,
-    rewrittenJson,
-    cleanup,
-  );
+  let url: string | undefined;
+  try {
+    url = await rewriteTilesetFile(
+      root,
+      filesByPath,
+      rewrittenJson,
+      cleanup,
+    );
+  } finally {
+    if (!url) {
+      for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
+      cleanup.blobUrls.length = 0;
+    }
+  }
+  if (!url) {
+    throw new Error("Failed to rewrite tileset.json");
+  }
 
   return {
     url,

@@ -306,7 +306,10 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
 
     const previous = tilesetRef.current;
     viewer.scene.primitives.add(tileset);
-    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+    // Once the tileset is in the scene, a newer loadId must not destroy it.
+    // The replacement load swaps it out via tilesetRef. Unmount/destroyed-viewer
+    // cleanup is the only reason to discard here.
+    if (viewer.isDestroyed?.() || !mountedRef.current) {
       discardTileset(viewer, tileset);
       return null;
     }
@@ -320,17 +323,21 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     }
     tilesetRef.current = tileset;
 
-    try {
-      await viewer.zoomTo(tileset);
-    } catch {
-      // New tileset is already in the scene; camera framing is best-effort.
+    if (isCurrentLoad(loadId)) {
+      try {
+        await viewer.zoomTo(tileset);
+      } catch {
+        // Framing is best-effort; the tileset is already live.
+      }
     }
-    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+    if (viewer.isDestroyed?.() || !mountedRef.current) {
       discardTileset(viewer, tileset);
       if (tilesetRef.current === tileset) tilesetRef.current = null;
       return null;
     }
-    viewer.scene.requestRender();
+    if (isCurrentLoad(loadId)) {
+      viewer.scene.requestRender();
+    }
     return tileset;
   };
 
@@ -347,10 +354,12 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
 
       if (next === "sample") {
         const tileset = await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET, loadId);
-        if (!isCurrentLoad(loadId) || !tileset) return;
-        localHandleRef.current?.cleanup();
-        localHandleRef.current = null;
-        setStatus("ready");
+        if (!tileset) return;
+        if (tilesetRef.current === tileset) {
+          localHandleRef.current?.cleanup();
+          localHandleRef.current = null;
+          if (isCurrentLoad(loadId)) setStatus("ready");
+        }
         return;
       }
 
@@ -368,14 +377,16 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       }
       try {
         const tileset = await replaceTileset(Cesium, handle.url, loadId);
-        if (!isCurrentLoad(loadId) || !tileset) {
+        // Keep blob URLs for whatever is actually in tilesetRef. Cleanup only
+        // handles that never became the live tileset (or were already swapped).
+        if (tileset && tilesetRef.current === tileset) {
+          const previous = localHandleRef.current;
+          localHandleRef.current = handle;
+          previous?.cleanup();
+          if (isCurrentLoad(loadId)) setStatus("ready");
+        } else {
           handle.cleanup();
-          return;
         }
-        const previous = localHandleRef.current;
-        localHandleRef.current = handle;
-        previous?.cleanup();
-        setStatus("ready");
       } catch (caught) {
         handle.cleanup();
         throw caught;
