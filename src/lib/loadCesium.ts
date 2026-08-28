@@ -1,11 +1,16 @@
+import type { CesiumApi } from "./cesiumApi";
+
 const CESIUM_VERSION = "1.134.0";
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`;
 
 const SCRIPT_ID = "cesium-js";
 
-type CesiumNamespace = typeof window & { Cesium?: any; CESIUM_BASE_URL?: string };
+type CesiumNamespace = typeof window & {
+  Cesium?: CesiumApi;
+  CESIUM_BASE_URL?: string;
+};
 
-let loading: Promise<any> | null = null;
+let loading: Promise<CesiumApi> | null = null;
 
 function injectStylesheet(href: string): void {
   const id = "cesium-widgets-css";
@@ -21,29 +26,29 @@ function injectScript(src: string): Promise<void> {
   const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
   if (existing) {
     if ((window as CesiumNamespace).Cesium) return Promise.resolve();
-    return new Promise((resolve, reject) => {
-      existing.addEventListener("load", () => resolve(), { once: true });
-      existing.addEventListener("error", () => reject(new Error("Failed to load CesiumJS")), {
-        once: true,
-      });
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    existing.addEventListener("load", () => resolve(), { once: true });
+    existing.addEventListener("error", () => reject(new Error("Failed to load CesiumJS")), {
+      once: true,
     });
+    return promise;
   }
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.id = SCRIPT_ID;
-    script.src = src;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load CesiumJS"));
-    document.head.appendChild(script);
-  });
+  const { promise, resolve, reject } = Promise.withResolvers<void>();
+  const script = document.createElement("script");
+  script.id = SCRIPT_ID;
+  script.src = src;
+  script.async = true;
+  script.onload = () => resolve();
+  script.onerror = () => reject(new Error("Failed to load CesiumJS"));
+  document.head.appendChild(script);
+  return promise;
 }
 
 /**
  * Load CesiumJS from a CDN only after the user asks for the demo.
  * Does not run on first paint.
  */
-export function loadCesium(): Promise<any> {
+export function loadCesium(): Promise<CesiumApi> {
   const existing = (window as CesiumNamespace).Cesium;
   if (existing) return Promise.resolve(existing);
   if (loading) return loading;
@@ -66,5 +71,5 @@ export function loadCesium(): Promise<any> {
   return loading;
 }
 
-export const PUBLIC_SAMPLE_TILESET =
-  "/demos/3d-tiles-viewer/synthetic-indoor/tileset.json?v=3";
+export const PUBLIC_SAMPLE_VENUE =
+  "/demos/3d-tiles-viewer/synthetic-indoor/venue.json";

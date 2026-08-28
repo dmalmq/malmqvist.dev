@@ -1,0 +1,145 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750105008,
+          35.639977542,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "restroom",
+        "image": "restroom.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Restroom",
+          "ja": "トイレ"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750060794,
+          35.639906576,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "information",
+        "image": "information.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Information",
+          "ja": "案内所"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750132642,
+          35.639946101,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "locker",
+        "image": "locker.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Coin lockers",
+          "ja": "コインロッカー"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.75003316,
+          35.639910169,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "ticket",
+        "image": "ticket.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Ticket machine",
+          "ja": "券売機"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750105008,
+          35.639977542,
+          53.2
+        ]
+      },
+      "properties": {
+        "symbol_id": "restroom",
+        "image": "restroom.svg",
+        "levelKey": "2F",
+        "name": {
+          "en": "Restroom",
+          "ja": "トイレ"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750138169,
+          35.639946101,
+          53.2
+        ]
+      },
+      "properties": {
+        "symbol_id": "information",
+        "image": "information.svg",
+        "levelKey": "2F",
+        "name": {
+          "en": "Gallery desk",
+          "ja": "ギャラリー受付"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750143695,
+          35.63991466,
+          53.2
+        ]
+      },
+      "properties": {
+        "symbol_id": "locker",
+        "image": "locker.svg",
+        "levelKey": "2F",
+        "name": {
+          "en": "Day lockers",
+          "ja": "一時ロッカー"
+        }
+      }
+    }
+  ]
+}
