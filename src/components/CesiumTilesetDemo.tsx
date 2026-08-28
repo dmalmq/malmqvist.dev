@@ -98,16 +98,22 @@ function pickFolderWithInput(): Promise<File[]> {
   });
 }
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError";
+}
+
 async function pickLocalFolder(): Promise<File[]> {
-  if (isFileSystemAccessSupported()) {
-    try {
-      const handle = await window.showDirectoryPicker!({ mode: "read" });
-      return await getFilesFromDirectoryHandle(handle);
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") throw error;
-    }
+  if (!isFileSystemAccessSupported()) {
+    return pickFolderWithInput();
   }
-  return pickFolderWithInput();
+  let handle: FileSystemDirectoryHandle;
+  try {
+    handle = await window.showDirectoryPicker!({ mode: "read" });
+  } catch (error) {
+    if (isAbortError(error)) throw error;
+    return pickFolderWithInput();
+  }
+  return getFilesFromDirectoryHandle(handle);
 }
 
 export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
@@ -118,7 +124,6 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
   const localHandleRef = useRef<LocalTilesetHandle | null>(null);
   const localFilesRef = useRef<File[] | null>(null);
   const datasetRef = useRef<Dataset>("sample");
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const loadIdRef = useRef(0);
   const mountedRef = useRef(true);
 
@@ -155,14 +160,14 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     return () => {
       mountedRef.current = false;
       loadIdRef.current += 1;
-      localHandleRef.current?.cleanup();
-      localHandleRef.current = null;
       const viewer = viewerRef.current;
       if (viewer && !viewer.isDestroyed?.()) {
         viewer.destroy();
       }
       viewerRef.current = null;
       tilesetRef.current = null;
+      localHandleRef.current?.cleanup();
+      localHandleRef.current = null;
     };
   }, []);
 
@@ -172,42 +177,30 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     setLocalLabel(describeLocalFolder(files));
   };
 
+  const commitLocal = (files?: File[]) => {
+    if (files) rememberLocalFiles(files);
+    setDataset("local");
+    datasetRef.current = "local";
+  };
+
+  const reportCaught = (caught: unknown) => {
+    if (isAbortError(caught)) return;
+    setError(caught instanceof Error ? caught.message : t.error);
+    setStatus(viewerRef.current ? "ready" : "error");
+  };
+
   const chooseFolder = async () => {
     setError("");
     try {
-      if (isFileSystemAccessSupported()) {
-        try {
-          const handle = await window.showDirectoryPicker!({ mode: "read" });
-          const files = await getFilesFromDirectoryHandle(handle);
-          rememberLocalFiles(files);
-          if (viewerRef.current) {
-            await loadDataset("local", files);
-          }
-          return;
-        } catch (caught) {
-          if (caught instanceof DOMException && caught.name === "AbortError") return;
-        }
+      const files = await pickLocalFolder();
+      if (!viewerRef.current) {
+        rememberLocalFiles(files);
+        return;
       }
-      fileInputRef.current?.click();
+      const loaded = await loadDataset("local", files);
+      if (loaded) rememberLocalFiles(files);
     } catch (caught) {
-      if (caught instanceof DOMException && caught.name === "AbortError") return;
-      setError(caught instanceof Error ? caught.message : t.error);
-      setStatus((prev) => (viewerRef.current ? "ready" : "error"));
-    }
-  };
-
-  const onFallbackFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []);
-    event.target.value = "";
-    if (!files.length) return;
-    rememberLocalFiles(files);
-    if (viewerRef.current) {
-      try {
-        await loadDataset("local", files);
-      } catch (caught) {
-        setError(caught instanceof Error ? caught.message : t.error);
-        setStatus("error");
-      }
+      reportCaught(caught);
     }
   };
 
@@ -341,58 +334,63 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     return tileset;
   };
 
-  const loadDataset = async (next: Dataset, files?: File[]) => {
+  const loadDataset = async (next: Dataset, files?: File[]): Promise<boolean> => {
     const loadId = ++loadIdRef.current;
     setStatus("loading");
     setError("");
     try {
       const Cesium = await loadCesium();
-      if (!isCurrentLoad(loadId)) return;
+      if (!isCurrentLoad(loadId)) return false;
 
       const viewer = await ensureViewer(Cesium, loadId);
-      if (!isCurrentLoad(loadId) || !viewer) return;
+      if (!isCurrentLoad(loadId) || !viewer) return false;
 
       if (next === "sample") {
         const tileset = await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET, loadId);
-        if (!tileset) return;
+        if (!tileset) return false;
         if (tilesetRef.current === tileset) {
           localHandleRef.current?.cleanup();
           localHandleRef.current = null;
-          if (isCurrentLoad(loadId)) setStatus("ready");
+          if (isCurrentLoad(loadId)) {
+            setStatus("ready");
+            return true;
+          }
         }
-        return;
+        return false;
       }
 
       const selected = files ?? localFilesRef.current;
       if (!selected?.length) {
-        if (!isCurrentLoad(loadId)) return;
+        if (!isCurrentLoad(loadId)) return false;
         setStatus(viewerRef.current ? "ready" : "idle");
-        return;
+        return false;
       }
 
       const handle = await prepareLocalTileset(selected);
       if (!isCurrentLoad(loadId)) {
         handle.cleanup();
-        return;
+        return false;
       }
       try {
         const tileset = await replaceTileset(Cesium, handle.url, loadId);
-        // Keep blob URLs for whatever is actually in tilesetRef. Cleanup only
-        // handles that never became the live tileset (or were already swapped).
         if (tileset && tilesetRef.current === tileset) {
           const previous = localHandleRef.current;
           localHandleRef.current = handle;
           previous?.cleanup();
-          if (isCurrentLoad(loadId)) setStatus("ready");
+          if (isCurrentLoad(loadId)) {
+            setStatus("ready");
+            return true;
+          }
         } else {
           handle.cleanup();
         }
+        return false;
       } catch (caught) {
         handle.cleanup();
         throw caught;
       }
     } catch (caught) {
-      if (!isCurrentLoad(loadId)) return;
+      if (!isCurrentLoad(loadId)) return false;
       throw caught;
     }
   };
@@ -401,13 +399,13 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     try {
       if (dataset === "local" && !localFilesRef.current?.length) {
         const files = await pickLocalFolder();
-        rememberLocalFiles(files);
-        await loadDataset("local", files);
+        const loaded = await loadDataset("local", files);
+        if (loaded) rememberLocalFiles(files);
         return;
       }
       await loadDataset(dataset);
     } catch (caught) {
-      if (caught instanceof DOMException && caught.name === "AbortError") {
+      if (isAbortError(caught)) {
         setStatus("idle");
         return;
       }
@@ -417,19 +415,43 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
   };
 
   const onDatasetChange = async (next: Dataset) => {
-    setDataset(next);
-    datasetRef.current = next;
-    if (!viewerRef.current) return;
+    if (next === "sample") {
+      setDataset("sample");
+      datasetRef.current = "sample";
+      if (!viewerRef.current) return;
+      try {
+        await loadDataset("sample");
+      } catch (caught) {
+        reportCaught(caught);
+      }
+      return;
+    }
+
     try {
-      if (next === "local" && !localFilesRef.current?.length) {
-        await chooseFolder();
+      let files = localFilesRef.current;
+      if (!files?.length) {
+        files = await pickLocalFolder();
+        if (!viewerRef.current) {
+          commitLocal(files);
+          return;
+        }
+        const loaded = await loadDataset("local", files);
+        if (loaded) commitLocal(files);
         return;
       }
-      await loadDataset(next);
+      if (!viewerRef.current) {
+        commitLocal();
+        return;
+      }
+      const loaded = await loadDataset("local", files);
+      if (loaded) commitLocal();
     } catch (caught) {
-      if (caught instanceof DOMException && caught.name === "AbortError") return;
-      setError(caught instanceof Error ? caught.message : t.error);
-      setStatus("error");
+      if (isAbortError(caught)) {
+        setDataset("sample");
+        datasetRef.current = "sample";
+        return;
+      }
+      reportCaught(caught);
     }
   };
 
@@ -489,7 +511,11 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
                 name="tileset-dataset"
                 value="local"
                 checked={dataset === "local"}
-                onChange={() => void onDatasetChange("local")}
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (dataset !== "local") void onDatasetChange("local");
+                }}
+                onChange={(event) => event.preventDefault()}
                 className="mt-1"
               />
               <span>
@@ -512,16 +538,6 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
             <p className="text-sm text-[var(--color-text-secondary)]">
               {hasLocalFiles ? localLabel : t.noFolder}
             </p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              onChange={(event) => void onFallbackFiles(event)}
-              {...{ webkitdirectory: "", directory: "" }}
-            />
             {!isFileSystemAccessSupported() && (
               <p className="w-full text-xs text-[var(--color-text-secondary)]">{t.fsaFallback}</p>
             )}
