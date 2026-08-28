@@ -63,6 +63,10 @@ function isAbsoluteContentUri(uri: string): boolean {
   return /^(https?:|blob:|data:)/i.test(uri);
 }
 
+function isUriTemplate(uri: string): boolean {
+  return /\{(?:level|x|y|z)\}/i.test(stripQueryAndHash(uri));
+}
+
 function joinPath(dir: string, rel: string): string {
   const cleaned = normalizeUri(rel);
   if (!cleaned || isAbsoluteContentUri(cleaned)) return cleaned;
@@ -81,13 +85,159 @@ function dirOf(filePath: string): string {
   return idx === -1 ? "" : filePath.slice(0, idx);
 }
 
-function isJsonTilesetUri(uri: string): boolean {
-  return normalizeUri(uri).toLowerCase().endsWith(".json");
+function extensionOf(path: string): string {
+  const name = normalizeUri(path).split("/").pop() ?? "";
+  const dot = name.lastIndexOf(".");
+  return dot === -1 ? "" : name.slice(dot).toLowerCase();
+}
+
+function relToBase(filePath: string, baseDir: string): string {
+  if (!baseDir) return filePath;
+  const prefix = `${baseDir}/`;
+  return filePath.startsWith(prefix) ? filePath.slice(prefix.length) : filePath;
+}
+
+function lookupFile(
+  original: string,
+  baseDir: string,
+  filesByPath: Map<string, File>,
+): File | undefined {
+  const resolved = joinPath(baseDir, original);
+  return (
+    filesByPath.get(resolved) ??
+    filesByPath.get(normalizeUri(original)) ??
+    filesByPath.get(normalizeUri(resolved))
+  );
+}
+
+function templateToRegex(pattern: string): RegExp {
+  const escaped = normalizeUri(pattern).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const withSlots = escaped
+    .replace(/\\\{level\\\}/gi, "[^/]+")
+    .replace(/\\\{x\\\}/gi, "[^/]+")
+    .replace(/\\\{y\\\}/gi, "[^/]+")
+    .replace(/\\\{z\\\}/gi, "[^/]+");
+  return new RegExp(`^${withSlots}$`, "i");
+}
+
+const GLB_MAGIC = 0x46546c67;
+const JSON_CHUNK = 0x4e4f534a;
+const BIN_CHUNK = 0x004e4942;
+
+function pad4(n: number): number {
+  return (n + 3) & ~3;
 }
 
 type BlobCleanup = {
   blobUrls: string[];
+  pathBlobs: Map<string, string>;
+  uninstall: () => void;
 };
+
+type RewriteCtx = {
+  filesByPath: Map<string, File>;
+  rewritten: Map<string, string>;
+  cleanup: BlobCleanup;
+};
+
+const activePathBlobs: BlobCleanup["pathBlobs"][] = [];
+let redirectDepth = 0;
+let restoreRedirect: (() => void) | null = null;
+
+function urlMatchesRelative(url: string, rel: string): boolean {
+  if (!rel) return false;
+  const stripped = stripQueryAndHash(url);
+  if (stripped === rel || stripped.endsWith(`/${rel}`)) return true;
+  try {
+    const decoded = decodePath(stripped);
+    if (decoded === rel || decoded.endsWith(`/${rel}`)) return true;
+  } catch {
+    // Keep the raw comparison.
+  }
+  const encoded = encodeURI(rel);
+  return stripped.endsWith(rel) || stripped.endsWith(encoded);
+}
+
+function blobForRequestUrl(url: string): string | undefined {
+  for (const map of activePathBlobs) {
+    const exact = map.get(stripQueryAndHash(url)) ?? map.get(normalizeUri(url));
+    if (exact) return exact;
+    for (const [rel, blob] of map) {
+      if (urlMatchesRelative(url, rel)) return blob;
+    }
+  }
+  return undefined;
+}
+
+function installBlobRedirects(): () => void {
+  redirectDepth += 1;
+  if (restoreRedirect) {
+    return () => {
+      redirectDepth = Math.max(0, redirectDepth - 1);
+      if (redirectDepth === 0) {
+        restoreRedirect?.();
+        restoreRedirect = null;
+      }
+    };
+  }
+
+  const originalFetch = globalThis.fetch.bind(globalThis);
+  globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+    const href =
+      typeof input === "string"
+        ? input
+        : input instanceof URL
+          ? input.href
+          : input.url;
+    const mapped = blobForRequestUrl(href);
+    if (!mapped) return originalFetch(input, init);
+    if (typeof Request !== "undefined" && input instanceof Request) {
+      return originalFetch(new Request(mapped, input), init);
+    }
+    return originalFetch(mapped, init);
+  };
+
+  const XHR = globalThis.XMLHttpRequest;
+  const originalOpen = XHR?.prototype.open;
+  if (XHR && originalOpen) {
+    XHR.prototype.open = function (
+      method: string,
+      url: string | URL,
+      async?: boolean,
+      username?: string | null,
+      password?: string | null,
+    ) {
+      const href = typeof url === "string" ? url : String(url);
+      const mapped = blobForRequestUrl(href);
+      return originalOpen.call(this, method, mapped ?? url, async, username, password);
+    };
+  }
+
+  restoreRedirect = () => {
+    globalThis.fetch = originalFetch;
+    if (XHR && originalOpen) XHR.prototype.open = originalOpen;
+  };
+
+  return () => {
+    redirectDepth = Math.max(0, redirectDepth - 1);
+    if (redirectDepth === 0) {
+      restoreRedirect?.();
+      restoreRedirect = null;
+    }
+  };
+}
+
+function rememberBlob(ctx: RewriteCtx, url: string): string {
+  ctx.cleanup.blobUrls.push(url);
+  return url;
+}
+
+function rememberPathBlob(ctx: RewriteCtx, relPath: string, url: string): void {
+  const key = normalizeUri(relPath);
+  if (!key) return;
+  ctx.cleanup.pathBlobs.set(key, url);
+  ctx.cleanup.pathBlobs.set(relPath, url);
+}
 
 function pickRootTileset(files: File[]): File {
   const jsonFiles = files.filter((file) => {
@@ -105,97 +255,201 @@ function pickRootTileset(files: File[]): File {
   )[0];
 }
 
+function parseGlb(bytes: Uint8Array): { json: Record<string, unknown>; bin: Uint8Array | null } {
+  if (bytes.byteLength < 12) {
+    throw new Error("GLB is too small to parse.");
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (view.getUint32(0, true) !== GLB_MAGIC) {
+    throw new Error("File is not a GLB.");
+  }
+  let offset = 12;
+  let json: Record<string, unknown> | undefined;
+  let bin: Uint8Array | null = null;
+  while (offset + 8 <= bytes.byteLength) {
+    const chunkLen = view.getUint32(offset, true);
+    const chunkType = view.getUint32(offset + 4, true);
+    const start = offset + 8;
+    const end = start + chunkLen;
+    if (end > bytes.byteLength) {
+      throw new Error("GLB chunk overruns the file.");
+    }
+    const chunk = bytes.subarray(start, end);
+    if (chunkType === JSON_CHUNK) {
+      const text = new TextDecoder().decode(chunk).replace(/\0+$/g, "").trimEnd();
+      json = JSON.parse(text) as Record<string, unknown>;
+    } else if (chunkType === BIN_CHUNK) {
+      bin = chunk;
+    }
+    offset = end;
+  }
+  if (!json) {
+    throw new Error("GLB has no JSON chunk.");
+  }
+  return { json, bin };
+}
+
+function rebuildGlb(jsonText: string, bin: Uint8Array | null): Uint8Array {
+  const jsonBytes = new TextEncoder().encode(jsonText);
+  const jsonPadded = pad4(jsonBytes.length);
+  const binPadded = bin ? pad4(bin.byteLength) : 0;
+  const total = 12 + 8 + jsonPadded + (bin ? 8 + binPadded : 0);
+  const out = new Uint8Array(total);
+  const view = new DataView(out.buffer);
+  view.setUint32(0, GLB_MAGIC, true);
+  view.setUint32(4, 2, true);
+  view.setUint32(8, total, true);
+  view.setUint32(12, jsonPadded, true);
+  view.setUint32(16, JSON_CHUNK, true);
+  out.set(jsonBytes, 20);
+  out.fill(0x20, 20 + jsonBytes.length, 20 + jsonPadded);
+  if (bin) {
+    const binAt = 20 + jsonPadded;
+    view.setUint32(binAt, binPadded, true);
+    view.setUint32(binAt + 4, BIN_CHUNK, true);
+    out.set(bin, binAt + 8);
+  }
+  return out;
+}
+
+async function rewriteUriFields(
+  value: unknown,
+  baseDir: string,
+  ctx: RewriteCtx,
+  depth = 0,
+): Promise<boolean> {
+  if (depth > 24 || value == null || typeof value !== "object") return false;
+  let changed = false;
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      if (await rewriteUriFields(entry, baseDir, ctx, depth + 1)) changed = true;
+    }
+    return changed;
+  }
+  const rec = value as Record<string, unknown>;
+  if (typeof rec.schemaUri === "string") {
+    const next = await resolveUri(rec.schemaUri, baseDir, ctx);
+    if (next !== rec.schemaUri) {
+      rec.schemaUri = next;
+      changed = true;
+    }
+  }
+  for (const [key, nested] of Object.entries(rec)) {
+    if ((key === "uri" || key === "url") && typeof nested === "string") {
+      const next = await resolveUri(nested, baseDir, ctx);
+      if (next !== nested) {
+        rec[key] = next;
+        changed = true;
+      }
+    } else if (await rewriteUriFields(nested, baseDir, ctx, depth + 1)) {
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+async function registerTemplateMatches(
+  original: string,
+  baseDir: string,
+  ctx: RewriteCtx,
+): Promise<void> {
+  const pattern = joinPath(baseDir, original);
+  const regex = templateToRegex(pattern);
+  let matched = 0;
+  for (const [filePath, file] of ctx.filesByPath) {
+    if (!regex.test(filePath) && !regex.test(normalizeUri(filePath))) continue;
+    const url = await rewriteFileToBlob(file, ctx);
+    rememberPathBlob(ctx, relToBase(filePath, baseDir), url);
+    matched += 1;
+  }
+  if (matched === 0) {
+    throw new Error(
+      `Tileset content is not in the selected folder: ${original}`,
+    );
+  }
+}
+
+async function resolveUri(
+  original: string,
+  baseDir: string,
+  ctx: RewriteCtx,
+): Promise<string> {
+  if (isAbsoluteContentUri(original)) return original;
+  if (isUriTemplate(original)) {
+    await registerTemplateMatches(original, baseDir, ctx);
+    return original;
+  }
+  const file = lookupFile(original, baseDir, ctx.filesByPath);
+  if (!file) {
+    throw new Error(
+      `Tileset content is not in the selected folder: ${original}`,
+    );
+  }
+  return rewriteFileToBlob(file, ctx);
+}
+
+async function rewriteJsonDocument(file: File, ctx: RewriteCtx): Promise<string> {
+  const filePath = fileRelPath(file);
+  const json = JSON.parse(await file.text()) as unknown;
+  await rewriteUriFields(json, dirOf(filePath), ctx);
+  const blob = new Blob([JSON.stringify(json)], { type: "application/json" });
+  return rememberBlob(ctx, URL.createObjectURL(blob));
+}
+
+async function rewriteGltfDocument(file: File, ctx: RewriteCtx): Promise<string> {
+  const filePath = fileRelPath(file);
+  const json = JSON.parse(await file.text()) as unknown;
+  await rewriteUriFields(json, dirOf(filePath), ctx);
+  const blob = new Blob([JSON.stringify(json)], { type: "model/gltf+json" });
+  return rememberBlob(ctx, URL.createObjectURL(blob));
+}
+
+async function rewriteGlbDocument(file: File, ctx: RewriteCtx): Promise<string> {
+  const filePath = fileRelPath(file);
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let parsed: { json: Record<string, unknown>; bin: Uint8Array | null };
+  try {
+    parsed = parseGlb(bytes);
+  } catch {
+    return rememberBlob(ctx, URL.createObjectURL(file));
+  }
+  const changed = await rewriteUriFields(parsed.json, dirOf(filePath), ctx);
+  if (!changed) {
+    return rememberBlob(ctx, URL.createObjectURL(file));
+  }
+  const rebuilt = rebuildGlb(JSON.stringify(parsed.json), parsed.bin);
+  const blob = new Blob([rebuilt], { type: "model/gltf-binary" });
+  return rememberBlob(ctx, URL.createObjectURL(blob));
+}
+
+async function rewriteFileToBlob(file: File, ctx: RewriteCtx): Promise<string> {
+  const filePath = fileRelPath(file);
+  const cached = ctx.rewritten.get(filePath);
+  if (cached) return cached;
+
+  const ext = extensionOf(filePath);
+  let url: string;
+  if (ext === ".gltf") {
+    url = await rewriteGltfDocument(file, ctx);
+  } else if (ext === ".glb") {
+    url = await rewriteGlbDocument(file, ctx);
+  } else if (ext === ".json") {
+    url = await rewriteJsonDocument(file, ctx);
+  } else {
+    url = rememberBlob(ctx, URL.createObjectURL(file));
+  }
+  ctx.rewritten.set(filePath, url);
+  return url;
+}
+
 async function rewriteTilesetFile(
   file: File,
   filesByPath: Map<string, File>,
   rewrittenJson: Map<string, string>,
   cleanup: BlobCleanup,
 ): Promise<string> {
-  const filePath = fileRelPath(file);
-  const cached = rewrittenJson.get(filePath);
-  if (cached) return cached;
-
-  const json = JSON.parse(await file.text()) as { root?: unknown };
-  const baseDir = dirOf(filePath);
-  await rewriteNode(json.root, baseDir, filesByPath, rewrittenJson, cleanup);
-
-  const blob = new Blob([JSON.stringify(json)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  cleanup.blobUrls.push(url);
-  rewrittenJson.set(filePath, url);
-  return url;
-}
-
-async function rewriteContentUri(
-  original: string | undefined,
-  baseDir: string,
-  filesByPath: Map<string, File>,
-  rewrittenJson: Map<string, string>,
-  cleanup: BlobCleanup,
-): Promise<string | undefined> {
-  if (!original) return original;
-  // http(s)/blob/data stay as authored. Relative URIs must resolve inside the folder.
-  if (isAbsoluteContentUri(original)) return original;
-  const resolved = joinPath(baseDir, original);
-  const file = filesByPath.get(resolved) ?? filesByPath.get(normalizeUri(original));
-  if (!file) {
-    throw new Error(
-      `Tileset content is not in the selected folder: ${original}`,
-    );
-  }
-  if (isJsonTilesetUri(original)) {
-    return rewriteTilesetFile(file, filesByPath, rewrittenJson, cleanup);
-  }
-  const url = URL.createObjectURL(file);
-  cleanup.blobUrls.push(url);
-  return url;
-}
-
-async function rewriteNode(
-  tile: unknown,
-  baseDir: string,
-  filesByPath: Map<string, File>,
-  rewrittenJson: Map<string, string>,
-  cleanup: BlobCleanup,
-): Promise<void> {
-  if (!tile || typeof tile !== "object") return;
-  const node = tile as {
-    content?: { uri?: string; url?: string };
-    contents?: Array<{ uri?: string; url?: string }>;
-    children?: unknown[];
-  };
-
-  if (node.content) {
-    const key = node.content.uri != null ? "uri" : "url";
-    const next = await rewriteContentUri(
-      node.content[key],
-      baseDir,
-      filesByPath,
-      rewrittenJson,
-      cleanup,
-    );
-    if (next) node.content[key] = next;
-  }
-
-  if (Array.isArray(node.contents)) {
-    for (const content of node.contents) {
-      const key = content.uri != null ? "uri" : "url";
-      const next = await rewriteContentUri(
-        content[key],
-        baseDir,
-        filesByPath,
-        rewrittenJson,
-        cleanup,
-      );
-      if (next) content[key] = next;
-    }
-  }
-
-  if (Array.isArray(node.children)) {
-    for (const child of node.children) {
-      await rewriteNode(child, baseDir, filesByPath, rewrittenJson, cleanup);
-    }
-  }
+  const ctx: RewriteCtx = { filesByPath, rewritten: rewrittenJson, cleanup };
+  return rewriteFileToBlob(file, ctx);
 }
 
 export type LocalTilesetHandle = {
@@ -218,7 +472,12 @@ export async function prepareLocalTileset(
   }
 
   const root = pickRootTileset(files);
-  const cleanup: BlobCleanup = { blobUrls: [] };
+  const pathBlobs = new Map<string, string>();
+  const cleanup: BlobCleanup = {
+    blobUrls: [],
+    pathBlobs,
+    uninstall: () => {},
+  };
   const rewrittenJson = new Map<string, string>();
   let url: string | undefined;
   try {
@@ -228,10 +487,18 @@ export async function prepareLocalTileset(
       rewrittenJson,
       cleanup,
     );
+    if (url && pathBlobs.size > 0) {
+      activePathBlobs.push(pathBlobs);
+      cleanup.uninstall = installBlobRedirects();
+    }
   } finally {
     if (!url) {
+      cleanup.uninstall();
+      const idx = activePathBlobs.indexOf(pathBlobs);
+      if (idx >= 0) activePathBlobs.splice(idx, 1);
       for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
       cleanup.blobUrls.length = 0;
+      pathBlobs.clear();
     }
   }
   if (!url) {
@@ -243,8 +510,12 @@ export async function prepareLocalTileset(
     label: fileRelPath(root),
     fileCount: files.length,
     cleanup: () => {
+      cleanup.uninstall();
+      const idx = activePathBlobs.indexOf(pathBlobs);
+      if (idx >= 0) activePathBlobs.splice(idx, 1);
       for (const blobUrl of cleanup.blobUrls) URL.revokeObjectURL(blobUrl);
       cleanup.blobUrls.length = 0;
+      pathBlobs.clear();
     },
   };
 }
