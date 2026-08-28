@@ -41,13 +41,21 @@ function fileRelPath(file: File): string {
   );
 }
 
+function stripQueryAndHash(uri: string): string {
+  return uri.split("#")[0].split("?")[0];
+}
+
 function normalizeUri(uri: string): string {
-  return uri.replace(/\\/g, "/").replace(/^\.\//, "");
+  return stripQueryAndHash(uri).replace(/\\/g, "/").replace(/^\.\//, "");
+}
+
+function isAbsoluteContentUri(uri: string): boolean {
+  return /^(https?:|blob:|data:)/i.test(uri);
 }
 
 function joinPath(dir: string, rel: string): string {
   const cleaned = normalizeUri(rel);
-  if (!cleaned || /^(https?:|blob:|data:)/i.test(cleaned)) return cleaned;
+  if (!cleaned || isAbsoluteContentUri(cleaned)) return cleaned;
   const parts: string[] = [];
   const prefix = dir ? `${dir}/${cleaned}` : cleaned;
   for (const part of prefix.split("/")) {
@@ -64,8 +72,7 @@ function dirOf(filePath: string): string {
 }
 
 function isJsonTilesetUri(uri: string): boolean {
-  const path = normalizeUri(uri).split("?")[0].toLowerCase();
-  return path.endsWith(".json");
+  return normalizeUri(uri).toLowerCase().endsWith(".json");
 }
 
 type BlobCleanup = {
@@ -116,10 +123,16 @@ async function rewriteContentUri(
   rewrittenJson: Map<string, string>,
   cleanup: BlobCleanup,
 ): Promise<string | undefined> {
-  if (!original || /^(https?:|blob:|data:)/i.test(original)) return original;
+  if (!original) return original;
+  // http(s)/blob/data stay as authored. Relative URIs must resolve inside the folder.
+  if (isAbsoluteContentUri(original)) return original;
   const resolved = joinPath(baseDir, original);
   const file = filesByPath.get(resolved) ?? filesByPath.get(normalizeUri(original));
-  if (!file) return original;
+  if (!file) {
+    throw new Error(
+      `Tileset content is not in the selected folder: ${original}`,
+    );
+  }
   if (isJsonTilesetUri(original)) {
     return rewriteTilesetFile(file, filesByPath, rewrittenJson, cleanup);
   }

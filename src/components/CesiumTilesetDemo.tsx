@@ -119,6 +119,8 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
   const localFilesRef = useRef<File[] | null>(null);
   const datasetRef = useRef<Dataset>("sample");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const loadIdRef = useRef(0);
+  const mountedRef = useRef(true);
 
   const [dataset, setDataset] = useState<Dataset>("sample");
   const [status, setStatus] = useState<Status>("idle");
@@ -129,8 +131,30 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
 
   datasetRef.current = dataset;
 
+  const isCurrentLoad = (loadId: number) =>
+    mountedRef.current && loadId === loadIdRef.current;
+
+  const discardTileset = (viewer: any, tileset: any) => {
+    if (!tileset) return;
+    try {
+      if (viewer && !viewer.isDestroyed?.()) {
+        viewer.scene.primitives.remove(tileset);
+      }
+    } catch {
+      // Viewer may already be torn down.
+    }
+    try {
+      tileset.destroy?.();
+    } catch {
+      // Ignore tilesets that have already been destroyed.
+    }
+  };
+
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
+      mountedRef.current = false;
+      loadIdRef.current += 1;
       localHandleRef.current?.cleanup();
       localHandleRef.current = null;
       const viewer = viewerRef.current;
@@ -187,7 +211,8 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
     }
   };
 
-  const ensureViewer = async (Cesium: any) => {
+  const ensureViewer = async (Cesium: any, loadId: number) => {
+    if (!isCurrentLoad(loadId)) return null;
     if (viewerRef.current && !viewerRef.current.isDestroyed?.()) {
       return viewerRef.current;
     }
@@ -218,79 +243,137 @@ export default function CesiumTilesetDemo({ lang = "en" }: { lang?: Lang }) {
       requestRenderMode: false,
     });
 
+    if (!isCurrentLoad(loadId)) {
+      if (!viewer.isDestroyed?.()) viewer.destroy();
+      return null;
+    }
+
     viewerRef.current = viewer;
     setBooted(true);
 
-    const scene = viewer.scene;
-    scene.globe.show = false;
-    scene.globe.depthTestAgainstTerrain = false;
-    scene.backgroundColor = Cesium.Color.fromCssColorString("#171512");
-    if (scene.sun) scene.sun.show = false;
-    if (scene.moon) scene.moon.show = false;
-    if (scene.fog) scene.fog.enabled = false;
-    if (scene.skyAtmosphere) scene.skyAtmosphere.show = false;
-    if (scene.skyBox) scene.skyBox.show = false;
-    scene.screenSpaceCameraController.enableCollisionDetection = false;
-    scene.screenSpaceCameraController.minimumZoomDistance = 1;
-    if (viewer.creditDisplay?.container) {
-      viewer.creditDisplay.container.style.display = "none";
-    }
     try {
-      scene.light = new Cesium.DirectionalLight({
-        direction: new Cesium.Cartesian3(0.35, 0.25, -1),
-        intensity: 2.2,
-      });
+      const scene = viewer.scene;
+      scene.globe.show = false;
+      scene.globe.depthTestAgainstTerrain = false;
+      scene.backgroundColor = Cesium.Color.fromCssColorString("#171512");
+      if (scene.sun) scene.sun.show = false;
+      if (scene.moon) scene.moon.show = false;
+      if (scene.fog) scene.fog.enabled = false;
+      if (scene.skyAtmosphere) scene.skyAtmosphere.show = false;
+      if (scene.skyBox) scene.skyBox.show = false;
+      scene.screenSpaceCameraController.enableCollisionDetection = false;
+      scene.screenSpaceCameraController.minimumZoomDistance = 1;
+      if (viewer.creditDisplay?.container) {
+        viewer.creditDisplay.container.style.display = "none";
+      }
+      try {
+        scene.light = new Cesium.DirectionalLight({
+          direction: new Cesium.Cartesian3(0.35, 0.25, -1),
+          intensity: 2.2,
+        });
+      } catch {
+        // Default lighting is fine if DirectionalLight is unavailable.
+      }
     } catch {
-      // Default lighting is fine if DirectionalLight is unavailable.
+      if (!isCurrentLoad(loadId)) return null;
+      throw new Error("Failed to configure Cesium viewer");
+    }
+
+    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+      if (viewerRef.current === viewer) viewerRef.current = null;
+      if (!viewer.isDestroyed?.()) viewer.destroy();
+      return null;
     }
 
     return viewer;
   };
 
-  const replaceTileset = async (Cesium: any, url: string) => {
-    const viewer = await ensureViewer(Cesium);
-    if (tilesetRef.current) {
-      viewer.scene.primitives.remove(tilesetRef.current);
-      tilesetRef.current = null;
-    }
+  const replaceTileset = async (Cesium: any, url: string, loadId: number) => {
+    const viewer = await ensureViewer(Cesium, loadId);
+    if (!viewer || !isCurrentLoad(loadId)) return null;
+
     const tileset = await Cesium.Cesium3DTileset.fromUrl(url);
+    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+      discardTileset(viewer, tileset);
+      return null;
+    }
+
     if (tileset.tileFailed) {
       tileset.tileFailed.addEventListener((failed: { url?: string; message?: string }) => {
         console.warn("3D Tiles content failed", failed?.url, failed?.message);
       });
     }
+
+    if (tilesetRef.current) {
+      viewer.scene.primitives.remove(tilesetRef.current);
+      try {
+        tilesetRef.current.destroy?.();
+      } catch {
+        // Previous tileset may already be gone.
+      }
+      tilesetRef.current = null;
+    }
+
     viewer.scene.primitives.add(tileset);
     tilesetRef.current = tileset;
+
+    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+      discardTileset(viewer, tileset);
+      if (tilesetRef.current === tileset) tilesetRef.current = null;
+      return null;
+    }
+
     await viewer.zoomTo(tileset);
+    if (!isCurrentLoad(loadId) || viewer.isDestroyed?.()) {
+      discardTileset(viewer, tileset);
+      if (tilesetRef.current === tileset) tilesetRef.current = null;
+      return null;
+    }
     viewer.scene.requestRender();
     return tileset;
   };
 
   const loadDataset = async (next: Dataset, files?: File[]) => {
+    const loadId = ++loadIdRef.current;
     setStatus("loading");
     setError("");
-    const Cesium = await loadCesium();
-    await ensureViewer(Cesium);
+    try {
+      const Cesium = await loadCesium();
+      if (!isCurrentLoad(loadId)) return;
 
-    if (next === "sample") {
+      const viewer = await ensureViewer(Cesium, loadId);
+      if (!isCurrentLoad(loadId) || !viewer) return;
+
+      if (next === "sample") {
+        localHandleRef.current?.cleanup();
+        localHandleRef.current = null;
+        const tileset = await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET, loadId);
+        if (!isCurrentLoad(loadId) || !tileset) return;
+        setStatus("ready");
+        return;
+      }
+
+      const selected = files ?? localFilesRef.current;
+      if (!selected?.length) {
+        if (!isCurrentLoad(loadId)) return;
+        setStatus(viewerRef.current ? "ready" : "idle");
+        return;
+      }
+
+      const handle = await prepareLocalTileset(selected);
+      if (!isCurrentLoad(loadId)) {
+        handle.cleanup();
+        return;
+      }
       localHandleRef.current?.cleanup();
-      localHandleRef.current = null;
-      await replaceTileset(Cesium, PUBLIC_SAMPLE_TILESET);
+      localHandleRef.current = handle;
+      const tileset = await replaceTileset(Cesium, handle.url, loadId);
+      if (!isCurrentLoad(loadId) || !tileset) return;
       setStatus("ready");
-      return;
+    } catch (caught) {
+      if (!isCurrentLoad(loadId)) return;
+      throw caught;
     }
-
-    const selected = files ?? localFilesRef.current;
-    if (!selected?.length) {
-      setStatus(viewerRef.current ? "ready" : "idle");
-      return;
-    }
-
-    const handle = await prepareLocalTileset(selected);
-    localHandleRef.current?.cleanup();
-    localHandleRef.current = handle;
-    await replaceTileset(Cesium, handle.url);
-    setStatus("ready");
   };
 
   const onLoadClick = async () => {
