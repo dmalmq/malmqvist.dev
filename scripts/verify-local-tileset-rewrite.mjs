@@ -1,10 +1,11 @@
 /**
  * Rerunnable check for local-folder URI rewrite.
- * Covers the public synthetic sample, a tiny implicit+glTF fixture, cyclic
- * external tilesets, and redirect isolation from same-origin site URLs.
+ * Covers the public synthetic bundle, a tiny implicit+glTF fixture, cyclic
+ * external tilesets, redirect isolation from same-origin site URLs, and
+ * opening a whole `venue-web` bundle from a picked folder.
  * Does not load workplace or JR station data.
  */
-import { readFile, rm } from "node:fs/promises";
+import { readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -23,7 +24,13 @@ await build({
   logLevel: "silent",
 });
 
-const { prepareLocalTileset } = await import(pathToFileURL(outFile).href);
+const { prepareLocalTileset, prepareLocalVenue } = await import(
+  pathToFileURL(outFile).href
+);
+
+// Captured before any folder is prepared: an uninstall that only unwinds part
+// of what installBlobRedirects registered leaves this identity changed.
+const pristineFetch = globalThis.fetch;
 
 function fileFromBytes(relPath, bytes, type = "application/octet-stream") {
   const file = new File([bytes], path.posix.basename(relPath), { type });
@@ -77,12 +84,12 @@ function assert(cond, message) {
 const sampleDir = path.join(root, "public/demos/3d-tiles-viewer/synthetic-indoor");
 const sampleFiles = [
   fileFromText(
-    "synthetic-indoor/tileset.json",
-    await readFile(path.join(sampleDir, "tileset.json"), "utf8"),
+    "synthetic-indoor/tiles/main/1f/tileset.json",
+    await readFile(path.join(sampleDir, "tiles/main/1f/tileset.json"), "utf8"),
   ),
   fileFromBytes(
-    "synthetic-indoor/building.glb",
-    await readFile(path.join(sampleDir, "building.glb")),
+    "synthetic-indoor/tiles/main/1f/1f.glb",
+    await readFile(path.join(sampleDir, "tiles/main/1f/1f.glb")),
     "model/gltf-binary",
   ),
 ];
@@ -91,7 +98,7 @@ const sample = await prepareLocalTileset(sampleFiles);
 const sampleJson = await readBlobJson(sample.url);
 assert(sampleJson.root.content.uri.startsWith("blob:"), "sample content.uri should be a blob URL");
 assert(
-  !sampleJson.root.content.uri.includes("building.glb"),
+  !sampleJson.root.content.uri.includes("1f.glb"),
   "sample should not leave the relative glb path",
 );
 
@@ -110,6 +117,10 @@ assert(
   "a versioned content request must return the GLB bytes",
 );
 sample.cleanup();
+assert(
+  globalThis.fetch === pristineFetch,
+  "cleanup must restore the original fetch, not a wrapper around it",
+);
 
 const remoteKept = "https://example.invalid/keep/{level}/{x}/{y}.glb";
 const implicitFiles = [
@@ -218,6 +229,10 @@ try {
   missingThrew = error instanceof Error && error.message.includes("not in the selected folder");
 }
 assert(missingThrew, "missing relative URI must throw");
+assert(
+  globalThis.fetch === pristineFetch,
+  "a prepare that throws must not leave an intercept installed",
+);
 
 let emptyThrew = false;
 try {
@@ -349,6 +364,94 @@ assert(
 );
 folderA.cleanup();
 folderB.cleanup();
+
+const bundleFiles = [];
+for (const rel of await readdir(sampleDir, { recursive: true, withFileTypes: true })) {
+  if (!rel.isFile()) continue;
+  const abs = path.join(rel.parentPath ?? rel.path, rel.name);
+  const relPath = path.relative(sampleDir, abs).split(path.sep).join("/");
+  bundleFiles.push(fileFromBytes(`picked/${relPath}`, await readFile(abs)));
+}
+
+const venue = await prepareLocalVenue(bundleFiles);
+assert(venue.source.manifest.levels.length === 2, "bundle should expose both levels");
+assert(venue.source.manifest.layers.length === 2, "bundle should expose both layers");
+for (const building of venue.source.manifest.buildings) {
+  for (const ref of building.tilesets) {
+    assert(
+      venue.source.resolve(ref.uri).startsWith("blob:"),
+      `tileset ${ref.uri} should resolve to a blob URL`,
+    );
+  }
+}
+for (const layer of venue.source.manifest.layers) {
+  const layerUrl = venue.source.resolve(layer.uri);
+  assert(layerUrl.startsWith("blob:"), `layer ${layer.id} should resolve to a blob URL`);
+  const fc = await fetch(layerUrl).then((res) => res.json());
+  assert(fc.features.length > 0, `layer ${layer.id} should carry features`);
+  const iconUrl = venue.source.resolve(
+    `${venue.source.manifest.iconBase}${fc.features[0].properties.image}`,
+  );
+  assert(iconUrl.startsWith("blob:"), "feature icons should resolve to blob URLs");
+}
+venue.cleanup();
+
+// A manifest may name files the picked folder does not carry. Resolving those to
+// the authored relative path would send the viewer at this page's origin, so
+// resolve must fail instead; http(s) URIs still pass through untouched.
+const REMOTE_LAYER = "https://example.invalid/layers/remote.geojson";
+const gapFiles = [
+  fileFromText(
+    "gap/venue.json",
+    JSON.stringify({
+      format: "venue-web",
+      version: 1,
+      id: "gap",
+      buildings: [{ id: "b", tilesets: [{ levelKey: null, uri: "tiles/1f/tileset.json" }] }],
+      layers: [
+        { id: "missing", uri: "layers/missing.geojson" },
+        { id: "remote", uri: REMOTE_LAYER },
+      ],
+      iconBase: "icons/marker/",
+    }),
+  ),
+  fileFromText(
+    "gap/tiles/1f/tileset.json",
+    JSON.stringify({
+      asset: { version: "1.1" },
+      geometricError: 0,
+      root: { boundingVolume: { box: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1] }, geometricError: 0 },
+    }),
+  ),
+];
+
+const gap = await prepareLocalVenue(gapFiles);
+assert(
+  gap.source.resolve("tiles/1f/tileset.json").startsWith("blob:"),
+  "a present tileset must still resolve to a blob URL",
+);
+assert(gap.source.resolve(REMOTE_LAYER) === REMOTE_LAYER, "http(s) URIs must stay as authored");
+for (const missing of ["layers/missing.geojson", "icons/marker/gone.png"]) {
+  let threw = "";
+  try {
+    threw = `resolved to ${gap.source.resolve(missing)}`;
+  } catch (error) {
+    threw = error instanceof Error && error.message.includes(missing) ? "" : String(error);
+  }
+  assert(threw === "", `resolve must reject ${missing} instead of a page-relative path (${threw})`);
+}
+gap.cleanup();
+
+const plainFolder = await prepareLocalVenue(sampleFiles);
+assert(
+  plainFolder.source.manifest.buildings[0].tilesets[0].uri.startsWith("blob:"),
+  "a folder without venue.json still resolves its single tileset",
+);
+assert(
+  plainFolder.source.manifest.levels.length === 0,
+  "a folder without venue.json reports no levels",
+);
+plainFolder.cleanup();
 
 await rm(outFile, { force: true });
 console.log("local tileset rewrite checks passed");

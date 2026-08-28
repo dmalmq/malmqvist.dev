@@ -1,0 +1,125 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750057478,
+          35.639982034,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "elevator",
+        "image": "elevator.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Lobby lift",
+          "ja": "ロビーエレベーター"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750024318,
+          35.639979339,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "stairs-up",
+        "image": "stairs-up.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Stair to 2F",
+          "ja": "2Fへの階段"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750057478,
+          35.639919152,
+          49.6
+        ]
+      },
+      "properties": {
+        "symbol_id": "escalator",
+        "image": "escalator.svg",
+        "levelKey": "1F",
+        "name": {
+          "en": "Escalator up",
+          "ja": "上りエスカレーター"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750057478,
+          35.639982034,
+          53.2
+        ]
+      },
+      "properties": {
+        "symbol_id": "elevator",
+        "image": "elevator.svg",
+        "levelKey": "2F",
+        "name": {
+          "en": "Gallery lift",
+          "ja": "ギャラリーエレベーター"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750024318,
+          35.639979339,
+          53.2
+        ]
+      },
+      "properties": {
+        "symbol_id": "stairs-down",
+        "image": "stairs-down.svg",
+        "levelKey": "2F",
+        "name": {
+          "en": "Stair to 1F",
+          "ja": "1Fへの階段"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.750057478,
+          35.639919152,
+          53.2
+        ]
+      },
+      "properties": {
+        "symbol_id": "escalator",
+        "image": "escalator.svg",
+        "levelKey": "2F",
+        "name": {
+          "en": "Escalator down",
+          "ja": "下りエスカレーター"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "format": "venue-web",
+  "version": 1,
+  "id": "synthetic-indoor",
+  "name": {
+    "en": "Synthetic indoor sample",
+    "ja": "合成屋内サンプル"
+  },
+  "generator": "malmqvist.dev/scripts/generate-synthetic-indoor-tileset.mjs",
+  "generatedAt": "2026-08-28T00:00:00.000Z",
+  "synthetic": true,
+  "levels": [
+    {
+      "levelKey": "1F",
+      "levelName": "1F",
+      "levelElevationMeters": 0,
+      "minZMeters": -0.2,
+      "maxZMeters": 3.6
+    },
+    {
+      "levelKey": "2F",
+      "levelName": "2F",
+      "levelElevationMeters": 3.6,
+      "minZMeters": 3.48,
+      "maxZMeters": 7.36
+    }
+  ],
+  "buildings": [
+    {
+      "id": "main",
+      "name": "Main building",
+      "tilesets": [
+        {
+          "levelKey": "1F",
+          "uri": "tiles/main/1f/tileset.json"
+        },
+        {
+          "levelKey": "2F",
+          "uri": "tiles/main/2f/tileset.json"
+        }
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "id": "circulation",
+      "name": {
+        "en": "Vertical circulation",
+        "ja": "縦動線"
+      },
+      "uri": "layers/circulation.geojson",
+      "geometry": "point",
+      "color": "#c93a22",
+      "defaultVisible": true
+    },
+    {
+      "id": "facilities",
+      "name": {
+        "en": "Facilities",
+        "ja": "設備"
+      },
+      "uri": "layers/facilities.geojson",
+      "geometry": "point",
+      "color": "#2b4c6f",
+      "defaultVisible": true
+    }
+  ],
+  "iconBase": "icons/marker/",
+  "camera": {
+    "heading": 182,
+    "pitch": -20,
+    "rangeMeters": 34
+  }
+}

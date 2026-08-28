@@ -1,18 +1,10 @@
 {
   "asset": {
     "version": "1.1",
-    "tilesetVersion": "synthetic-indoor-3",
+    "tilesetVersion": "synthetic-indoor-2f-1",
     "extras": {
       "attribution": "Synthetic indoor sample generated for malmqvist.dev. Invented geometry — not a real building, JR station, workplace, or client dataset."
     }
-  },
-  "extras": {
-    "name": "Synthetic indoor sample",
-    "floors": [
-      "1F lobby + two rooms",
-      "2F gallery + two rooms"
-    ],
-    "license": "Made-up sample for this site. No third-party data."
   },
   "geometricError": 80,
   "root": {
@@ -20,7 +12,7 @@
       "box": [
         9,
         -6,
-        3.58,
+        5.42,
         9,
         0,
         0,
@@ -29,7 +21,7 @@
         0,
         0,
         0,
-        3.7800000000000002
+        1.9400000000000002
       ]
     },
     "geometricError": 0,
@@ -53,7 +45,7 @@
       1
     ],
     "content": {
-      "uri": "building.glb?v=3"
+      "uri": "2f.glb"
     }
   }
 }

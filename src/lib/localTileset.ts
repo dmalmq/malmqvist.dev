@@ -3,6 +3,11 @@
  * Adapted from dmalmq/3D-Tiles-Viewer `tilesetLoader.js` + `fileSystemAccess.js`.
  * Files are read in-memory and rewritten to blob URLs. Nothing is uploaded.
  */
+import {
+  parseVenueManifest,
+  type VenueManifest,
+  type VenueSource,
+} from "./venueBundle";
 
 export function isFileSystemAccessSupported(): boolean {
   return typeof window !== "undefined" && "showDirectoryPicker" in window;
@@ -191,8 +196,8 @@ function installBlobRedirects(): () => void {
     };
   }
 
-  const originalFetch = globalThis.fetch.bind(globalThis);
-  globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const originalFetch = globalThis.fetch;
+  const patchedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
     const href =
       typeof input === "string"
         ? input
@@ -200,17 +205,20 @@ function installBlobRedirects(): () => void {
           ? input.href
           : input.url;
     const mapped = blobForRequestUrl(href);
-    if (!mapped) return originalFetch(input, init);
+    if (!mapped) return originalFetch.call(globalThis, input, init);
     if (typeof Request !== "undefined" && input instanceof Request) {
-      return originalFetch(new Request(mapped, input), init);
+      return originalFetch.call(globalThis, new Request(mapped, input), init);
     }
-    return originalFetch(mapped, init);
+    return originalFetch.call(globalThis, mapped, init);
   };
+  globalThis.fetch = patchedFetch;
 
   const XHR = globalThis.XMLHttpRequest;
   const originalOpen = XHR?.prototype.open;
+  let patchedOpen: typeof originalOpen | undefined;
   if (XHR && originalOpen) {
-    XHR.prototype.open = function (
+    patchedOpen = function (
+      this: XMLHttpRequest,
       method: string,
       url: string | URL,
       async?: boolean,
@@ -227,12 +235,17 @@ function installBlobRedirects(): () => void {
         username,
         password,
       );
-    };
+    } as typeof originalOpen;
+    XHR.prototype.open = patchedOpen;
   }
 
   restoreRedirect = () => {
-    globalThis.fetch = originalFetch;
-    if (XHR && originalOpen) XHR.prototype.open = originalOpen;
+    // Only unwind our own patch. Anything installed on top of it owns the slot
+    // and must restore what it captured, which is this patched pair.
+    if (globalThis.fetch === patchedFetch) globalThis.fetch = originalFetch;
+    if (XHR && originalOpen && XHR.prototype.open === patchedOpen) {
+      XHR.prototype.open = originalOpen;
+    }
   };
 
   return () => {
@@ -498,22 +511,6 @@ async function rewriteFileToBlob(file: File, ctx: RewriteCtx): Promise<string> {
   }
 }
 
-async function rewriteTilesetFile(
-  file: File,
-  filesByPath: Map<string, File>,
-  rewrittenJson: Map<string, string>,
-  cleanup: BlobCleanup,
-): Promise<string> {
-  const ctx: RewriteCtx = {
-    filesByPath,
-    rewritten: rewrittenJson,
-    pending: new Set(),
-    cycleWaiters: new Map(),
-    cleanup,
-  };
-  return rewriteFileToBlob(file, ctx);
-}
-
 export type LocalTilesetHandle = {
   url: string;
   label: string;
@@ -523,28 +520,18 @@ export type LocalTilesetHandle = {
   cleanup: () => void;
 };
 
-export async function prepareLocalTileset(
-  files: File[],
-): Promise<LocalTilesetHandle> {
-  if (!files.length) {
-    throw new Error("No files selected.");
-  }
+type BlobLifecycle = {
+  cleanup: BlobCleanup;
+  ctx: RewriteCtx;
+  attach: () => void;
+  detach: () => void;
+  revokeAll: () => void;
+};
 
-  const filesByPath = new Map<string, File>();
-  for (const file of files) {
-    filesByPath.set(fileRelPath(file), file);
-  }
-
-  const root = pickRootTileset(files);
+function createBlobLifecycle(filesByPath: Map<string, File>): BlobLifecycle {
   const pathBlobs = new Map<string, string>();
   const blobUrls = new Set<string>();
-  const cleanup: BlobCleanup = {
-    blobUrls,
-    pathBlobs,
-    uninstall: () => {},
-  };
-  const rewrittenJson = new Map<string, string>();
-
+  const cleanup: BlobCleanup = { blobUrls, pathBlobs, uninstall: () => {} };
   let attached = false;
   let revoked = false;
 
@@ -577,17 +564,46 @@ export async function prepareLocalTileset(
     pathBlobs.clear();
   };
 
+  return {
+    cleanup,
+    ctx: {
+      filesByPath,
+      rewritten: new Map<string, string>(),
+      pending: new Set<string>(),
+      cycleWaiters: new Map<string, Set<string>>(),
+      cleanup,
+    },
+    attach,
+    detach,
+    revokeAll,
+  };
+}
+
+function indexFiles(files: File[]): Map<string, File> {
+  const filesByPath = new Map<string, File>();
+  for (const file of files) {
+    filesByPath.set(fileRelPath(file), file);
+  }
+  return filesByPath;
+}
+
+export async function prepareLocalTileset(
+  files: File[],
+): Promise<LocalTilesetHandle> {
+  if (!files.length) {
+    throw new Error("No files selected.");
+  }
+
+  const filesByPath = indexFiles(files);
+  const root = pickRootTileset(files);
+  const life = createBlobLifecycle(filesByPath);
+
   let url: string | undefined;
   try {
-    url = await rewriteTilesetFile(
-      root,
-      filesByPath,
-      rewrittenJson,
-      cleanup,
-    );
-    if (url) attach();
+    url = await rewriteFileToBlob(root, life.ctx);
+    if (url) life.attach();
   } finally {
-    if (!url) revokeAll();
+    if (!url) life.revokeAll();
   }
   if (!url) {
     throw new Error("Failed to rewrite tileset.json");
@@ -597,9 +613,120 @@ export async function prepareLocalTileset(
     url,
     label: fileRelPath(root),
     fileCount: files.length,
-    attach,
-    detach,
-    cleanup: revokeAll,
+    attach: life.attach,
+    detach: life.detach,
+    cleanup: life.revokeAll,
+  };
+}
+
+export type LocalVenueHandle = {
+  source: VenueSource;
+  label: string;
+  fileCount: number;
+  attach: () => void;
+  detach: () => void;
+  cleanup: () => void;
+};
+
+function pickVenueManifestFile(files: File[]): File | undefined {
+  const candidates = files.filter(
+    (file) => fileRelPath(file).split("/").pop()?.toLowerCase() === "venue.json",
+  );
+  if (candidates.length === 0) return undefined;
+  return [...candidates].sort(
+    (a, b) => fileRelPath(a).length - fileRelPath(b).length,
+  )[0];
+}
+
+/**
+ * Opens a picked folder as a venue. A folder holding a `venue-web` bundle keeps
+ * its levels, layers, and icons; any other folder falls back to the single
+ * tileset it contains so the plain case still works.
+ */
+export async function prepareLocalVenue(files: File[]): Promise<LocalVenueHandle> {
+  if (!files.length) {
+    throw new Error("No files selected.");
+  }
+
+  const filesByPath = indexFiles(files);
+  const manifestFile = pickVenueManifestFile(files);
+
+  if (!manifestFile) {
+    const handle = await prepareLocalTileset(files);
+    const root = pickRootTileset(files);
+    const manifest: VenueManifest = {
+      id: "local-tileset",
+      name: fileRelPath(root),
+      generator: null,
+      generatedAt: null,
+      synthetic: false,
+      levels: [],
+      buildings: [
+        {
+          id: "local",
+          name: fileRelPath(root),
+          tilesets: [{ levelKey: null, uri: handle.url }],
+        },
+      ],
+      layers: [],
+      iconBase: "icons/marker/",
+      camera: null,
+    };
+    return {
+      source: { manifest, resolve: (uri) => uri, cleanup: handle.cleanup },
+      label: handle.label,
+      fileCount: handle.fileCount,
+      attach: handle.attach,
+      detach: handle.detach,
+      cleanup: handle.cleanup,
+    };
+  }
+
+  const manifestPath = fileRelPath(manifestFile);
+  const baseDir = dirOf(manifestPath);
+  const manifest = parseVenueManifest(await manifestFile.text());
+  const life = createBlobLifecycle(filesByPath);
+  const resolved = new Map<string, string>();
+
+  const resolve = (uri: string): string => {
+    if (isAbsoluteContentUri(uri)) return uri;
+    const key = joinPath(baseDir, uri);
+    const cached = resolved.get(key);
+    if (cached) return cached;
+    const file = filesByPath.get(key) ?? filesByPath.get(normalizeUri(uri));
+    // Handing back the authored relative uri would send Cesium at this page's
+    // origin for a file the folder never had; fail instead.
+    if (!file) throw new Error(`Bundle is missing ${uri}`);
+    const url = rememberBlob(life.ctx, URL.createObjectURL(file));
+    resolved.set(key, url);
+    return url;
+  };
+
+  let ready = false;
+  try {
+    for (const building of manifest.buildings) {
+      for (const ref of building.tilesets) {
+        const key = joinPath(baseDir, ref.uri);
+        const file = filesByPath.get(key);
+        if (!file) {
+          throw new Error(`Bundle is missing ${ref.uri}`);
+        }
+        resolved.set(key, await rewriteFileToBlob(file, life.ctx));
+      }
+    }
+    ready = true;
+    life.attach();
+  } finally {
+    if (!ready) life.revokeAll();
+  }
+
+  return {
+    source: { manifest, resolve, cleanup: life.revokeAll },
+    label: manifestPath,
+    fileCount: files.length,
+    attach: life.attach,
+    detach: life.detach,
+    cleanup: life.revokeAll,
   };
 }
 
