@@ -39,7 +39,7 @@ class StubElement {
     for (const fn of this.listeners[type] ?? []) fn();
   }
   remove() {
-    byId.delete(this.id);
+    if (byId.get(this.id) === this) byId.delete(this.id);
   }
 }
 
@@ -112,6 +112,55 @@ assert(
 assert(
   !byId.has("cesium-js"),
   "a script that loads without the global must not block a retry",
+);
+
+resetDom();
+const loadOverDeadTag = await freshLoader("dead-tag");
+// A #cesium-js tag nobody is watching: it already errored, so it will never
+// fire load or error again. Waiting on it would hang the Load button forever.
+const deadTag = new StubElement("script");
+deadTag.id = "cesium-js";
+byId.set(deadTag.id, deadTag);
+const overDeadTag = settle(loadOverDeadTag());
+assert(injected.length === 1, "a dead #cesium-js tag must be replaced, not awaited");
+assert(byId.get("cesium-js") === injected[0], "the fresh script must own the id");
+globalThis.Cesium = { stub: true };
+injected.at(-1).fire("load");
+assert(
+  (await overDeadTag) === "resolved",
+  "a load started over a dead tag must settle instead of hanging",
+);
+
+resetDom();
+const loadWithTimeout = await freshLoader("timeout");
+// A black-holed CDN fires neither load nor error.
+const stalled = settle(loadWithTimeout(20), 500);
+assert(
+  (await stalled) === "rejected:CesiumJS did not load in time",
+  "a script that never fires must time out rather than hang",
+);
+assert(!byId.has("cesium-js"), "a timed-out inject must not leave its script in the DOM");
+
+injected.length = 0;
+const afterTimeout = settle(loadWithTimeout(20_000));
+assert(injected.length === 1, "a retry after a timeout must inject a fresh script");
+globalThis.Cesium = { stub: true };
+injected.at(-1).fire("load");
+assert(
+  (await afterTimeout) === "resolved",
+  "a retry after a timeout must load",
+);
+
+resetDom();
+const loadTwice = await freshLoader("concurrent");
+const firstCall = settle(loadTwice());
+const secondCall = settle(loadTwice());
+assert(injected.length === 1, "concurrent loads must share one script tag");
+globalThis.Cesium = { stub: true };
+injected.at(-1).fire("load");
+assert(
+  (await firstCall) === "resolved" && (await secondCall) === "resolved",
+  "both concurrent loads must settle",
 );
 
 await rm(outFile, { force: true });
