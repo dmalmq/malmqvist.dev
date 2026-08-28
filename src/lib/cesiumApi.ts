@@ -65,7 +65,12 @@ export interface CesiumEntity {
   point?: Record<string, unknown>;
   label?: Record<string, unknown>;
   polyline?: { material?: unknown };
-  polygon?: { material?: unknown };
+  polygon?: {
+    material?: unknown;
+    outlineColor?: unknown;
+    perPositionHeight?: boolean;
+    arcType?: unknown;
+  };
 }
 
 export interface CesiumDataSource {
@@ -155,5 +160,6 @@ export interface CesiumApi {
   HeadingPitchRange: new (heading: number, pitch: number, range: number) => unknown;
   JulianDate: { now(): unknown };
   DirectionalLight: new (options: { direction: CesiumCartesian3; intensity: number }) => unknown;
+  ArcType: { NONE: unknown };
   Math: { toRadians(degrees: number): number };
 }
