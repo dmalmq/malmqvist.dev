@@ -20,6 +20,7 @@ slidesUrl: "https://www.figma.com/deck/Wmym8uEPIZ5Dy5BFco4mMH"
 import ImageRow from "../../../components/mdx/ImageRow.astro";
 import Section from "../../../components/mdx/Section.astro";
 import TechStack from "../../../components/mdx/TechStack.astro";
+import TilesetLiveDemo from "../../../components/mdx/TilesetLiveDemo.astro";
 
 <Section label="課題">
   <p>{frontmatter.problem}</p>
@@ -28,6 +29,8 @@ import TechStack from "../../../components/mdx/TechStack.astro";
 <Section label="アプローチ">
   <p>{frontmatter.solution}</p>
 </Section>
+
+<TilesetLiveDemo lang="ja" />
 
 <ImageRow
   title="スクリーンショット"

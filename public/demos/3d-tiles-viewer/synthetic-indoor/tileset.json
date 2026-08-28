@@ -1,0 +1,59 @@
+{
+  "asset": {
+    "version": "1.1",
+    "tilesetVersion": "synthetic-indoor-1",
+    "extras": {
+      "attribution": "Synthetic indoor sample generated for malmqvist.dev. Invented geometry — not a real building, JR station, workplace, or client dataset."
+    }
+  },
+  "extras": {
+    "name": "Synthetic indoor sample",
+    "floors": [
+      "1F lobby + two rooms",
+      "2F gallery + two rooms"
+    ],
+    "license": "Made-up sample for this site. No third-party data."
+  },
+  "geometricError": 80,
+  "root": {
+    "boundingVolume": {
+      "box": [
+        9,
+        -6,
+        3.58,
+        9,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        3.7800000000000002
+      ]
+    },
+    "geometricError": 0,
+    "refine": "ADD",
+    "transform": [
+      -0.6461239796429638,
+      -0.7632324697825289,
+      0,
+      0,
+      0.4447282939162137,
+      -0.3764902916235278,
+      0.812694164433094,
+      0,
+      -0.6202745742981189,
+      0.5251011877561238,
+      0.582690479668576,
+      0,
+      -3960729.7446975904,
+      3353005.2326828395,
+      3695830.6908901976,
+      1
+    ],
+    "content": {
+      "uri": "building.glb"
+    }
+  }
+}
